@@ -33,11 +33,8 @@ export default function DashboardHome() {
   const activeSubjects = userCourse.semesters[activeSemester] || [];
 
   // Compute stats
-  // Get all question IDs belonging to the active semester's subjects
   const subjectIds = activeSubjects.map(sub => sub.id);
   const totalQuestions = questions.filter(q => subjectIds.includes(q.subjectId));
-  
-  // Find which of these are completed
   const completedInSemester = totalQuestions.filter(q => completedList.includes(q.id));
   const completionRate = totalQuestions.length > 0 
     ? Math.round((completedInSemester.length / totalQuestions.length) * 100) 
@@ -59,170 +56,170 @@ export default function DashboardHome() {
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-      {/* Welcome Hero */}
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      {/* Welcome Banner */}
       <div style={{
-        padding: "32px",
-        borderRadius: "16px",
-        background: "linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(20, 184, 166, 0.05) 100%)",
-        border: "1px solid rgba(59, 130, 246, 0.15)",
+        padding: "24px",
+        borderRadius: "4px",
+        background: "#121214",
+        border: "1px solid #27272a",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: "24px"
+        gap: "16px"
       }}>
         <div>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: "700", marginBottom: "8px" }}>
-            Welcome back, {user.name || "Scholar"}! 👋
+          <h1 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "4px" }}>
+            Welcome, {user.name || "Student"}
           </h1>
-          <p style={{ color: "#94a3b8", fontSize: "0.95rem", maxWidth: "600px" }}>
-            You are currently analyzing the syllabus for **{user.courseName}** (Semester {user.semester}) at **{user.college}**. Let&apos;s finish some PYQs today!
+          <p style={{ color: "#a1a1aa", fontSize: "0.8rem", maxWidth: "600px" }}>
+            You are tracking the syllabus for **{user.courseName}** (Semester {user.semester}) at **SSCBS**.
           </p>
         </div>
-        <Link href="/dashboard/analyzer" className="btn btn-primary" style={{ padding: "12px 24px" }}>
-          Launch PYQ Analyzer <Play size={16} fill="white" />
+        <Link href="/dashboard/analyzer" className="btn btn-primary" style={{ padding: "8px 12px", fontSize: "0.8rem" }}>
+          Open Analyzer <Play size={12} fill="currentColor" />
         </Link>
       </div>
 
-      {/* Stats Summary Cards */}
+      {/* Stats row */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        gap: "20px"
+        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+        gap: "16px"
       }}>
         {/* Stat 1 */}
-        <div className="glass-panel" style={{ padding: "24px", display: "flex", alignItems: "center", gap: "20px" }}>
+        <div className="glass-panel" style={{ padding: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "12px",
-            background: "rgba(59, 130, 246, 0.1)",
-            border: "1px solid rgba(59, 130, 246, 0.2)",
-            color: "#3b82f6",
+            width: "36px",
+            height: "36px",
+            borderRadius: "4px",
+            background: "#09090b",
+            border: "1px solid #27272a",
+            color: "#a1a1aa",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
           }}>
-            <BookOpen size={22} />
+            <BookOpen size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "500" }}>TOTAL PYQs</div>
-            <div style={{ fontSize: "1.6rem", fontWeight: "700", marginTop: "4px" }}>
-              {totalQuestions.length} Questions
+            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>TOTAL QUESTIONS</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
+              {totalQuestions.length} PYQs
             </div>
           </div>
         </div>
 
         {/* Stat 2 */}
-        <div className="glass-panel" style={{ padding: "24px", display: "flex", alignItems: "center", gap: "20px" }}>
+        <div className="glass-panel" style={{ padding: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "12px",
-            background: "rgba(16, 185, 129, 0.1)",
-            border: "1px solid rgba(16, 185, 129, 0.2)",
-            color: "#10b981",
+            width: "36px",
+            height: "36px",
+            borderRadius: "4px",
+            background: "#09090b",
+            border: "1px solid #27272a",
+            color: "#a1a1aa",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
           }}>
-            <CheckCircle size={22} />
+            <CheckCircle size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "500" }}>COMPLETED</div>
-            <div style={{ fontSize: "1.6rem", fontWeight: "700", marginTop: "4px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>COMPLETED</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
               {completedInSemester.length} / {totalQuestions.length}
             </div>
           </div>
         </div>
 
         {/* Stat 3 */}
-        <div className="glass-panel" style={{ padding: "24px", display: "flex", alignItems: "center", gap: "20px" }}>
+        <div className="glass-panel" style={{ padding: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "12px",
-            background: "rgba(20, 184, 166, 0.1)",
-            border: "1px solid rgba(20, 184, 166, 0.2)",
-            color: "#14b8a6",
+            width: "36px",
+            height: "36px",
+            borderRadius: "4px",
+            background: "#09090b",
+            border: "1px solid #27272a",
+            color: "#a1a1aa",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
           }}>
-            <Award size={22} />
+            <Award size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "500" }}>COVERAGE</div>
-            <div style={{ fontSize: "1.6rem", fontWeight: "700", marginTop: "4px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>COVERAGE</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
               {completionRate}%
             </div>
           </div>
         </div>
 
         {/* Stat 4 */}
-        <div className="glass-panel" style={{ padding: "24px", display: "flex", alignItems: "center", gap: "20px" }}>
+        <div className="glass-panel" style={{ padding: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "12px",
-            background: "rgba(245, 158, 11, 0.1)",
-            border: "1px solid rgba(245, 158, 11, 0.2)",
-            color: "#f59e0b",
+            width: "36px",
+            height: "36px",
+            borderRadius: "4px",
+            background: "#09090b",
+            border: "1px solid #27272a",
+            color: "#a1a1aa",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
           }}>
-            <Calendar size={22} />
+            <Calendar size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "500" }}>DAYS LEFT</div>
-            <div style={{ fontSize: "1.6rem", fontWeight: "700", marginTop: "4px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>DAYS REMAINING</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
               45 Days
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Subjects & Activity */}
+      {/* Main Grid */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: "32px",
+        gridTemplateColumns: "1fr 300px",
+        gap: "24px",
         alignItems: "start"
       }}>
-        {/* Left Side: Subjects */}
+        {/* Left: Subjects */}
         <div>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "20px" }}>
-            Your Semester Subjects
+          <h3 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#a1a1aa", letterSpacing: "0.05em", marginBottom: "12px" }}>
+            SUBJECTS
           </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {subjectsWithStats.map((subject) => (
               <div 
                 key={subject.id} 
-                className="glass-panel animate-fade-in" 
+                className="glass-panel" 
                 style={{ 
-                  padding: "24px",
+                  padding: "16px",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "16px"
+                  gap: "12px"
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
-                    <span className="badge badge-blue" style={{ marginBottom: "6px" }}>
+                    <span className="badge" style={{ marginBottom: "4px" }}>
                       {subject.code}
                     </span>
-                    <h4 style={{ fontSize: "1.1rem", fontWeight: "600" }}>{subject.name}</h4>
-                    <p style={{ color: "#64748b", fontSize: "0.8rem", marginTop: "4px" }}>
-                      Category: {subject.type} • Syllabus: NEP UGCF
+                    <h4 style={{ fontSize: "0.95rem", fontWeight: "600", color: "#ffffff" }}>{subject.name}</h4>
+                    <p style={{ color: "#71717a", fontSize: "0.75rem", marginTop: "2px" }}>
+                      Type: {subject.type}
                     </p>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
-                      {subject.completedCount} / {subject.totalCount} PYQs Done
+                    <div style={{ fontSize: "0.75rem", color: "#a1a1aa" }}>
+                      {subject.completedCount} / {subject.totalCount} completed
                     </div>
-                    <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#3b82f6", marginTop: "4px" }}>
+                    <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#ffffff", marginTop: "2px" }}>
                       {subject.progress}%
                     </div>
                   </div>
@@ -230,123 +227,114 @@ export default function DashboardHome() {
 
                 {/* Progress bar */}
                 <div style={{
-                  height: "8px",
-                  background: "rgba(255, 255, 255, 0.05)",
-                  borderRadius: "4px",
+                  height: "4px",
+                  background: "#09090b",
+                  border: "1px solid #27272a",
+                  borderRadius: "2px",
                   overflow: "hidden",
                   width: "100%"
                 }}>
                   <div style={{
                     width: `${subject.progress}%`,
                     height: "100%",
-                    background: "linear-gradient(90deg, #3b82f6, #14b8a6)",
-                    borderRadius: "4px",
-                    transition: "width 0.4s ease"
+                    background: "#ffffff",
+                    borderRadius: "2px",
+                    transition: "width 0.3s"
                   }} />
                 </div>
 
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingTop: "8px"
+                  alignItems: "center"
                 }}>
-                  <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                    Years Indexed: 2022 - 2024
+                  <span style={{ fontSize: "0.7rem", color: "#71717a" }}>
+                    Syllabus: UGCF 2022
                   </span>
                   <Link 
                     href={`/dashboard/subject/${subject.id}`} 
                     style={{
-                      fontSize: "0.85rem",
+                      fontSize: "0.8rem",
                       fontWeight: "600",
-                      color: "#3b82f6",
+                      color: "#ffffff",
                       display: "flex",
                       alignItems: "center",
-                      gap: "4px",
-                      textDecoration: "none"
+                      gap: "2px",
+                      textDecoration: "underline"
                     }}
                   >
-                    View Details <ChevronRight size={16} />
+                    Open Review <ChevronRight size={14} />
                   </Link>
                 </div>
               </div>
             ))}
+            {subjectsWithStats.length === 0 && (
+              <div style={{ textAlign: "center", padding: "24px", color: "#71717a", fontSize: "0.8rem" }}>
+                No subjects assigned for this semester.
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right Side: Recent Activity & Tips */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-          {/* Recent Activity */}
-          <div className="glass-panel" style={{ padding: "24px" }}>
-            <h3 style={{ fontSize: "1.05rem", fontWeight: "600", marginBottom: "16px" }}>
-              Recent Progress
+        {/* Right: Activity & Tips */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          {/* Recent completions */}
+          <div className="glass-panel" style={{ padding: "16px" }}>
+            <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#a1a1aa", letterSpacing: "0.05em", marginBottom: "12px" }}>
+              RECENT PROGRESS
             </h3>
             
             {completedInSemester.length > 0 ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {completedInSemester.slice(0, 3).map((item) => (
                   <div key={item.id} style={{
                     display: "flex",
                     alignItems: "flex-start",
-                    gap: "12px",
-                    paddingBottom: "12px",
-                    borderBottom: "1px solid rgba(255, 255, 255, 0.04)"
+                    gap: "8px",
+                    paddingBottom: "8px",
+                    borderBottom: "1px solid #27272a"
                   }}>
                     <div style={{
-                      marginTop: "2px",
-                      width: "16px",
-                      height: "16px",
+                      marginTop: "3px",
+                      width: "8px",
+                      height: "8px",
                       borderRadius: "50%",
-                      background: "rgba(16, 185, 129, 0.15)",
-                      border: "1px solid #10b981",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}>
-                      <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981" }} />
-                    </div>
+                      background: "#ffffff",
+                      flexShrink: 0
+                    }} />
                     <div>
-                      <div style={{ fontSize: "0.85rem", fontWeight: "500", color: "#f8fafc" }}>
-                        Marked Completed
+                      <div style={{ fontSize: "0.8rem", fontWeight: "500", color: "#ffffff" }}>
+                        Solved Question
                       </div>
                       <p style={{
-                        fontSize: "0.75rem",
-                        color: "#94a3b8",
-                        marginTop: "2px",
+                        fontSize: "0.7rem",
+                        color: "#a1a1aa",
+                        marginTop: "1px",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        maxWidth: "180px"
+                        maxWidth: "200px"
                       }}>
                         {item.text}
                       </p>
-                      <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
-                        <span style={{ fontSize: "0.65rem", color: "#64748b" }}>{item.topic}</span>
-                        <span style={{ fontSize: "0.65rem", color: "#64748b" }}>•</span>
-                        <span style={{ fontSize: "0.65rem", color: "#64748b" }}>{item.year}</span>
-                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div style={{ padding: "24px 0", textAlign: "center", color: "#64748b", fontSize: "0.85rem" }}>
-                No questions completed yet. Pick a subject and start solving!
+              <div style={{ padding: "16px 0", textAlign: "center", color: "#71717a", fontSize: "0.75rem" }}>
+                No completions yet. Open a subject to begin.
               </div>
             )}
           </div>
 
-          {/* Exam Prep Tip Card */}
-          <div className="glass-panel" style={{
-            padding: "24px",
-            background: "linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(0, 0, 0, 0) 100%)",
-            borderColor: "rgba(245, 158, 11, 0.1)"
-          }}>
-            <h3 style={{ fontSize: "1.05rem", fontWeight: "600", color: "#f59e0b", marginBottom: "12px" }}>
-              Exam Tip of the Day
+          {/* Minimal Tip card */}
+          <div className="glass-panel" style={{ padding: "16px", background: "#121214" }}>
+            <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#ffffff", marginBottom: "8px" }}>
+              Study Advice
             </h3>
-            <p style={{ fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.5" }}>
-              **Did you know?** In DU semester papers, structural questions about **AVL Tree Rotations** and **Depreciation methods (WDV)** have appeared in 3 of the last 4 years. Make sure to solve these high-weightage questions!
+            <p style={{ fontSize: "0.75rem", color: "#a1a1aa", lineHeight: "1.4" }}>
+              Focus on **Depreciation Ledger entries (WDV)** and **AVL Trees**. Historically, similar analytical questions have frequently appeared in SSCBS examinations.
             </p>
           </div>
         </div>

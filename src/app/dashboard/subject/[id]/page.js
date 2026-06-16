@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { courses } from "@/data/courses";
 import { questions } from "@/data/questions";
 import { 
   ArrowLeft, 
-  CheckCircle2, 
   ChevronDown, 
   ChevronUp, 
   FileText, 
-  Award, 
   Calendar,
-  Grid,
-  Filter
+  Grid
 } from "lucide-react";
 
 export default function SubjectPage() {
@@ -58,8 +55,8 @@ export default function SubjectPage() {
   if (!activeSubject) {
     return (
       <div style={{ textAlign: "center", padding: "40px" }}>
-        <h3 style={{ color: "#fb7185" }}>Subject not found</h3>
-        <Link href="/dashboard" style={{ color: "#3b82f6", marginTop: "12px", display: "inline-block" }}>
+        <h3 style={{ color: "#ef4444" }}>Subject not found</h3>
+        <Link href="/dashboard" style={{ color: "#ffffff", marginTop: "12px", display: "inline-block" }}>
           Return to Dashboard
         </Link>
       </div>
@@ -73,7 +70,7 @@ export default function SubjectPage() {
     ? Math.round((completedInSubject.length / subjectQuestions.length) * 100)
     : 0;
 
-  // Toggle completion checkbox
+  // Toggle completion
   const handleToggleCompletion = (qId) => {
     let updated;
     if (completedList.includes(qId)) {
@@ -83,13 +80,12 @@ export default function SubjectPage() {
     }
     setCompletedList(updated);
 
-    // Save back to user in localStorage
     const updatedUser = { ...user, completedQuestions: updated };
     setUser(updatedUser);
     localStorage.setItem("paperwise_user", JSON.stringify(updatedUser));
   };
 
-  // Toggle solution collapse
+  // Toggle expand
   const handleToggleExpand = (qId) => {
     setExpandedQuestions(prev => ({
       ...prev,
@@ -97,24 +93,22 @@ export default function SubjectPage() {
     }));
   };
 
-  // Group questions by topic
+  // Grouping
   const questionsByTopic = subjectQuestions.reduce((acc, q) => {
     if (!acc[q.topic]) acc[q.topic] = [];
     acc[q.topic].push(q);
     return acc;
   }, {});
 
-  // Group questions by year
   const questionsByYear = subjectQuestions.reduce((acc, q) => {
     if (!acc[q.year]) acc[q.year] = [];
     acc[q.year].push(q);
     return acc;
   }, {});
 
-  // Sorting years descending
   const sortedYears = Object.keys(questionsByYear).sort((a, b) => b - a);
 
-  // Question item renderer
+  // Card renderer
   const renderQuestionCard = (q) => {
     const isCompleted = completedList.includes(q.id);
     const isExpanded = !!expandedQuestions[q.id];
@@ -124,17 +118,16 @@ export default function SubjectPage() {
         key={q.id} 
         className="glass-panel" 
         style={{ 
-          padding: "20px", 
+          padding: "16px", 
           display: "flex", 
           flexDirection: "column", 
-          gap: "14px",
-          borderLeft: isCompleted ? "4px solid #10b981" : "1px solid rgba(255, 255, 255, 0.06)",
-          transition: "all 0.2s"
+          gap: "12px",
+          borderLeft: isCompleted ? "2px solid #ffffff" : "1px solid #27272a",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
           {/* Custom Checkbox */}
-          <label className="checkbox-container" style={{ marginTop: "4px" }}>
+          <label className="checkbox-container" style={{ marginTop: "2px" }}>
             <input 
               type="checkbox" 
               className="checkbox-input" 
@@ -144,71 +137,62 @@ export default function SubjectPage() {
             <span className="checkmark" />
           </label>
 
-          {/* Question Text & Tags */}
           <div style={{ flex: 1 }}>
             <p style={{ 
-              fontSize: "0.95rem", 
-              lineHeight: "1.6", 
-              color: isCompleted ? "#94a3b8" : "#f8fafc",
+              fontSize: "0.85rem", 
+              lineHeight: "1.5", 
+              color: isCompleted ? "#71717a" : "#ffffff",
               textDecoration: isCompleted ? "line-through" : "none"
             }}>
               {q.text}
             </p>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "12px" }}>
-              <span className="badge badge-blue">{q.year} Paper</span>
-              <span className="badge badge-teal">{q.topic}</span>
-              <span className="badge badge-amber">{q.marks} Marks</span>
-              <span className={`badge ${
-                q.difficulty === "Easy" ? "badge-teal" : 
-                q.difficulty === "Medium" ? "badge-amber" : "badge-rose"
-              }`}>{q.difficulty}</span>
-              <span className="badge" style={{ background: "rgba(255,255,255,0.04)", color: "#cbd5e1" }}>
-                {q.type}
-              </span>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px" }}>
+              <span className="badge">{q.year}</span>
+              <span className="badge">{q.topic}</span>
+              <span className="badge">{q.marks} Marks</span>
+              <span className="badge">{q.difficulty}</span>
+              <span className="badge">{q.type}</span>
             </div>
           </div>
 
-          {/* Expand/Collapse Button */}
           <button 
             onClick={() => handleToggleExpand(q.id)}
             style={{
-              background: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid rgba(255, 255, 255, 0.06)",
-              borderRadius: "6px",
-              padding: "6px 10px",
-              color: "#cbd5e1",
+              background: "#121214",
+              border: "1px solid #27272a",
+              borderRadius: "4px",
+              padding: "4px 8px",
+              color: "#a1a1aa",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: "4px",
-              fontSize: "0.8rem",
-              transition: "all 0.15s"
+              gap: "2px",
+              fontSize: "0.75rem",
             }}
           >
             {isExpanded ? (
-              <>Hide Solution <ChevronUp size={14} /></>
+              <>Hide <ChevronUp size={12} /></>
             ) : (
-              <>Show Solution <ChevronDown size={14} /></>
+              <>Solution <ChevronDown size={12} /></>
             )}
           </button>
         </div>
 
-        {/* Expandable Solution Area */}
+        {/* Answer Walkthrough */}
         {isExpanded && (
           <div style={{ 
-            marginTop: "8px", 
-            padding: "16px", 
-            background: "rgba(0, 0, 0, 0.2)", 
-            borderRadius: "8px", 
-            borderLeft: "2px solid #3b82f6",
-            fontSize: "0.9rem",
-            lineHeight: "1.6",
+            padding: "12px", 
+            background: "#09090b", 
+            border: "1px solid #27272a",
+            borderRadius: "4px", 
+            fontSize: "0.8rem",
+            lineHeight: "1.5",
             color: "#e2e8f0"
           }}>
-            <h5 style={{ fontWeight: "700", color: "#60a5fa", marginBottom: "8px", fontSize: "0.85rem", letterSpacing: "0.05em" }}>
-              SUGGESTED ANSWER / STEP-BY-STEP EXPLANATION
-            </h5>
+            <div style={{ fontWeight: "700", color: "#a1a1aa", marginBottom: "6px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
+              SOLUTION WALKTHROUGH
+            </div>
             <div style={{ whiteSpace: "pre-wrap" }}>{q.solution}</div>
           </div>
         )}
@@ -217,85 +201,62 @@ export default function SubjectPage() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      {/* Back button */}
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <div>
         <Link href="/dashboard" style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: "6px",
-          color: "#94a3b8",
-          fontSize: "0.85rem",
+          gap: "4px",
+          color: "#a1a1aa",
+          fontSize: "0.8rem",
           textDecoration: "none",
-          transition: "color 0.15s"
         }}>
-          <ArrowLeft size={16} /> Back to Dashboard
+          <ArrowLeft size={14} /> Dashboard Overview
         </Link>
       </div>
 
-      {/* Subject Header Panel */}
+      {/* Header Panel */}
       <div className="glass-panel" style={{
-        padding: "32px",
+        padding: "24px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: "24px"
+        gap: "16px"
       }}>
-        <div style={{ flex: 1, minWidth: "280px" }}>
-          <span className="badge badge-blue" style={{ marginBottom: "8px" }}>
+        <div style={{ flex: 1, minWidth: "250px" }}>
+          <span className="badge" style={{ marginBottom: "6px" }}>
             {activeSubject.code}
           </span>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: "700", marginBottom: "8px" }}>
+          <h1 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "4px" }}>
             {activeSubject.name}
           </h1>
-          <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
-            Syllabus: Delhi University NEP UGCF • Course Type: {activeSubject.type} (Core)
+          <p style={{ color: "#a1a1aa", fontSize: "0.75rem" }}>
+            Syllabus: UGCF NEP • Course: SSCBS
           </p>
         </div>
 
-        {/* Overall Subject Progress */}
+        {/* Progress box */}
         <div style={{
           display: "flex",
-          alignItems: "center",
-          gap: "20px",
-          background: "rgba(255,255,255,0.02)",
-          border: "1px solid rgba(255,255,255,0.04)",
-          padding: "16px 24px",
-          borderRadius: "12px"
+          flexDirection: "column",
+          gap: "4px",
+          background: "#09090b",
+          border: "1px solid #27272a",
+          padding: "10px 16px",
+          borderRadius: "4px",
+          alignItems: "flex-end"
         }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: "500" }}>COMPLETED QUESTIONS</div>
-            <div style={{ fontSize: "1.3rem", fontWeight: "700", marginTop: "2px", color: "#10b981" }}>
+          <span style={{ fontSize: "0.65rem", color: "#a1a1aa", fontWeight: "600", letterSpacing: "0.05em" }}>
+            COMPLETED QUESTIONS
+          </span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+            <span style={{ fontSize: "1.15rem", fontWeight: "700", color: "#ffffff" }}>
               {completedInSubject.length} / {subjectQuestions.length}
-            </div>
-          </div>
-          <div style={{
-            position: "relative",
-            width: "56px",
-            height: "56px",
-            borderRadius: "50%",
-            background: "conic-gradient(#10b981 0% 0%, rgba(255,255,255,0.05) 0% 100%)",
-            // A dynamic background set via inline style for safety
-            backgroundImage: `conic-gradient(#10b981 ${progressRate}%, rgba(255, 255, 255, 0.05) ${progressRate}% 100%)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            <div style={{
-              width: "46px",
-              height: "46px",
-              borderRadius: "50%",
-              background: "#0c0f1c",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "0.85rem",
-              fontWeight: "700",
-              color: "#f8fafc"
-            }}>
-              {progressRate}%
-            </div>
+            </span>
+            <span style={{ fontSize: "0.8rem", color: "#a1a1aa" }}>
+              ({progressRate}%)
+            </span>
           </div>
         </div>
       </div>
@@ -303,8 +264,9 @@ export default function SubjectPage() {
       {/* Tabs Menu */}
       <div style={{
         display: "flex",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
-        gap: "24px"
+        borderBottom: "1px solid #27272a",
+        gap: "16px",
+        marginBottom: "8px"
       }}>
         {[
           { id: "all", label: "All Questions", icon: FileText },
@@ -320,56 +282,54 @@ export default function SubjectPage() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "8px",
-                padding: "12px 4px",
+                gap: "6px",
+                padding: "10px 2px",
                 border: "none",
                 background: "transparent",
-                color: isActive ? "#3b82f6" : "#64748b",
+                color: isActive ? "#ffffff" : "#71717a",
                 fontWeight: isActive ? "600" : "500",
-                fontSize: "0.95rem",
+                fontSize: "0.85rem",
                 cursor: "pointer",
-                borderBottom: isActive ? "2px solid #3b82f6" : "2px solid transparent",
-                transition: "all 0.15s ease",
+                borderBottom: isActive ? "2px solid #ffffff" : "2px solid transparent",
+                transition: "all 0.1s ease",
                 marginBottom: "-1px"
               }}
             >
-              <Icon size={18} /> {tab.label}
+              <Icon size={14} /> {tab.label}
             </button>
           );
         })}
       </div>
 
-      {/* Questions List Container */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      {/* List */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         
-        {/* Tab 1: All Questions */}
         {activeTab === "all" && (
           subjectQuestions.length > 0 ? (
             subjectQuestions.map(renderQuestionCard)
           ) : (
-            <div style={{ textAlign: "center", padding: "48px", color: "#64748b" }}>
-              No questions found for this subject.
+            <div style={{ textAlign: "center", padding: "32px", color: "#71717a", fontSize: "0.8rem" }}>
+              No questions found.
             </div>
           )
         )}
 
-        {/* Tab 2: Topic-wise */}
         {activeTab === "topic" && (
           Object.keys(questionsByTopic).length > 0 ? (
             Object.keys(questionsByTopic).map((topic) => (
-              <div key={topic} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div key={topic} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 <h3 style={{ 
-                  fontSize: "1.05rem", 
-                  fontWeight: "600", 
-                  color: "#60a5fa", 
-                  paddingBottom: "6px", 
-                  borderBottom: "1px solid rgba(59, 130, 246, 0.15)",
-                  marginTop: "12px",
+                  fontSize: "0.85rem", 
+                  fontWeight: "700", 
+                  color: "#ffffff", 
+                  paddingBottom: "4px", 
+                  borderBottom: "1px solid #27272a",
+                  marginTop: "8px",
                   display: "flex",
                   justifyContent: "space-between"
                 }}>
                   <span>{topic}</span>
-                  <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#71717a", fontWeight: "normal" }}>
                     {questionsByTopic[topic].length} Questions
                   </span>
                 </h3>
@@ -377,29 +337,28 @@ export default function SubjectPage() {
               </div>
             ))
           ) : (
-            <div style={{ textAlign: "center", padding: "48px", color: "#64748b" }}>
-              No questions grouped by topic.
+            <div style={{ textAlign: "center", padding: "32px", color: "#71717a", fontSize: "0.8rem" }}>
+              No questions found.
             </div>
           )
         )}
 
-        {/* Tab 3: Year-wise */}
         {activeTab === "year" && (
           sortedYears.length > 0 ? (
             sortedYears.map((year) => (
-              <div key={year} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div key={year} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 <h3 style={{ 
-                  fontSize: "1.05rem", 
-                  fontWeight: "600", 
-                  color: "#14b8a6", 
-                  paddingBottom: "6px", 
-                  borderBottom: "1px solid rgba(20, 184, 166, 0.15)",
-                  marginTop: "12px",
+                  fontSize: "0.85rem", 
+                  fontWeight: "700", 
+                  color: "#ffffff", 
+                  paddingBottom: "4px", 
+                  borderBottom: "1px solid #27272a",
+                  marginTop: "8px",
                   display: "flex",
                   justifyContent: "space-between"
                 }}>
-                  <span>{year} Semester Examination</span>
-                  <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                  <span>{year} Semester Exam</span>
+                  <span style={{ fontSize: "0.75rem", color: "#71717a", fontWeight: "normal" }}>
                     {questionsByYear[year].length} Questions
                   </span>
                 </h3>
@@ -407,8 +366,8 @@ export default function SubjectPage() {
               </div>
             ))
           ) : (
-            <div style={{ textAlign: "center", padding: "48px", color: "#64748b" }}>
-              No questions grouped by year.
+            <div style={{ textAlign: "center", padding: "32px", color: "#71717a", fontSize: "0.8rem" }}>
+              No questions found.
             </div>
           )
         )}

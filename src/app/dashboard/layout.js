@@ -7,7 +7,6 @@ import {
   BookOpen, 
   LayoutDashboard, 
   BarChart3, 
-  Settings, 
   LogOut, 
   ChevronLeft, 
   ChevronRight,
@@ -42,11 +41,12 @@ export default function DashboardLayout({ children }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#070913",
-        color: "#64748b",
+        background: "#09090b",
+        color: "#71717a",
+        fontSize: "0.85rem",
         fontFamily: "var(--font-inter)"
       }}>
-        Loading your space...
+        Loading...
       </div>
     );
   }
@@ -60,98 +60,96 @@ export default function DashboardLayout({ children }) {
     <div style={{
       display: "flex",
       minHeight: "100vh",
-      background: "#070913",
+      background: "#09090b",
       fontFamily: "var(--font-inter)",
-      color: "#f8fafc"
+      color: "#ffffff"
     }}>
       {/* Sidebar */}
       <aside style={{
-        width: isSidebarCollapsed ? "80px" : "260px",
-        background: "#0a0e1c",
-        borderRight: "1px solid rgba(255, 255, 255, 0.06)",
+        width: isSidebarCollapsed ? "68px" : "240px",
+        background: "#121214",
+        borderRight: "1px solid #27272a",
         display: "flex",
         flexDirection: "column",
-        transition: "width 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "width 0.2s ease-in-out",
         position: "relative",
         zIndex: 10
       }}>
         {/* Sidebar Header */}
         <div style={{
-          height: "72px",
+          height: "64px",
           display: "flex",
           alignItems: "center",
           justifyContent: isSidebarCollapsed ? "center" : "space-between",
-          padding: "0 24px",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.04)"
+          padding: "0 20px",
+          borderBottom: "1px solid #27272a"
         }}>
           {!isSidebarCollapsed && (
             <Link href="/dashboard" style={{
               display: "flex",
               alignItems: "center",
-              gap: "10px",
+              gap: "8px",
               textDecoration: "none",
-              color: "#f8fafc"
+              color: "#ffffff"
             }}>
-              <BookOpen size={22} style={{ color: "#3b82f6" }} />
-              <span style={{ fontSize: "1.15rem", fontWeight: "700", letterSpacing: "-0.01em" }}>
-                Paper<span style={{ color: "#3b82f6" }}>Wise</span>
+              <BookOpen size={18} style={{ color: "#ffffff" }} />
+              <span style={{ fontSize: "1rem", fontWeight: "750", letterSpacing: "-0.01em" }}>
+                Paper<span style={{ color: "#a1a1aa" }}>Wise</span>
               </span>
             </Link>
           )}
           {isSidebarCollapsed && (
-            <BookOpen size={24} style={{ color: "#3b82f6" }} />
+            <BookOpen size={18} style={{ color: "#ffffff" }} />
           )}
 
-          {/* Collapse toggle button */}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             style={{
               position: "absolute",
-              right: "-12px",
-              top: "24px",
-              width: "24px",
-              height: "24px",
-              borderRadius: "50%",
-              background: "#3b82f6",
+              right: "-10px",
+              top: "20px",
+              width: "20px",
+              height: "20px",
+              borderRadius: "4px",
+              background: "#27272a",
               color: "#ffffff",
-              border: "none",
+              border: "1px solid #3f3f46",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 4px 10px rgba(59, 130, 246, 0.3)"
             }}
           >
-            {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            {isSidebarCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
           </button>
         </div>
 
-        {/* Course Details (Simplified in sidebar) */}
+        {/* Profile indicator */}
         {!isSidebarCollapsed && (
           <div style={{
-            padding: "16px 20px",
-            margin: "16px 16px 0",
-            background: "rgba(255, 255, 255, 0.02)",
-            border: "1px solid rgba(255, 255, 255, 0.04)",
-            borderRadius: "10px",
+            padding: "12px 14px",
+            margin: "12px 12px 0",
+            background: "#09090b",
+            border: "1px solid #27272a",
+            borderRadius: "4px",
           }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-              <GraduationCap size={16} style={{ color: "#14b8a6" }} />
-              <span style={{ fontSize: "0.75rem", fontWeight: "600", color: "#14b8a6" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
+              <GraduationCap size={14} style={{ color: "#a1a1aa" }} />
+              <span style={{ fontSize: "0.65rem", fontWeight: "700", color: "#a1a1aa", letterSpacing: "0.05em" }}>
                 ACTIVE PROFILE
               </span>
             </div>
-            <div style={{ fontSize: "0.85rem", fontWeight: "600", color: "#f8fafc", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {user.courseName}
+            <div style={{ fontSize: "0.75rem", fontWeight: "600", color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {user.courseName.includes("[") ? user.courseName.split("[")[1].replace("]", "") : user.courseName}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "2px" }}>
-              Semester {user.semester} • {user.college}
+            <div style={{ fontSize: "0.65rem", color: "#71717a", marginTop: "2px" }}>
+              Semester {user.semester} • SSCBS
             </div>
           </div>
         )}
 
         {/* Navigation Items */}
-        <nav style={{ flex: 1, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
+        <nav style={{ flex: 1, padding: "20px 12px", display: "flex", flexDirection: "column", gap: "4px" }}>
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -162,52 +160,54 @@ export default function DashboardLayout({ children }) {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "12px",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  color: isActive ? "#3b82f6" : "#94a3b8",
-                  background: isActive ? "rgba(59, 130, 246, 0.08)" : "transparent",
+                  gap: "10px",
+                  padding: "10px 12px",
+                  borderRadius: "4px",
+                  color: isActive ? "#ffffff" : "#a1a1aa",
+                  background: isActive ? "#1a1a1e" : "transparent",
+                  border: isActive ? "1px solid #27272a" : "1px solid transparent",
                   textDecoration: "none",
                   fontWeight: isActive ? "600" : "500",
-                  fontSize: "0.95rem",
-                  transition: "all 0.15s ease",
+                  fontSize: "0.85rem",
+                  transition: "all 0.1s ease",
                   justifyContent: isSidebarCollapsed ? "center" : "flex-start"
                 }}
               >
-                <Icon size={20} />
+                <Icon size={16} />
                 {!isSidebarCollapsed && <span>{item.name}</span>}
               </Link>
             );
           })}
         </nav>
 
-        {/* User Footer */}
+        {/* Footer */}
         <div style={{
-          padding: "20px 16px",
-          borderTop: "1px solid rgba(255, 255, 255, 0.04)",
+          padding: "16px 12px",
+          borderTop: "1px solid #27272a",
           display: "flex",
           flexDirection: "column",
           gap: "8px"
         }}>
           {!isSidebarCollapsed && (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "4px 8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "2px 6px" }}>
               <div style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                background: "rgba(255, 255, 255, 0.06)",
+                width: "28px",
+                height: "28px",
+                borderRadius: "4px",
+                background: "#09090b",
+                border: "1px solid #27272a",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#94a3b8"
+                color: "#a1a1aa"
               }}>
-                <User size={16} />
+                <User size={14} />
               </div>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: "0.85rem", fontWeight: "600", color: "#f8fafc", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontSize: "0.8rem", fontWeight: "600", color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {user.name}
                 </div>
-                <div style={{ fontSize: "0.75rem", color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontSize: "0.65rem", color: "#71717a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {user.email}
                 </div>
               </div>
@@ -221,19 +221,19 @@ export default function DashboardLayout({ children }) {
               display: "flex",
               alignItems: "center",
               justifyContent: isSidebarCollapsed ? "center" : "flex-start",
-              gap: "12px",
-              padding: "10px 16px",
-              borderRadius: "8px",
-              background: "rgba(244, 63, 94, 0.05)",
-              border: "1px solid rgba(244, 63, 94, 0.1)",
-              color: "#fb7185",
+              gap: "10px",
+              padding: "8px 12px",
+              borderRadius: "4px",
+              background: "rgba(239, 68, 68, 0.05)",
+              border: "1px solid rgba(239, 68, 68, 0.1)",
+              color: "#f87171",
               cursor: "pointer",
-              fontSize: "0.9rem",
+              fontSize: "0.8rem",
               fontWeight: "500",
-              transition: "all 0.15s ease",
+              transition: "all 0.1s ease",
             }}
           >
-            <LogOut size={18} />
+            <LogOut size={14} />
             {!isSidebarCollapsed && <span>Log Out</span>}
           </button>
         </div>
@@ -250,51 +250,35 @@ export default function DashboardLayout({ children }) {
       }}>
         {/* Header */}
         <header style={{
-          height: "72px",
-          background: "#080c18",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+          height: "64px",
+          background: "#121214",
+          borderBottom: "1px solid #27272a",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0 32px",
+          padding: "0 24px",
           flexShrink: 0
         }}>
           <div>
-            <h2 style={{ fontSize: "1.1rem", fontWeight: "600", color: "#f8fafc" }}>
-              {pathname === "/dashboard" && "Dashboard Overview"}
-              {pathname === "/dashboard/analyzer" && "PYQ Analyser Tool"}
-              {pathname.includes("/dashboard/subject/") && "Subject Analytics & PYQs"}
+            <h2 style={{ fontSize: "0.95rem", fontWeight: "600", color: "#ffffff" }}>
+              {pathname === "/dashboard" && "OVERVIEW"}
+              {pathname === "/dashboard/analyzer" && "ANALYZER"}
+              {pathname.includes("/dashboard/subject/") && "SUBJECT REVIEW"}
             </h2>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: "600",
-              color: "#60a5fa",
-              background: "rgba(59, 130, 246, 0.1)",
-              padding: "4px 10px",
-              borderRadius: "12px",
-              border: "1px solid rgba(59, 130, 246, 0.2)"
-            }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span className="badge">
               Semester {user.semester}
             </span>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: "600",
-              color: "#2dd4bf",
-              background: "rgba(20, 184, 166, 0.1)",
-              padding: "4px 10px",
-              borderRadius: "12px",
-              border: "1px solid rgba(20, 184, 166, 0.2)"
-            }}>
-              {user.college}
+            <span className="badge">
+              SSCBS
             </span>
           </div>
         </header>
 
         {/* Content body */}
-        <main style={{ flex: 1, padding: "32px", position: "relative" }}>
+        <main style={{ flex: 1, padding: "24px" }}>
           {children}
         </main>
       </div>

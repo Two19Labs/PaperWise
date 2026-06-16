@@ -1,27 +1,3 @@
 export const colleges = [
-  "Hindu College",
-  "Hansraj College",
-  "Miranda House",
-  "Shri Ram College of Commerce (SRCC)",
-  "St. Stephen's College",
-  "Ramjas College",
-  "Kirori Mal College",
-  "Gargi College",
-  "Lady Shri Ram College for Women (LSR)",
-  "Daulat Ram College",
-  "Shaheed Bhagat Singh College",
-  "Atma Ram Sanatan Dharma College (ARSD)",
-  "Dyal Singh College",
-  "Zakir Husain Delhi College",
-  "Sri Venkateswara College",
-  "Delhi College of Arts and Commerce (DCAC)",
-  "Deen Dayal Upadhyaya College",
-  "Keshav Mahavidyalaya",
-  "Shaheed Sukhdev College of Business Studies (SSCBS)",
-  "Sri Guru Tegh Bahadur Khalsa College",
-  "Maitreyi College",
-  "Kamala Nehru College",
-  "Deshbandhu College",
-  "Ramanujan College",
-  "P.G.D.A.V. College"
+  "Shaheed Sukhdev College of Business Studies (SSCBS)"
 ];

@@ -21,20 +21,18 @@ export default function LoginPage() {
     setError("");
     setIsLoading(true);
 
-    // Mock successful authentication after 1 second delay
     setTimeout(() => {
       setIsLoading(false);
-      // Store mock user info in localStorage
       localStorage.setItem(
         "paperwise_user",
         JSON.stringify({
           email,
           name: email.split("@")[0],
-          college: "Hindu College",
-          courseId: "bsc_cs_hons",
-          courseName: "B.Sc (Hons) Computer Science",
+          college: "Shaheed Sukhdev College of Business Studies (SSCBS)",
+          courseId: "bsc_cs",
+          courseName: "B.Sc. (Hons.) Computer Science [B.Sc. Comp Science]",
           semester: 2,
-          completedQuestions: ["ds_q2", "ds_q5"]
+          completedQuestions: ["ds_q2"]
         })
       );
       router.push("/dashboard");
@@ -47,60 +45,53 @@ export default function LoginPage() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(-45deg, #070913, #0f1322, #0c2340, #070913)",
-      backgroundSize: "400% 400%",
+      background: "#09090b",
       padding: "20px",
     }}>
       <div style={{
         width: "100%",
-        maxWidth: "420px",
-        padding: "40px 30px",
-        borderRadius: "16px",
-        background: "rgba(255, 255, 255, 0.02)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        border: "1px solid rgba(255, 255, 255, 0.06)",
-        boxShadow: "0 20px 50px rgba(0, 0, 0, 0.5)",
+        maxWidth: "400px",
+        padding: "32px 24px",
+        borderRadius: "6px",
+        background: "#121214",
+        border: "1px solid #27272a",
       }}>
-        {/* Brand Header */}
-        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <div style={{
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "48px",
-            height: "48px",
-            borderRadius: "12px",
-            background: "rgba(59, 130, 246, 0.1)",
-            border: "1px solid rgba(59, 130, 246, 0.2)",
-            color: "#3b82f6",
-            marginBottom: "16px",
+            width: "40px",
+            height: "40px",
+            borderRadius: "4px",
+            background: "#1a1a1e",
+            border: "1px solid #27272a",
+            color: "#ffffff",
+            marginBottom: "12px",
           }}>
-            <BookOpen size={24} />
+            <BookOpen size={20} />
           </div>
           <h1 style={{
-            fontSize: "1.8rem",
+            fontSize: "1.35rem",
             fontWeight: "700",
-            letterSpacing: "-0.025em",
-            marginBottom: "8px",
-            background: "linear-gradient(135deg, #f8fafc 30%, #3b82f6 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            marginBottom: "6px",
+            color: "#ffffff"
           }}>Welcome Back</h1>
-          <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
-            Sign in to continue analyzing your DU PYQs
+          <p style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>
+            Sign in to track your SSCBS syllabus PYQs
           </p>
         </div>
 
         {error && (
           <div style={{
-            padding: "12px",
-            borderRadius: "8px",
-            background: "rgba(244, 63, 94, 0.1)",
-            border: "1px solid rgba(244, 63, 94, 0.2)",
-            color: "#fb7185",
-            fontSize: "0.85rem",
-            marginBottom: "20px",
+            padding: "10px",
+            borderRadius: "4px",
+            background: "rgba(239, 68, 68, 0.1)",
+            border: "1px solid rgba(239, 68, 68, 0.2)",
+            color: "#f87171",
+            fontSize: "0.8rem",
+            marginBottom: "16px",
             textAlign: "center"
           }}>
             {error}
@@ -109,44 +100,43 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           {/* Email field */}
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: "16px" }}>
             <label style={{
               display: "block",
-              fontSize: "0.8rem",
+              fontSize: "0.75rem",
               fontWeight: "600",
-              color: "#94a3b8",
-              marginBottom: "8px"
+              color: "#a1a1aa",
+              marginBottom: "6px"
             }}>
               EMAIL ADDRESS
             </label>
             <div style={{ position: "relative" }}>
               <span style={{
                 position: "absolute",
-                left: "12px",
+                left: "10px",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#64748b",
+                color: "#52525b",
                 display: "flex",
                 alignItems: "center"
               }}>
-                <Mail size={18} />
+                <Mail size={16} />
               </span>
               <input
                 id="login-email"
                 type="email"
-                placeholder="you@college.du.ac.in"
+                placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{
                   width: "100%",
-                  padding: "12px 16px 12px 40px",
-                  borderRadius: "8px",
-                  background: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  color: "#f8fafc",
-                  fontSize: "0.95rem",
+                  padding: "8px 12px 8px 34px",
+                  borderRadius: "4px",
+                  background: "#09090b",
+                  border: "1px solid #27272a",
+                  color: "#ffffff",
+                  fontSize: "0.9rem",
                   outline: "none",
-                  transition: "all 0.2s",
                 }}
                 disabled={isLoading}
               />
@@ -154,24 +144,24 @@ export default function LoginPage() {
           </div>
 
           {/* Password field */}
-          <div style={{ marginBottom: "24px" }}>
+          <div style={{ marginBottom: "20px" }}>
             <div style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: "8px"
+              marginBottom: "6px"
             }}>
               <label style={{
-                fontSize: "0.8rem",
+                fontSize: "0.75rem",
                 fontWeight: "600",
-                color: "#94a3b8",
+                color: "#a1a1aa",
               }}>
                 PASSWORD
               </label>
               <a href="#" style={{
-                fontSize: "0.8rem",
-                color: "#3b82f6",
-                textDecoration: "none"
+                fontSize: "0.75rem",
+                color: "#a1a1aa",
+                textDecoration: "underline"
               }}>
                 Forgot?
               </a>
@@ -179,14 +169,14 @@ export default function LoginPage() {
             <div style={{ position: "relative" }}>
               <span style={{
                 position: "absolute",
-                left: "12px",
+                left: "10px",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#64748b",
+                color: "#52525b",
                 display: "flex",
                 alignItems: "center"
               }}>
-                <Lock size={18} />
+                <Lock size={16} />
               </span>
               <input
                 id="login-password"
@@ -196,14 +186,13 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 style={{
                   width: "100%",
-                  padding: "12px 16px 12px 40px",
-                  borderRadius: "8px",
-                  background: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  color: "#f8fafc",
-                  fontSize: "0.95rem",
+                  padding: "8px 12px 8px 34px",
+                  borderRadius: "4px",
+                  background: "#09090b",
+                  border: "1px solid #27272a",
+                  color: "#ffffff",
+                  fontSize: "0.9rem",
                   outline: "none",
-                  transition: "all 0.2s",
                 }}
                 disabled={isLoading}
               />
@@ -215,40 +204,26 @@ export default function LoginPage() {
             id="login-submit"
             type="submit"
             disabled={isLoading}
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "8px",
-              background: "#3b82f6",
-              color: "#ffffff",
-              fontSize: "0.95rem",
-              fontWeight: "600",
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              transition: "all 0.2s",
-            }}
+            className="btn btn-primary"
+            style={{ width: "100%", padding: "10px" }}
           >
             {isLoading ? "Signing in..." : "Sign In"}
-            {!isLoading && <ArrowRight size={16} />}
+            {!isLoading && <ArrowRight size={14} />}
           </button>
         </form>
 
         {/* Signup redirection */}
         <div style={{
-          marginTop: "24px",
+          marginTop: "20px",
           textAlign: "center",
-          fontSize: "0.85rem",
-          color: "#94a3b8"
+          fontSize: "0.8rem",
+          color: "#a1a1aa"
         }}>
           Don&apos;t have an account?{" "}
           <Link href="/auth/signup" style={{
-            color: "#3b82f6",
-            fontWeight: "500",
-            textDecoration: "none"
+            color: "#ffffff",
+            fontWeight: "600",
+            textDecoration: "underline"
           }}>
             Create an account
           </Link>

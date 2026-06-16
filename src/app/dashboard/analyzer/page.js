@@ -5,16 +5,11 @@ import { useRouter } from "next/navigation";
 import { courses } from "@/data/courses";
 import { questions } from "@/data/questions";
 import { 
-  CheckCircle, 
   ChevronDown, 
   ChevronUp, 
   Filter, 
   Search, 
   RefreshCw, 
-  TrendingUp, 
-  PieChart, 
-  BarChart,
-  HelpCircle
 } from "lucide-react";
 
 export default function AnalyzerPage() {
@@ -31,7 +26,7 @@ export default function AnalyzerPage() {
   const [selectedStatus, setSelectedStatus] = useState("all"); // "all" | "completed" | "uncompleted"
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Expander State for Solutions
+  // Expander State
   const [expandedQuestions, setExpandedQuestions] = useState({});
 
   useEffect(() => {
@@ -59,14 +54,12 @@ export default function AnalyzerPage() {
     setSelectedSubjectId(activeSubjects[0].id);
   }
 
-  // Filter questions by active semester subjects first
   const semesterQuestions = questions.filter(q => activeSubjectIds.includes(q.subjectId));
 
-  // Get distinct topics for the currently selected subject
+  // Topics for selected subject
   const currentSubjectQuestions = questions.filter(q => q.subjectId === selectedSubjectId);
   const distinctTopics = Array.from(new Set(currentSubjectQuestions.map(q => q.topic)));
 
-  // Handle multi-select toggle helper
   const handleToggleFilter = (item, list, setter) => {
     if (list.includes(item)) {
       setter(list.filter(i => i !== item));
@@ -77,33 +70,21 @@ export default function AnalyzerPage() {
 
   // Perform filtering
   const filteredQuestions = semesterQuestions.filter(q => {
-    // Subject filter
     if (selectedSubjectId !== "all" && q.subjectId !== selectedSubjectId) return false;
-
-    // Topic filter
     if (selectedTopics.length > 0 && !selectedTopics.includes(q.topic)) return false;
-
-    // Year filter
     if (selectedYears.length > 0 && !selectedYears.includes(q.year)) return false;
-
-    // Difficulty filter
     if (selectedDifficulties.length > 0 && !selectedDifficulties.includes(q.difficulty)) return false;
-
-    // Type filter
     if (selectedTypes.length > 0 && !selectedTypes.includes(q.type)) return false;
 
-    // Status filter
     const isCompleted = completedList.includes(q.id);
     if (selectedStatus === "completed" && !isCompleted) return false;
     if (selectedStatus === "uncompleted" && isCompleted) return false;
 
-    // Search query filter
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       const textMatches = q.text.toLowerCase().includes(query);
       const topicMatches = q.topic.toLowerCase().includes(query);
-      const subtopicMatches = q.subtopic.toLowerCase().includes(query);
-      if (!textMatches && !topicMatches && !subtopicMatches) return false;
+      if (!textMatches && !topicMatches) return false;
     }
 
     return true;
@@ -124,12 +105,10 @@ export default function AnalyzerPage() {
     localStorage.setItem("paperwise_user", JSON.stringify(updatedUser));
   };
 
-  // Toggle expand
   const handleToggleExpand = (qId) => {
     setExpandedQuestions(prev => ({ ...prev, [qId]: !prev[qId] }));
   };
 
-  // Clear filters
   const handleClearFilters = () => {
     setSelectedTopics([]);
     setSelectedYears([]);
@@ -139,12 +118,11 @@ export default function AnalyzerPage() {
     setSearchQuery("");
   };
 
-  // --- Analytics calculations from filtered list ---
+  // Analytics
   const totalInFilter = filteredQuestions.length;
   const completedInFilter = filteredQuestions.filter(q => completedList.includes(q.id)).length;
   const progressPercent = totalInFilter > 0 ? Math.round((completedInFilter / totalInFilter) * 100) : 0;
 
-  // Topic distribution (for charts)
   const topicCounts = filteredQuestions.reduce((acc, q) => {
     acc[q.topic] = (acc[q.topic] || 0) + 1;
     return acc;
@@ -153,52 +131,44 @@ export default function AnalyzerPage() {
     .map(topic => ({ topic, count: topicCounts[topic] }))
     .sort((a, b) => b.count - a.count);
 
-  // Difficulty breakdown
   const difficultyCounts = filteredQuestions.reduce((acc, q) => {
     acc[q.difficulty] = (acc[q.difficulty] || 0) + 1;
     return acc;
   }, { Easy: 0, Medium: 0, Hard: 0 });
 
-  // Year distribution
-  const yearCounts = filteredQuestions.reduce((acc, q) => {
-    acc[q.year] = (acc[q.year] || 0) + 1;
-    return acc;
-  }, {});
-
-  const currentSubjectObj = activeSubjects.find(s => s.id === selectedSubjectId);
-
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: "260px 1fr 300px",
-      gap: "24px",
+      gridTemplateColumns: "240px 1fr 280px",
+      gap: "20px",
       alignItems: "start"
     }}>
-      {/* COLUMN 1: FILTER PANEL */}
-      <aside className="glass-panel" style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ fontSize: "0.95rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
-            <Filter size={16} /> Filters
+      {/* COLUMN 1: FILTERS */}
+      <aside className="glass-panel" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ display: "flex", justifyItems: "center", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 style={{ fontSize: "0.8rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px" }}>
+            <Filter size={14} /> FILTERS
           </h3>
           <button 
             onClick={handleClearFilters}
             style={{
               background: "transparent",
               border: "none",
-              color: "#3b82f6",
-              fontSize: "0.75rem",
+              color: "#a1a1aa",
+              fontSize: "0.7rem",
               fontWeight: "600",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: "4px"
+              gap: "2px",
+              textDecoration: "underline"
             }}
           >
-            <RefreshCw size={12} /> Clear All
+            <RefreshCw size={10} /> Clear
           </button>
         </div>
 
-        {/* Subject Filter */}
+        {/* Subject */}
         <div className="form-group">
           <label className="form-label">SUBJECT</label>
           <select 
@@ -206,34 +176,34 @@ export default function AnalyzerPage() {
             value={selectedSubjectId}
             onChange={(e) => {
               setSelectedSubjectId(e.target.value);
-              setSelectedTopics([]); // reset topics when subject changes
+              setSelectedTopics([]);
             }}
-            style={{ padding: "8px 12px", fontSize: "0.85rem" }}
+            style={{ padding: "6px 10px", fontSize: "0.8rem" }}
           >
             {activeSubjects.map((sub) => (
-              <option key={sub.id} value={sub.id} style={{ background: "#0a0e1c" }}>
+              <option key={sub.id} value={sub.id} style={{ background: "#09090b" }}>
                 {sub.name}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Topic Filter */}
+        {/* Topics */}
         <div className="form-group">
           <label className="form-label">TOPICS</label>
           <div style={{
-            maxHeight: "140px",
+            maxHeight: "120px",
             overflowY: "auto",
             display: "flex",
             flexDirection: "column",
-            gap: "8px",
+            gap: "6px",
             padding: "4px",
-            border: "1px solid rgba(255, 255, 255, 0.04)",
-            borderRadius: "6px",
-            background: "rgba(0,0,0,0.15)"
+            border: "1px solid #27272a",
+            borderRadius: "4px",
+            background: "#09090b"
           }}>
             {distinctTopics.map((topic) => (
-              <label key={topic} className="checkbox-container" style={{ fontSize: "0.8rem" }}>
+              <label key={topic} className="checkbox-container" style={{ fontSize: "0.75rem" }}>
                 <input 
                   type="checkbox"
                   className="checkbox-input"
@@ -245,17 +215,17 @@ export default function AnalyzerPage() {
               </label>
             ))}
             {distinctTopics.length === 0 && (
-              <div style={{ padding: "8px", color: "#64748b", fontSize: "0.75rem" }}>
-                No topics available.
+              <div style={{ padding: "6px", color: "#52525b", fontSize: "0.7rem" }}>
+                Select a subject first
               </div>
             )}
           </div>
         </div>
 
-        {/* Year Filter */}
+        {/* Years */}
         <div className="form-group">
           <label className="form-label">EXAM YEARS</label>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
             {[2022, 2023, 2024].map((year) => {
               const isSelected = selectedYears.includes(year);
               return (
@@ -263,15 +233,14 @@ export default function AnalyzerPage() {
                   key={year}
                   onClick={() => handleToggleFilter(year, selectedYears, setSelectedYears)}
                   style={{
-                    padding: "4px 10px",
-                    borderRadius: "6px",
-                    border: isSelected ? "1px solid #3b82f6" : "1px solid rgba(255, 255, 255, 0.08)",
-                    background: isSelected ? "rgba(59, 130, 246, 0.15)" : "transparent",
-                    color: isSelected ? "#60a5fa" : "#94a3b8",
-                    fontSize: "0.75rem",
+                    padding: "3px 8px",
+                    borderRadius: "4px",
+                    border: isSelected ? "1px solid #ffffff" : "1px solid #27272a",
+                    background: isSelected ? "#ffffff" : "transparent",
+                    color: isSelected ? "#09090b" : "#a1a1aa",
+                    fontSize: "0.7rem",
                     fontWeight: "600",
                     cursor: "pointer",
-                    transition: "all 0.15s"
                   }}
                 >
                   {year}
@@ -281,12 +250,12 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Difficulty Filter */}
+        {/* Difficulty */}
         <div className="form-group">
           <label className="form-label">DIFFICULTY</label>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {["Easy", "Medium", "Hard"].map((diff) => (
-              <label key={diff} className="checkbox-container" style={{ fontSize: "0.8rem" }}>
+              <label key={diff} className="checkbox-container" style={{ fontSize: "0.75rem" }}>
                 <input 
                   type="checkbox"
                   className="checkbox-input"
@@ -300,12 +269,12 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Question Type Filter */}
+        {/* Type */}
         <div className="form-group">
           <label className="form-label">QUESTION TYPE</label>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {["MCQ", "Short", "Long", "Numerical"].map((type) => (
-              <label key={type} className="checkbox-container" style={{ fontSize: "0.8rem" }}>
+              <label key={type} className="checkbox-container" style={{ fontSize: "0.75rem" }}>
                 <input 
                   type="checkbox"
                   className="checkbox-input"
@@ -313,28 +282,28 @@ export default function AnalyzerPage() {
                   onChange={() => handleToggleFilter(type, selectedTypes, setSelectedTypes)}
                 />
                 <span className="checkmark" />
-                <span>{type} Answer</span>
+                <span>{type}</span>
               </label>
             ))}
           </div>
         </div>
 
-        {/* Completion Status Filter */}
+        {/* Status */}
         <div className="form-group">
-          <label className="form-label">COMPLETION STATUS</label>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <label className="form-label">STATUS</label>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { id: "all", label: "All Questions" },
-              { id: "completed", label: "Attempted Only" },
-              { id: "uncompleted", label: "Unattempted Only" }
+              { id: "completed", label: "Attempted" },
+              { id: "uncompleted", label: "Unattempted" }
             ].map((opt) => (
-              <label key={opt.id} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.8rem", color: "#94a3b8", cursor: "pointer" }}>
+              <label key={opt.id} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#a1a1aa", cursor: "pointer" }}>
                 <input 
                   type="radio"
                   name="statusFilter"
                   checked={selectedStatus === opt.id}
                   onChange={() => setSelectedStatus(opt.id)}
-                  style={{ accentColor: "#3b82f6" }}
+                  style={{ accentColor: "#ffffff" }}
                 />
                 <span>{opt.label}</span>
               </label>
@@ -343,39 +312,39 @@ export default function AnalyzerPage() {
         </div>
       </aside>
 
-      {/* COLUMN 2: QUESTION LISTING */}
-      <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* COLUMN 2: DECK */}
+      <section style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         
-        {/* Search Bar & Stats */}
-        <div className="glass-panel" style={{ padding: "16px 24px", display: "flex", alignItems: "center", justifyItems: "center", gap: "16px" }}>
+        {/* Search */}
+        <div className="glass-panel" style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyItems: "center", gap: "12px" }}>
           <div style={{ position: "relative", flex: 1 }}>
-            <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", display: "flex", alignItems: "center" }}>
-              <Search size={16} />
+            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#52525b", display: "flex", alignItems: "center" }}>
+              <Search size={14} />
             </span>
             <input 
               type="text"
-              placeholder="Search keyword, formula, or topic..."
+              placeholder="Search terms, topics, subtopics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
                 width: "100%",
-                padding: "8px 16px 8px 36px",
-                borderRadius: "6px",
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
-                color: "#f8fafc",
-                fontSize: "0.85rem",
+                padding: "6px 12px 6px 30px",
+                borderRadius: "4px",
+                background: "#09090b",
+                border: "1px solid #27272a",
+                color: "#ffffff",
+                fontSize: "0.8rem",
                 outline: "none",
               }}
             />
           </div>
-          <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "500", whiteSpace: "nowrap" }}>
-            Showing **{filteredQuestions.length}** of **{semesterQuestions.length}**
+          <div style={{ fontSize: "0.75rem", color: "#a1a1aa", whiteSpace: "nowrap" }}>
+            Found: **{filteredQuestions.length}**
           </div>
         </div>
 
-        {/* Dynamic deck list */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {/* List */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {filteredQuestions.length > 0 ? (
             filteredQuestions.map((q) => {
               const isCompleted = completedList.includes(q.id);
@@ -386,16 +355,15 @@ export default function AnalyzerPage() {
                   key={q.id}
                   className="glass-panel"
                   style={{
-                    padding: "20px",
-                    borderLeft: isCompleted ? "4px solid #10b981" : "1px solid rgba(255, 255, 255, 0.06)",
-                    transition: "all 0.15s ease",
+                    padding: "16px",
+                    borderLeft: isCompleted ? "2px solid #ffffff" : "1px solid #27272a",
                     display: "flex",
                     flexDirection: "column",
-                    gap: "12px"
+                    gap: "8px"
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
-                    <label className="checkbox-container" style={{ marginTop: "4px" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                    <label className="checkbox-container" style={{ marginTop: "2px" }}>
                       <input 
                         type="checkbox"
                         className="checkbox-input"
@@ -407,58 +375,53 @@ export default function AnalyzerPage() {
 
                     <div style={{ flex: 1 }}>
                       <p style={{
-                        fontSize: "0.9rem",
-                        lineHeight: "1.55",
-                        color: isCompleted ? "#64748b" : "#f8fafc",
+                        fontSize: "0.85rem",
+                        lineHeight: "1.4",
+                        color: isCompleted ? "#71717a" : "#ffffff",
                         textDecoration: isCompleted ? "line-through" : "none"
                       }}>
                         {q.text}
                       </p>
 
-                      {/* Info badges */}
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px" }}>
-                        <span className="badge badge-blue">{q.year}</span>
-                        <span className="badge badge-teal">{q.topic}</span>
-                        <span className="badge badge-amber">{q.marks}M</span>
-                        <span className={`badge ${
-                          q.difficulty === "Easy" ? "badge-teal" : 
-                          q.difficulty === "Medium" ? "badge-amber" : "badge-rose"
-                        }`}>{q.difficulty}</span>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "6px" }}>
+                        <span className="badge">{q.year}</span>
+                        <span className="badge">{q.topic}</span>
+                        <span className="badge">{q.marks}M</span>
+                        <span className="badge">{q.difficulty}</span>
                       </div>
                     </div>
 
                     <button 
                       onClick={() => handleToggleExpand(q.id)}
                       style={{
-                        background: "rgba(255,255,255,0.02)",
-                        border: "1px solid rgba(255,255,255,0.06)",
-                        borderRadius: "6px",
-                        padding: "5px 8px",
-                        color: "#94a3b8",
-                        fontSize: "0.75rem",
+                        background: "#121214",
+                        border: "1px solid #27272a",
+                        borderRadius: "4px",
+                        padding: "3px 6px",
+                        color: "#a1a1aa",
+                        fontSize: "0.7rem",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
                         gap: "2px"
                       }}
                     >
-                      {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                      Solution
+                      {isExpanded ? "Hide" : "Solution"}
                     </button>
                   </div>
 
                   {isExpanded && (
                     <div style={{
-                      padding: "12px 16px",
-                      background: "rgba(0,0,0,0.25)",
-                      borderLeft: "2px solid #3b82f6",
-                      borderRadius: "6px",
-                      fontSize: "0.85rem",
-                      lineHeight: "1.5",
+                      padding: "12px",
+                      background: "#09090b",
+                      border: "1px solid #27272a",
+                      borderRadius: "4px",
+                      fontSize: "0.8rem",
+                      lineHeight: "1.4",
                       color: "#cbd5e1",
-                      marginTop: "6px"
+                      marginTop: "4px"
                     }}>
-                      <div style={{ fontWeight: "700", color: "#60a5fa", marginBottom: "6px", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
+                      <div style={{ fontWeight: "700", color: "#a1a1aa", marginBottom: "4px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
                         SOLUTION WORKTHROUGH
                       </div>
                       <div style={{ whiteSpace: "pre-wrap" }}>{q.solution}</div>
@@ -468,70 +431,57 @@ export default function AnalyzerPage() {
               );
             })
           ) : (
-            <div className="glass-panel" style={{ padding: "48px", textAlign: "center", color: "#64748b" }}>
-              No questions match the selected filter combination. Try clearing filters or altering search keywords.
+            <div className="glass-panel" style={{ padding: "32px", textAlign: "center", color: "#71717a", fontSize: "0.8rem" }}>
+              No matching questions.
             </div>
           )}
         </div>
       </section>
 
-      {/* COLUMN 3: ANALYTICS PANEL */}
-      <aside style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      {/* COLUMN 3: ANALYTICS */}
+      <aside style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         
-        {/* Progress Gauge */}
-        <div className="glass-panel" style={{ padding: "20px", textAlign: "center" }}>
-          <h3 style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "600", marginBottom: "16px", textTransform: "uppercase" }}>
-            Completion Progress
-          </h3>
-          <div style={{
-            position: "relative",
-            width: "90px",
-            height: "90px",
-            borderRadius: "50%",
-            background: `conic-gradient(#3b82f6 ${progressPercent}%, rgba(255,255,255,0.04) ${progressPercent}% 100%)`,
-            margin: "0 auto 12px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            <div style={{
-              width: "74px",
-              height: "74px",
-              borderRadius: "50%",
-              background: "#0c0f1c",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center"
-            }}>
-              <span style={{ fontSize: "1.25rem", fontWeight: "700" }}>{progressPercent}%</span>
-              <span style={{ fontSize: "0.6rem", color: "#64748b" }}>COVERED</span>
-            </div>
+        {/* Simple Progress Box */}
+        <div className="glass-panel" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+          <span style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600", letterSpacing: "0.05em" }}>
+            COMPLETION RATE
+          </span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+            <span style={{ fontSize: "1.5rem", fontWeight: "700", color: "#ffffff" }}>
+              {progressPercent}%
+            </span>
+            <span style={{ fontSize: "0.75rem", color: "#71717a" }}>
+              ({completedInFilter} / {totalInFilter} solved)
+            </span>
           </div>
-          <p style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
-            Attempted **{completedInFilter}** of **{totalInFilter}** questions in active selection.
-          </p>
+          <div style={{
+            height: "4px",
+            background: "#09090b",
+            border: "1px solid #27272a",
+            borderRadius: "2px",
+            overflow: "hidden"
+          }}>
+            <div style={{ width: `${progressPercent}%`, height: "100%", background: "#ffffff" }} />
+          </div>
         </div>
 
-        {/* Difficulty Breakdown Bar */}
-        <div className="glass-panel" style={{ padding: "20px" }}>
-          <h3 style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "600", marginBottom: "16px", textTransform: "uppercase" }}>
-            Difficulty Breakdown
+        {/* Difficulty Breakdown (Clean linear blocks) */}
+        <div className="glass-panel" style={{ padding: "16px" }}>
+          <h3 style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600", marginBottom: "12px", letterSpacing: "0.05em" }}>
+            DIFFICULTY SPREAD
           </h3>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {["Easy", "Medium", "Hard"].map((lvl) => {
               const count = difficultyCounts[lvl] || 0;
               const pct = totalInFilter > 0 ? Math.round((count / totalInFilter) * 100) : 0;
-              const barColor = lvl === "Easy" ? "#10b981" : lvl === "Medium" ? "#f59e0b" : "#f43f5e";
               return (
                 <div key={lvl}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", marginBottom: "4px" }}>
-                    <span style={{ color: "#e2e8f0" }}>{lvl}</span>
-                    <span style={{ color: "#94a3b8" }}>{count} ({pct}%)</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", marginBottom: "2px" }}>
+                    <span style={{ color: "#ffffff" }}>{lvl}</span>
+                    <span style={{ color: "#71717a" }}>{count} ({pct}%)</span>
                   </div>
-                  <div style={{ height: "6px", background: "rgba(255,255,255,0.03)", borderRadius: "3px", overflow: "hidden" }}>
-                    <div style={{ width: `${pct}%`, height: "100%", background: barColor, borderRadius: "3px" }} />
+                  <div style={{ height: "3px", background: "#09090b", borderRadius: "1px", overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: "#ffffff" }} />
                   </div>
                 </div>
               );
@@ -539,32 +489,32 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Repeated Topics Heatmap */}
-        <div className="glass-panel" style={{ padding: "20px" }}>
-          <h3 style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "600", marginBottom: "16px", textTransform: "uppercase" }}>
-            Repeated Hot Topics
+        {/* Repeated Hot Topics (Clean simple list) */}
+        <div className="glass-panel" style={{ padding: "16px" }}>
+          <h3 style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600", marginBottom: "12px", letterSpacing: "0.05em" }}>
+            TOPIC REPETITIONS
           </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {sortedTopicFrequency.slice(0, 4).map((item, idx) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {sortedTopicFrequency.slice(0, 3).map((item) => (
               <div key={item.topic} style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: "8px 12px",
-                background: "rgba(255,255,255,0.02)",
-                borderRadius: "6px",
-                borderLeft: `3px solid ${idx === 0 ? "#10b981" : "#3b82f6"}`,
-                fontSize: "0.8rem"
+                padding: "6px 10px",
+                background: "#09090b",
+                border: "1px solid #27272a",
+                borderRadius: "4px",
+                fontSize: "0.75rem"
               }}>
-                <span style={{ fontWeight: "500", color: "#e2e8f0" }}>{item.topic}</span>
-                <span className="badge badge-blue" style={{ fontSize: "0.65rem" }}>
-                  {item.count} appearance{item.count > 1 ? "s" : ""}
+                <span style={{ fontWeight: "500", color: "#ffffff" }}>{item.topic}</span>
+                <span style={{ color: "#a1a1aa", fontWeight: "600" }}>
+                  {item.count}
                 </span>
               </div>
             ))}
             {sortedTopicFrequency.length === 0 && (
-              <div style={{ fontSize: "0.75rem", color: "#64748b", textAlign: "center", padding: "12px" }}>
-                No active topics.
+              <div style={{ fontSize: "0.75rem", color: "#71717a", textAlign: "center" }}>
+                No active data.
               </div>
             )}
           </div>
