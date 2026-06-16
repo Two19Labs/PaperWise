@@ -11,7 +11,9 @@ export default function DashboardHome() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [completedList, setCompletedList] = useState([]);
-  const [oranges, setOranges] = useState(0);
+  
+  // Selected course tab (initialised based on user course selection but togglable)
+  const [activeCourseId, setActiveCourseId] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("paperwise_user");
@@ -22,46 +24,50 @@ export default function DashboardHome() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
-    setOranges((parsed.completedQuestions || []).length * 10);
+    setActiveCourseId(parsed.courseId || "bms");
   }, [router]);
 
-  if (!user) {
+  if (!user || !activeCourseId) {
     return null;
   }
 
-  // Find user's active course subjects
-  const userCourse = courses.find(c => c.id === user.courseId) || courses[0];
-  const activeSemester = user.semester || 1;
-  const activeSubjects = userCourse.semesters[activeSemester] || [];
+  // Find active course details
+  const activeCourse = courses.find(c => c.id === activeCourseId) || courses[0];
 
-  // Compute stats
-  const subjectIds = activeSubjects.map(sub => sub.id);
-  const totalQuestions = questions.filter(q => subjectIds.includes(q.subjectId));
-  const completedInSemester = totalQuestions.filter(q => completedList.includes(q.id));
-  const completionRate = totalQuestions.length > 0 
-    ? Math.round((completedInSemester.length / totalQuestions.length) * 100) 
-    : 0;
+  // Calculate stats for the active course (across all semesters)
+  const allSubjectIds = [];
+  const subjectsBySemester = {};
 
-  // Calculate stats per subject
-  const subjectsWithStats = activeSubjects.map(subject => {
-    const subQuestions = questions.filter(q => q.subjectId === subject.id);
-    const subCompleted = subQuestions.filter(q => completedList.includes(q.id));
-    const subProgress = subQuestions.length > 0
-      ? Math.round((subCompleted.length / subQuestions.length) * 100)
-      : 0;
-    return {
-      ...subject,
-      totalCount: subQuestions.length,
-      completedCount: subCompleted.length,
-      progress: subProgress
-    };
+  Object.keys(activeCourse.semesters).forEach(sem => {
+    subjectsBySemester[sem] = activeCourse.semesters[sem].map(subject => {
+      allSubjectIds.push(subject.id);
+      
+      const subQuestions = questions.filter(q => q.subjectId === subject.id);
+      const subCompleted = subQuestions.filter(q => completedList.includes(q.id));
+      const progress = subQuestions.length > 0
+        ? Math.round((subCompleted.length / subQuestions.length) * 100)
+        : 0;
+
+      return {
+        ...subject,
+        totalCount: subQuestions.length,
+        completedCount: subCompleted.length,
+        progress
+      };
+    });
   });
+
+  const totalQuestions = questions.filter(q => allSubjectIds.includes(q.subjectId));
+  const completedInCourse = totalQuestions.filter(q => completedList.includes(q.id));
+  const coverageRate = totalQuestions.length > 0
+    ? Math.round((completedInCourse.length / totalQuestions.length) * 100)
+    : 0;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Welcome Banner */}
       <div style={{
-        padding: "24px",
+        padding: "20px 24px",
         borderRadius: "8px",
         background: "#ffffff",
         border: "1px solid #e2e8f0",
@@ -69,23 +75,57 @@ export default function DashboardHome() {
         justifyContent: "space-between",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: "16px",
-        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.02)"
+        gap: "16px"
       }}>
         <div>
-          <h1 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "4px", color: "#0f172a" }}>
+          <h1 style={{ fontSize: "1.2rem", fontWeight: "700", color: "#0f172a", marginBottom: "4px" }}>
             Welcome, {user.name || "Student"} 👋
           </h1>
-          <p style={{ color: "#475569", fontSize: "0.8rem", maxWidth: "600px" }}>
-            You are tracking the syllabus for **{user.courseName}** (Semester {user.semester}) at **SSCBS**.
+          <p style={{ color: "#475569", fontSize: "0.8rem" }}>
+            You have full access to all semesters, courses, and PYQs for **SSCBS**.
           </p>
         </div>
         <Link href="/dashboard/analyzer" className="btn btn-primary" style={{ padding: "8px 12px", fontSize: "0.8rem" }}>
-          Open Analyzer <Play size={12} fill="currentColor" />
+          Open PYQ Analyzer <Play size={12} fill="currentColor" />
         </Link>
       </div>
 
-      {/* Stats row */}
+      {/* Course Toggle Tabs */}
+      <div style={{
+        display: "flex",
+        background: "#ffffff",
+        border: "1px solid #e2e8f0",
+        borderRadius: "8px",
+        padding: "4px",
+        gap: "4px"
+      }}>
+        {courses.map((course) => {
+          const isActive = activeCourseId === course.id;
+          return (
+            <button
+              key={course.id}
+              onClick={() => setActiveCourseId(course.id)}
+              style={{
+                flex: 1,
+                padding: "8px 16px",
+                border: "none",
+                background: isActive ? "#fff7ed" : "transparent",
+                color: isActive ? "#ea580c" : "#475569",
+                borderRadius: "6px",
+                fontSize: "0.85rem",
+                fontWeight: isActive ? "700" : "500",
+                cursor: "pointer",
+                transition: "all 0.15s",
+                textAlign: "center"
+              }}
+            >
+              {course.name.includes("[") ? course.name.split("[")[1].replace("]", "") : course.name}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Stats Summary row */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -132,7 +172,7 @@ export default function DashboardHome() {
           <div>
             <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>COMPLETED</div>
             <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px", color: "#0f172a" }}>
-              {completedInSemester.length} / {totalQuestions.length}
+              {completedInCourse.length} / {totalQuestions.length}
             </div>
           </div>
         </div>
@@ -153,202 +193,113 @@ export default function DashboardHome() {
             <Award size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>COVERAGE</div>
+            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>TOTAL COVERAGE</div>
             <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px", color: "#0f172a" }}>
-              {completionRate}%
-            </div>
-          </div>
-        </div>
-
-        {/* Stat 4 */}
-        <div className="glass-panel" style={{ padding: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
-          <div style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "6px",
-            background: "#fff7ed",
-            border: "1px solid rgba(245, 131, 64, 0.2)",
-            color: "#f58340",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            <Calendar size={16} />
-          </div>
-          <div>
-            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>DAYS REMAINING</div>
-            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px", color: "#0f172a" }}>
-              45 Days
+              {coverageRate}%
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Grid */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 300px",
-        gap: "24px",
-        alignItems: "start"
-      }}>
-        {/* Left Column: Subjects */}
-        <div>
-          <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.03em", marginBottom: "12px" }}>
-            SUBJECTS
-          </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {subjectsWithStats.map((subject) => (
-              <div 
-                key={subject.id} 
-                className="glass-panel" 
-                style={{ 
-                  padding: "16px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px"
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <span className="badge" style={{ marginBottom: "4px" }}>
-                      {subject.code}
-                    </span>
-                    <h4 style={{ fontSize: "0.95rem", fontWeight: "600", color: "#0f172a" }}>{subject.name}</h4>
-                    <p style={{ color: "#64748b", fontSize: "0.75rem", marginTop: "2px" }}>
-                      Type: {subject.type}
-                    </p>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
-                      {subject.completedCount} / {subject.totalCount} completed
-                    </div>
-                    <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#f58340", marginTop: "2px" }}>
-                      {subject.progress}%
-                    </div>
-                  </div>
-                </div>
-
-                {/* Progress bar (Orange Accent) */}
-                <div style={{
-                  height: "4px",
-                  background: "#f3f4f6",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "2px",
-                  overflow: "hidden",
-                  width: "100%"
-                }}>
-                  <div style={{
-                    width: `${subject.progress}%`,
-                    height: "100%",
-                    background: "#f58340",
-                    borderRadius: "2px",
-                    transition: "width 0.3s"
-                  }} />
-                </div>
-
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center"
-                }}>
-                  <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                    Syllabus: UGCF 2022
-                  </span>
-                  <Link 
-                    href={`/dashboard/subject/${subject.id}`} 
-                    style={{
-                      fontSize: "0.8rem",
-                      fontWeight: "650",
-                      color: "#f58340",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "2px",
-                      textDecoration: "underline"
-                    }}
-                  >
-                    Open Review <ChevronRight size={14} />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Column: Activity & Rewards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {/* Orange Rewards Card */}
-          <div className="glass-panel" style={{
-            padding: "16px",
-            background: "#fff7ed",
-            border: "1px solid rgba(245, 131, 64, 0.25)"
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-              <span style={{ fontSize: "1.25rem" }}>🍊</span>
-              <h3 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#ea580c" }}>
-                ORANGES EARNED
-              </h3>
-            </div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "8px" }}>
-              <span style={{ fontSize: "1.8rem", fontWeight: "800", color: "#ea580c" }}>
-                {oranges}
-              </span>
-              <span style={{ fontSize: "0.8rem", color: "#c2410c" }}>oranges collected</span>
-            </div>
-            <p style={{ fontSize: "0.75rem", color: "#c2410c", lineHeight: "1.4" }}>
-              Earn 10 oranges for every question checked off! Keep practicing to fill your reward basket.
-            </p>
-          </div>
-
-          {/* Recent completions */}
-          <div className="glass-panel" style={{ padding: "16px" }}>
-            <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.03em", marginBottom: "12px" }}>
-              RECENT COMPLETIONS
+      {/* Main content grid: Semesters & Subjects */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        {Object.keys(subjectsBySemester).map((sem) => (
+          <div key={sem} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <h3 style={{ 
+              fontSize: "0.85rem", 
+              fontWeight: "700", 
+              color: "#475569", 
+              letterSpacing: "0.05em",
+              borderBottom: "1px solid #e2e8f0",
+              paddingBottom: "4px",
+              marginTop: "8px"
+            }}>
+              SEMESTER {sem}
             </h3>
-            
-            {completedInSemester.length > 0 ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {completedInSemester.slice(0, 3).map((item) => (
-                  <div key={item.id} style={{
+
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "16px"
+            }}>
+              {subjectsBySemester[sem].map((subject) => (
+                <div 
+                  key={subject.id} 
+                  className="glass-panel" 
+                  style={{ 
+                    padding: "16px",
                     display: "flex",
-                    alignItems: "flex-start",
-                    gap: "8px",
-                    paddingBottom: "8px",
-                    borderBottom: "1px solid #e2e8f0"
-                  }}>
-                    <div style={{
-                      marginTop: "3px",
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
-                      background: "#f58340",
-                      flexShrink: 0
-                    }} />
+                    flexDirection: "column",
+                    gap: "12px",
+                    background: "#ffffff"
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
-                      <div style={{ fontSize: "0.8rem", fontWeight: "600", color: "#0f172a" }}>
-                        Solved Question
-                      </div>
-                      <p style={{
-                        fontSize: "0.7rem",
-                        color: "#475569",
-                        marginTop: "1px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        maxWidth: "200px"
-                      }}>
-                        {item.text}
+                      <span className="badge" style={{ marginBottom: "4px" }}>
+                        {subject.code}
+                      </span>
+                      <h4 style={{ fontSize: "0.9rem", fontWeight: "600", color: "#0f172a" }}>{subject.name}</h4>
+                      <p style={{ color: "#64748b", fontSize: "0.7rem", marginTop: "2px" }}>
+                        Type: {subject.type}
                       </p>
                     </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
+                        {subject.completedCount} / {subject.totalCount} done
+                      </div>
+                      <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#f58340", marginTop: "2px" }}>
+                        {subject.progress}%
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div style={{ padding: "16px 0", textAlign: "center", color: "#64748b", fontSize: "0.75rem" }}>
-                No questions completed yet.
-              </div>
-            )}
+
+                  {/* Progress bar */}
+                  <div style={{
+                    height: "4px",
+                    background: "#f3f4f6",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "2px",
+                    overflow: "hidden",
+                    width: "100%"
+                  }}>
+                    <div style={{
+                      width: `${subject.progress}%`,
+                      height: "100%",
+                      background: "#f58340",
+                      borderRadius: "2px",
+                      transition: "width 0.3s"
+                    }} />
+                  </div>
+
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}>
+                    <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
+                      Syllabus: UGCF 2022
+                    </span>
+                    <Link 
+                      href={`/dashboard/subject/${subject.id}`} 
+                      style={{
+                        fontSize: "0.75rem",
+                        fontWeight: "650",
+                        color: "#f58340",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "2px",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      Browse PYQs <ChevronRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

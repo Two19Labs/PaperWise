@@ -51,21 +51,32 @@ export default function AnalyzerPage() {
     return null;
   }
 
-  // Get active subjects
-  const userCourse = courses.find(c => c.id === user.courseId) || courses[0];
-  const activeSubjects = userCourse.semesters[user.semester] || [];
-  const activeSubjectIds = activeSubjects.map(s => s.id);
+  // Flatten all subjects from all courses for global access
+  const allSubjects = [];
+  courses.forEach(course => {
+    Object.keys(course.semesters).forEach(sem => {
+      course.semesters[sem].forEach(sub => {
+        if (!allSubjects.some(s => s.id === sub.id)) {
+          allSubjects.push({
+            ...sub,
+            courseName: course.name.includes("[") ? course.name.split("[")[1].replace("]", "") : course.name,
+            courseId: course.id,
+            semester: sem
+          });
+        }
+      });
+    });
+  });
 
-  // Set default subject
-  if (selectedSubjectId === "all" && activeSubjects.length > 0) {
-    setSelectedSubjectId(activeSubjects[0].id);
-  }
+  const allSubjectIds = allSubjects.map(s => s.id);
 
-  const semesterQuestions = questions.filter(q => activeSubjectIds.includes(q.subjectId));
+  // Filter questions globally or by subject
+  const currentQuestionsSet = selectedSubjectId === "all"
+    ? questions.filter(q => allSubjectIds.includes(q.subjectId))
+    : questions.filter(q => q.subjectId === selectedSubjectId);
 
-  // Topics for selected subject
-  const currentSubjectQuestions = questions.filter(q => q.subjectId === selectedSubjectId);
-  const distinctTopics = Array.from(new Set(currentSubjectQuestions.map(q => q.topic)));
+  // Get distinct topics for current subject(s)
+  const distinctTopics = Array.from(new Set(currentQuestionsSet.map(q => q.topic)));
 
   const handleToggleFilter = (item, list, setter) => {
     if (list.includes(item)) {
@@ -76,11 +87,23 @@ export default function AnalyzerPage() {
   };
 
   // Perform filtering
-  const filteredQuestions = semesterQuestions.filter(q => {
+  const filteredQuestions = questions.filter(q => {
+    // Subject filter
     if (selectedSubjectId !== "all" && q.subjectId !== selectedSubjectId) return false;
+    
+    // Global safety check (only show questions mapping to our SSCBS subject list)
+    if (selectedSubjectId === "all" && !allSubjectIds.includes(q.subjectId)) return false;
+
+    // Topic filter
     if (selectedTopics.length > 0 && !selectedTopics.includes(q.topic)) return false;
+
+    // Year filter
     if (selectedYears.length > 0 && !selectedYears.includes(q.year)) return false;
+
+    // Difficulty filter
     if (selectedDifficulties.length > 0 && !selectedDifficulties.includes(q.difficulty)) return false;
+
+    // Type filter
     if (selectedTypes.length > 0 && !selectedTypes.includes(q.type)) return false;
 
     // Status filter
@@ -169,6 +192,13 @@ export default function AnalyzerPage() {
     return acc;
   }, { Easy: 0, Medium: 0, Hard: 0 });
 
+  // Group subjects by Course for optgroup layout
+  const subjectsByCourse = allSubjects.reduce((acc, s) => {
+    if (!acc[s.courseName]) acc[s.courseName] = [];
+    acc[s.courseName].push(s);
+    return acc;
+  }, {});
+
   return (
     <div style={{
       display: "grid",
@@ -201,7 +231,7 @@ export default function AnalyzerPage() {
           </button>
         </div>
 
-        {/* Subject */}
+        {/* Subject dropdown grouped by course */}
         <div className="form-group">
           <label className="form-label">SUBJECT</label>
           <select 
@@ -213,10 +243,15 @@ export default function AnalyzerPage() {
             }}
             style={{ padding: "6px 10px", fontSize: "0.8rem" }}
           >
-            {activeSubjects.map((sub) => (
-              <option key={sub.id} value={sub.id} style={{ background: "#ffffff" }}>
-                {sub.name}
-              </option>
+            <option value="all">All Subjects (SSCBS)</option>
+            {Object.keys(subjectsByCourse).map(courseName => (
+              <optgroup key={courseName} label={courseName} style={{ background: "#ffffff", fontWeight: "600" }}>
+                {subjectsByCourse[courseName].map(sub => (
+                  <option key={sub.id} value={sub.id} style={{ background: "#ffffff", fontWeight: "normal" }}>
+                    {sub.name} (S{sub.semester})
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </div>
@@ -278,7 +313,7 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Custom Lists (Bookmarks / Doubts) */}
+        {/* Personal Lists */}
         <div className="form-group">
           <label className="form-label">PERSONAL LISTS</label>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -328,7 +363,7 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Status */}
+        {/* Completion */}
         <div className="form-group">
           <label className="form-label">COMPLETION</label>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -355,7 +390,7 @@ export default function AnalyzerPage() {
       {/* COLUMN 2: DECK */}
       <section style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         
-        {/* Search & Counter */}
+        {/* Search */}
         <div className="glass-panel" style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyItems: "center", gap: "12px", background: "#ffffff" }}>
           <div style={{ position: "relative", flex: 1 }}>
             <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8", display: "flex", alignItems: "center" }}>
@@ -363,7 +398,7 @@ export default function AnalyzerPage() {
             </span>
             <input 
               type="text"
-              placeholder="Search keywords, topics..."
+              placeholder="Search keyword, formula, or topic..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -383,7 +418,7 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Question Deck */}
+        {/* List */}
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {filteredQuestions.length > 0 ? (
             filteredQuestions.map((q) => {
@@ -434,7 +469,6 @@ export default function AnalyzerPage() {
                       </div>
                     </div>
 
-                    {/* Bookmarks, Doubt basket, expand solution */}
                     <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                       <button
                         onClick={() => handleToggleBookmark(q.id)}

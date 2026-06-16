@@ -88,7 +88,7 @@ export default function LandingPage() {
             maxWidth: "540px",
             margin: "0 auto 32px"
           }}>
-            Stop digging through messy PDF dumps. Filter past papers by topic, check off solved questions, earn reward oranges, and access detailed step-by-step guides.
+            Stop digging through messy PDF dumps. Filter past papers by topic, check off solved questions, and access detailed step-by-step guides.
           </p>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
@@ -181,7 +181,7 @@ export default function LandingPage() {
               </div>
               <h3 style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "#0f172a" }}>Track Coverage</h3>
               <p style={{ color: "#475569", fontSize: "0.8rem", lineHeight: "1.5" }}>
-                Check off solved questions, earn oranges, and watch your progress metrics rise in real-time.
+                Check off solved questions, and watch your progress metrics rise in real-time.
               </p>
             </div>
 

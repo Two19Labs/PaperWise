@@ -19,19 +19,15 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [user, setUser] = useState(null);
-  const [oranges, setOranges] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("paperwise_user");
     if (!storedUser) {
       router.push("/auth/login");
     } else {
-      const parsed = JSON.parse(storedUser);
-      setUser(parsed);
-      // Award 10 oranges per completed question
-      setOranges((parsed.completedQuestions || []).length * 10);
+      setUser(JSON.parse(storedUser));
     }
-  }, [router, pathname]); // Re-calculate oranges when pathname changes (user toggles questions)
+  }, [router, pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("paperwise_user");
@@ -141,14 +137,14 @@ export default function DashboardLayout({ children }) {
             <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
               <GraduationCap size={14} style={{ color: "#f58340" }} />
               <span style={{ fontSize: "0.65rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.05em" }}>
-                ACTIVE PROFILE
+                ACADEMIC PORTAL
               </span>
             </div>
             <div style={{ fontSize: "0.75rem", fontWeight: "750", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {user.courseName.includes("[") ? user.courseName.split("[")[1].replace("]", "") : user.courseName}
+              SSCBS Curriculum
             </div>
             <div style={{ fontSize: "0.65rem", color: "#64748b", marginTop: "2px" }}>
-              Semester {user.semester} • SSCBS
+              BMS • BBA (FIA) • B.Sc. CS
             </div>
           </div>
         )}
@@ -273,23 +269,8 @@ export default function DashboardLayout({ children }) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {/* Gamification widget */}
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: "700",
-              color: "#ea580c",
-              background: "#fff7ed",
-              border: "1px solid rgba(245, 131, 64, 0.25)",
-              padding: "4px 10px",
-              borderRadius: "6px",
-              display: "flex",
-              alignItems: "center",
-              gap: "4px"
-            }}>
-              🍊 {oranges} Oranges
-            </span>
-            <span className="badge">
-              Semester {user.semester}
+            <span className="badge badge-orange" style={{ fontWeight: "700" }}>
+              ALL ACCESS
             </span>
             <span className="badge">
               SSCBS

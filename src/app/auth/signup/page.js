@@ -16,7 +16,6 @@ export default function SignupPage() {
   // Onboarding states
   const [selectedCollege] = useState("Shaheed Sukhdev College of Business Studies (SSCBS)");
   const [selectedCourseId, setSelectedCourseId] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState(1);
   
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,11 +32,6 @@ export default function SignupPage() {
       }
     } else if (step === 2) {
       // College confirm
-    } else if (step === 3) {
-      if (!selectedCourseId) {
-        setError("Please select your course.");
-        return;
-      }
     }
     
     setError("");
@@ -51,6 +45,10 @@ export default function SignupPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!selectedCourseId) {
+      setError("Please select your course.");
+      return;
+    }
     setIsLoading(true);
 
     const courseObj = courses.find(c => c.id === selectedCourseId);
@@ -65,7 +63,6 @@ export default function SignupPage() {
           college: selectedCollege,
           courseId: selectedCourseId,
           courseName: courseObj ? courseObj.name : "Custom Course",
-          semester: parseInt(selectedSemester),
           completedQuestions: []
         })
       );
@@ -94,12 +91,12 @@ export default function SignupPage() {
         {/* Step Indicator */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
           <div style={{ display: "flex", gap: "6px" }}>
-            {[1, 2, 3, 4].map((s) => (
+            {[1, 2, 3].map((s) => (
               <div
                 key={s}
                 style={{
                   height: "3px",
-                  width: "20px",
+                  width: "24px",
                   borderRadius: "1.5px",
                   background: s <= step ? "#f58340" : "#e2e8f0",
                   transition: "all 0.2s ease",
@@ -108,7 +105,7 @@ export default function SignupPage() {
             ))}
           </div>
           <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "600" }}>
-            STEP {step} OF 4
+            STEP {step} OF 3
           </span>
         </div>
 
@@ -123,13 +120,11 @@ export default function SignupPage() {
             {step === 1 && "Create Your Account"}
             {step === 2 && "Confirm College"}
             {step === 3 && "Select Your Course"}
-            {step === 4 && "Choose Semester"}
           </h1>
           <p style={{ color: "#475569", fontSize: "0.8rem" }}>
             {step === 1 && "Start tracking and analyzing your SSCBS past papers."}
             {step === 2 && "Verify your college details to proceed."}
-            {step === 3 && "We will load the relevant syllabus modules."}
-            {step === 4 && "Select your current semester."}
+            {step === 3 && "You will have full access to all semesters and subjects."}
           </p>
         </div>
 
@@ -317,60 +312,6 @@ export default function SignupPage() {
                     </div>
                     {isSelected && <Check size={14} style={{ color: "#ea580c" }} />}
                   </div>
-                );
-              })}
-            </div>
-
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                onClick={handlePrevStep}
-                className="btn btn-secondary"
-                style={{ flex: "1" }}
-              >
-                <ArrowLeft size={14} /> Back
-              </button>
-              <button
-                id="signup-next-3"
-                onClick={handleNextStep}
-                className="btn btn-primary"
-                style={{ flex: "1" }}
-              >
-                Next <ArrowRight size={14} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4 */}
-        {step === 4 && (
-          <div>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "8px",
-              marginBottom: "24px"
-            }}>
-              {Array.from({ length: 8 }, (_, i) => i + 1).map((sem) => {
-                const isSelected = selectedSemester === sem;
-                return (
-                  <button
-                    key={sem}
-                    type="button"
-                    onClick={() => setSelectedSemester(sem)}
-                    style={{
-                      height: "44px",
-                      borderRadius: "6px",
-                      background: isSelected ? "#f58340" : "#ffffff",
-                      border: isSelected ? "1px solid #f58340" : "1px solid #e2e8f0",
-                      color: isSelected ? "#ffffff" : "#0f172a",
-                      fontSize: "0.95rem",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      transition: "all 0.15s",
-                    }}
-                  >
-                    S{sem}
-                  </button>
                 );
               })}
             </div>
