@@ -140,11 +140,11 @@ export default function DashboardLayout({ children }) {
                 ACADEMIC PORTAL
               </span>
             </div>
-            <div style={{ fontSize: "0.75rem", fontWeight: "750", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              SSCBS Curriculum
+            <div style={{ fontSize: "0.75rem", fontWeight: "750", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={user.college}>
+              {user.college && user.college.includes("(") ? user.college.split("(")[1].replace(")", "") : (user.college || "SSCBS")} Portal
             </div>
-            <div style={{ fontSize: "0.65rem", color: "#64748b", marginTop: "2px" }}>
-              BMS • BBA (FIA) • B.Sc. CS
+            <div style={{ fontSize: "0.65rem", color: "#64748b", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={user.courseName}>
+              {user.courseName ? (user.courseName.includes("[") ? user.courseName.split("[")[1].replace("]", "") : user.courseName) : "All Courses"}
             </div>
           </div>
         )}
@@ -272,8 +272,8 @@ export default function DashboardLayout({ children }) {
             <span className="badge badge-orange" style={{ fontWeight: "700" }}>
               ALL ACCESS
             </span>
-            <span className="badge">
-              SSCBS
+            <span className="badge" title={user.college}>
+              {user.college && user.college.includes("(") ? user.college.split("(")[1].replace(")", "") : (user.college || "SSCBS")}
             </span>
           </div>
         </header>

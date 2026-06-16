@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { courses } from "@/data/courses";
 import { questions } from "@/data/questions";
+import Latex from "@/components/Latex";
 import { 
   ChevronDown, 
   ChevronUp, 
@@ -51,20 +52,19 @@ export default function AnalyzerPage() {
     return null;
   }
 
-  // Flatten all subjects from all courses for global access
+  // Load subjects ONLY for the user's chosen course
+  const userCourse = courses.find(c => c.id === user.courseId) || courses[0];
   const allSubjects = [];
-  courses.forEach(course => {
-    Object.keys(course.semesters).forEach(sem => {
-      course.semesters[sem].forEach(sub => {
-        if (!allSubjects.some(s => s.id === sub.id)) {
-          allSubjects.push({
-            ...sub,
-            courseName: course.name.includes("[") ? course.name.split("[")[1].replace("]", "") : course.name,
-            courseId: course.id,
-            semester: sem
-          });
-        }
-      });
+  Object.keys(userCourse.semesters).forEach(sem => {
+    userCourse.semesters[sem].forEach(sub => {
+      if (!allSubjects.some(s => s.id === sub.id)) {
+        allSubjects.push({
+          ...sub,
+          courseName: userCourse.name.includes("[") ? userCourse.name.split("[")[1].replace("]", "") : userCourse.name,
+          courseId: userCourse.id,
+          semester: sem
+        });
+      }
     });
   });
 
@@ -458,7 +458,7 @@ export default function AnalyzerPage() {
                         color: isCompleted ? "#94a3b8" : "#0f172a",
                         textDecoration: isCompleted ? "line-through" : "none"
                       }}>
-                        {q.text}
+                        <Latex text={q.text} />
                       </p>
 
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "6px" }}>
@@ -527,7 +527,7 @@ export default function AnalyzerPage() {
                       <div style={{ fontWeight: "700", color: "#f58340", marginBottom: "4px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
                         SOLUTION WORKTHROUGH
                       </div>
-                      <div style={{ whiteSpace: "pre-wrap" }}>{q.solution}</div>
+                      <div style={{ whiteSpace: "pre-wrap" }}><Latex>{q.solution}</Latex></div>
                     </div>
                   )}
                 </div>

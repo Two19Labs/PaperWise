@@ -82,47 +82,12 @@ export default function DashboardHome() {
             Welcome, {user.name || "Student"} 👋
           </h1>
           <p style={{ color: "#475569", fontSize: "0.8rem" }}>
-            You have full access to all semesters, courses, and PYQs for **SSCBS**.
+            You have full access to all semesters and subjects for **{user.college || "SSCBS"}**.
           </p>
         </div>
         <Link href="/dashboard/analyzer" className="btn btn-primary" style={{ padding: "8px 12px", fontSize: "0.8rem" }}>
           Open PYQ Analyzer <Play size={12} fill="currentColor" />
         </Link>
-      </div>
-
-      {/* Course Toggle Tabs */}
-      <div style={{
-        display: "flex",
-        background: "#ffffff",
-        border: "1px solid #e2e8f0",
-        borderRadius: "8px",
-        padding: "4px",
-        gap: "4px"
-      }}>
-        {courses.map((course) => {
-          const isActive = activeCourseId === course.id;
-          return (
-            <button
-              key={course.id}
-              onClick={() => setActiveCourseId(course.id)}
-              style={{
-                flex: 1,
-                padding: "8px 16px",
-                border: "none",
-                background: isActive ? "#fff7ed" : "transparent",
-                color: isActive ? "#ea580c" : "#475569",
-                borderRadius: "6px",
-                fontSize: "0.85rem",
-                fontWeight: isActive ? "700" : "500",
-                cursor: "pointer",
-                transition: "all 0.15s",
-                textAlign: "center"
-              }}
-            >
-              {course.name.includes("[") ? course.name.split("[")[1].replace("]", "") : course.name}
-            </button>
-          );
-        })}
       </div>
 
       {/* Stats Summary row */}

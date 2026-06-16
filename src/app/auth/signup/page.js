@@ -13,8 +13,14 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
+  // Colleges list
+  const colleges = [
+    { id: "sscbs", name: "Shaheed Sukhdev College of Business Studies (SSCBS)" },
+    { id: "srcc", name: "Shri Ram College of Commerce (SRCC)" }
+  ];
+
   // Onboarding states
-  const [selectedCollege] = useState("Shaheed Sukhdev College of Business Studies (SSCBS)");
+  const [selectedCollegeId, setSelectedCollegeId] = useState("sscbs");
   const [selectedCourseId, setSelectedCourseId] = useState("");
   
   const [error, setError] = useState("");
@@ -51,6 +57,8 @@ export default function SignupPage() {
     }
     setIsLoading(true);
 
+    const collegeObj = colleges.find(c => c.id === selectedCollegeId);
+    const collegeName = collegeObj ? collegeObj.name : "Shaheed Sukhdev College of Business Studies (SSCBS)";
     const courseObj = courses.find(c => c.id === selectedCourseId);
 
     setTimeout(() => {
@@ -60,7 +68,8 @@ export default function SignupPage() {
         JSON.stringify({
           email,
           name,
-          college: selectedCollege,
+          college: collegeName,
+          collegeId: selectedCollegeId,
           courseId: selectedCourseId,
           courseName: courseObj ? courseObj.name : "Custom Course",
           completedQuestions: []
@@ -244,19 +253,38 @@ export default function SignupPage() {
         {/* Step 2 */}
         {step === 2 && (
           <div>
-            <div style={{
-              padding: "16px",
-              background: "#f9fafb",
-              border: "1px solid #e2e8f0",
-              borderRadius: "6px",
-              marginBottom: "20px"
-            }}>
-              <span style={{ fontSize: "0.65rem", color: "#64748b", fontWeight: "600", display: "block", marginBottom: "4px" }}>
-                COLLEGE
-              </span>
-              <div style={{ fontSize: "0.95rem", fontWeight: "600", color: "#0f172a" }}>
-                {selectedCollege}
-              </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
+              {colleges.map((college) => {
+                const isSelected = selectedCollegeId === college.id;
+                return (
+                  <div
+                    key={college.id}
+                    onClick={() => {
+                      setSelectedCollegeId(college.id);
+                      setSelectedCourseId(""); // Reset course if college changes
+                    }}
+                    style={{
+                      padding: "16px",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      background: isSelected ? "#fff7ed" : "#ffffff",
+                      border: isSelected ? "1px solid #f58340" : "1px solid #e2e8f0",
+                      color: isSelected ? "#ea580c" : "#475569",
+                      transition: "all 0.15s",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>
+                        {college.name}
+                      </div>
+                    </div>
+                    {isSelected && <Check size={14} style={{ color: "#ea580c" }} />}
+                  </div>
+                );
+              })}
             </div>
 
             <div style={{ display: "flex", gap: "10px" }}>
@@ -283,7 +311,7 @@ export default function SignupPage() {
         {step === 3 && (
           <div>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
-              {courses.map((course) => {
+              {courses.filter(c => c.collegeId === selectedCollegeId).map((course) => {
                 const isSelected = selectedCourseId === course.id;
                 return (
                   <div

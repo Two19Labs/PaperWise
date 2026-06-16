@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css");
+
 :root {
   /* AfterBoards Design Language - Clean Light Theme */
   --bg-primary: #ffffff;

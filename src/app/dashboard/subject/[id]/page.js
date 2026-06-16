@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { courses } from "@/data/courses";
 import { questions } from "@/data/questions";
+import Latex from "@/components/Latex";
 import { 
   ArrowLeft, 
   ChevronDown, 
@@ -170,7 +171,7 @@ export default function SubjectPage() {
               color: isCompleted ? "#94a3b8" : "#0f172a",
               textDecoration: isCompleted ? "line-through" : "none"
             }}>
-              {q.text}
+              <Latex text={q.text} />
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px" }}>
@@ -253,7 +254,7 @@ export default function SubjectPage() {
             <div style={{ fontWeight: "700", color: "#f58340", marginBottom: "6px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
               SOLUTION WORKTHROUGH
             </div>
-            <div style={{ whiteSpace: "pre-wrap" }}>{q.solution}</div>
+            <div style={{ whiteSpace: "pre-wrap" }}><Latex text={q.solution} /></div>
           </div>
         )}
       </div>
