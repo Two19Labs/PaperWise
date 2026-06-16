@@ -1,0 +1,366 @@
+:root {
+  /* Color Palette - Dark Mode Primary */
+  --bg-primary: #070913;
+  --bg-secondary: #0f1322;
+  --bg-tertiary: #171d33;
+  
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-hover-bg: rgba(255, 255, 255, 0.06);
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-border-hover: rgba(255, 255, 255, 0.12);
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --accent-blue: #3b82f6;
+  --accent-blue-glow: rgba(59, 130, 246, 0.15);
+  --accent-teal: #14b8a6;
+  --accent-teal-glow: rgba(20, 184, 166, 0.15);
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(59, 130, 246, 0.5);
+  
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s ease-out;
+  
+  --glass-blur: blur(12px);
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+/* Light mode overrides (Only if user toggles or requests) */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  
+  --card-bg: rgba(0, 0, 0, 0.02);
+  --card-hover-bg: rgba(0, 0, 0, 0.04);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --card-border-hover: rgba(0, 0, 0, 0.15);
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  
+  --accent-blue: #2563eb;
+  --accent-blue-glow: rgba(37, 99, 235, 0.1);
+  --accent-teal: #0d9488;
+  --accent-teal-glow: rgba(13, 148, 136, 0.1);
+  
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-focus: rgba(37, 99, 235, 0.5);
+  
+  --shadow-premium: 0 10px 25px -12px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-inter);
+  min-height: 100vh;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Utility Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); }
+  50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.3); }
+}
+
+@keyframes gradientBg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Premium Layout Elements */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+}
+
+.glass-panel:hover {
+  border-color: var(--card-border-hover);
+  background: var(--card-hover-bg);
+}
+
+.glass-panel-interactive {
+  cursor: pointer;
+}
+
+.glass-panel-interactive:active {
+  transform: scale(0.98);
+}
+
+/* Accent Gradients */
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-teal {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-teal) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-glow {
+  background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0c4a6e, #0f1322);
+  background-size: 400% 400%;
+  animation: gradientBg 15s ease infinite;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-inter);
+  font-weight: 500;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-secondary {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--card-border-hover);
+}
+
+.btn-teal {
+  background: var(--accent-teal);
+  color: #070913;
+}
+
+.btn-teal:hover {
+  background: #0d9488;
+  box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
+}
+
+.btn-icon {
+  padding: 8px;
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Badge/Chips */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.badge-blue {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.badge-teal {
+  background: rgba(20, 184, 166, 0.1);
+  border-color: rgba(20, 184, 166, 0.2);
+  color: #2dd4bf;
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.badge-rose {
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.2);
+  color: #fb7185;
+}
+
+/* Input Fields */
+.input-control {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 10px 14px;
+  font-family: var(--font-inter);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-fast);
+  width: 100%;
+}
+
+.input-control:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px var(--accent-blue-glow);
+}
+
+.input-control::placeholder {
+  color: var(--text-muted);
+}
+
+/* Select */
+.select-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+/* Checkbox custom */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.checkbox-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  height: 18px;
+  width: 18px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.checkbox-container:hover .checkmark {
+  border-color: var(--accent-blue);
+}
+
+.checkbox-input:checked ~ .checkmark {
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+
+.checkmark:after {
+  content: "";
+  display: none;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.checkbox-input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Structure grid/flex helpers */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
