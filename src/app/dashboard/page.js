@@ -11,6 +11,7 @@ export default function DashboardHome() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [completedList, setCompletedList] = useState([]);
+  const [oranges, setOranges] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("paperwise_user");
@@ -21,6 +22,7 @@ export default function DashboardHome() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
+    setOranges((parsed.completedQuestions || []).length * 10);
   }, [router]);
 
   if (!user) {
@@ -60,20 +62,21 @@ export default function DashboardHome() {
       {/* Welcome Banner */}
       <div style={{
         padding: "24px",
-        borderRadius: "4px",
-        background: "#121214",
-        border: "1px solid #27272a",
+        borderRadius: "8px",
+        background: "#ffffff",
+        border: "1px solid #e2e8f0",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: "16px"
+        gap: "16px",
+        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.02)"
       }}>
         <div>
-          <h1 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "4px" }}>
-            Welcome, {user.name || "Student"}
+          <h1 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "4px", color: "#0f172a" }}>
+            Welcome, {user.name || "Student"} 👋
           </h1>
-          <p style={{ color: "#a1a1aa", fontSize: "0.8rem", maxWidth: "600px" }}>
+          <p style={{ color: "#475569", fontSize: "0.8rem", maxWidth: "600px" }}>
             You are tracking the syllabus for **{user.courseName}** (Semester {user.semester}) at **SSCBS**.
           </p>
         </div>
@@ -93,10 +96,10 @@ export default function DashboardHome() {
           <div style={{
             width: "36px",
             height: "36px",
-            borderRadius: "4px",
-            background: "#09090b",
-            border: "1px solid #27272a",
-            color: "#a1a1aa",
+            borderRadius: "6px",
+            background: "#fff7ed",
+            border: "1px solid rgba(245, 131, 64, 0.2)",
+            color: "#f58340",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -104,8 +107,8 @@ export default function DashboardHome() {
             <BookOpen size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>TOTAL QUESTIONS</div>
-            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>TOTAL QUESTIONS</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px", color: "#0f172a" }}>
               {totalQuestions.length} PYQs
             </div>
           </div>
@@ -116,10 +119,10 @@ export default function DashboardHome() {
           <div style={{
             width: "36px",
             height: "36px",
-            borderRadius: "4px",
-            background: "#09090b",
-            border: "1px solid #27272a",
-            color: "#a1a1aa",
+            borderRadius: "6px",
+            background: "#fff7ed",
+            border: "1px solid rgba(245, 131, 64, 0.2)",
+            color: "#f58340",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -127,8 +130,8 @@ export default function DashboardHome() {
             <CheckCircle size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>COMPLETED</div>
-            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>COMPLETED</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px", color: "#0f172a" }}>
               {completedInSemester.length} / {totalQuestions.length}
             </div>
           </div>
@@ -139,10 +142,10 @@ export default function DashboardHome() {
           <div style={{
             width: "36px",
             height: "36px",
-            borderRadius: "4px",
-            background: "#09090b",
-            border: "1px solid #27272a",
-            color: "#a1a1aa",
+            borderRadius: "6px",
+            background: "#fff7ed",
+            border: "1px solid rgba(245, 131, 64, 0.2)",
+            color: "#f58340",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -150,8 +153,8 @@ export default function DashboardHome() {
             <Award size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>COVERAGE</div>
-            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>COVERAGE</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px", color: "#0f172a" }}>
               {completionRate}%
             </div>
           </div>
@@ -162,10 +165,10 @@ export default function DashboardHome() {
           <div style={{
             width: "36px",
             height: "36px",
-            borderRadius: "4px",
-            background: "#09090b",
-            border: "1px solid #27272a",
-            color: "#a1a1aa",
+            borderRadius: "6px",
+            background: "#fff7ed",
+            border: "1px solid rgba(245, 131, 64, 0.2)",
+            color: "#f58340",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -173,8 +176,8 @@ export default function DashboardHome() {
             <Calendar size={16} />
           </div>
           <div>
-            <div style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600" }}>DAYS REMAINING</div>
-            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "600" }}>DAYS REMAINING</div>
+            <div style={{ fontSize: "1.15rem", fontWeight: "700", marginTop: "2px", color: "#0f172a" }}>
               45 Days
             </div>
           </div>
@@ -188,9 +191,9 @@ export default function DashboardHome() {
         gap: "24px",
         alignItems: "start"
       }}>
-        {/* Left: Subjects */}
+        {/* Left Column: Subjects */}
         <div>
-          <h3 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#a1a1aa", letterSpacing: "0.05em", marginBottom: "12px" }}>
+          <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.03em", marginBottom: "12px" }}>
             SUBJECTS
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -210,26 +213,26 @@ export default function DashboardHome() {
                     <span className="badge" style={{ marginBottom: "4px" }}>
                       {subject.code}
                     </span>
-                    <h4 style={{ fontSize: "0.95rem", fontWeight: "600", color: "#ffffff" }}>{subject.name}</h4>
-                    <p style={{ color: "#71717a", fontSize: "0.75rem", marginTop: "2px" }}>
+                    <h4 style={{ fontSize: "0.95rem", fontWeight: "600", color: "#0f172a" }}>{subject.name}</h4>
+                    <p style={{ color: "#64748b", fontSize: "0.75rem", marginTop: "2px" }}>
                       Type: {subject.type}
                     </p>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "0.75rem", color: "#a1a1aa" }}>
+                    <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
                       {subject.completedCount} / {subject.totalCount} completed
                     </div>
-                    <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#ffffff", marginTop: "2px" }}>
+                    <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#f58340", marginTop: "2px" }}>
                       {subject.progress}%
                     </div>
                   </div>
                 </div>
 
-                {/* Progress bar */}
+                {/* Progress bar (Orange Accent) */}
                 <div style={{
                   height: "4px",
-                  background: "#09090b",
-                  border: "1px solid #27272a",
+                  background: "#f3f4f6",
+                  border: "1px solid #e2e8f0",
                   borderRadius: "2px",
                   overflow: "hidden",
                   width: "100%"
@@ -237,7 +240,7 @@ export default function DashboardHome() {
                   <div style={{
                     width: `${subject.progress}%`,
                     height: "100%",
-                    background: "#ffffff",
+                    background: "#f58340",
                     borderRadius: "2px",
                     transition: "width 0.3s"
                   }} />
@@ -248,15 +251,15 @@ export default function DashboardHome() {
                   justifyContent: "space-between",
                   alignItems: "center"
                 }}>
-                  <span style={{ fontSize: "0.7rem", color: "#71717a" }}>
+                  <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
                     Syllabus: UGCF 2022
                   </span>
                   <Link 
                     href={`/dashboard/subject/${subject.id}`} 
                     style={{
                       fontSize: "0.8rem",
-                      fontWeight: "600",
-                      color: "#ffffff",
+                      fontWeight: "650",
+                      color: "#f58340",
                       display: "flex",
                       alignItems: "center",
                       gap: "2px",
@@ -268,20 +271,38 @@ export default function DashboardHome() {
                 </div>
               </div>
             ))}
-            {subjectsWithStats.length === 0 && (
-              <div style={{ textAlign: "center", padding: "24px", color: "#71717a", fontSize: "0.8rem" }}>
-                No subjects assigned for this semester.
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Right: Activity & Tips */}
+        {/* Right Column: Activity & Rewards */}
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          {/* Orange Rewards Card */}
+          <div className="glass-panel" style={{
+            padding: "16px",
+            background: "#fff7ed",
+            border: "1px solid rgba(245, 131, 64, 0.25)"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+              <span style={{ fontSize: "1.25rem" }}>🍊</span>
+              <h3 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#ea580c" }}>
+                ORANGES EARNED
+              </h3>
+            </div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "8px" }}>
+              <span style={{ fontSize: "1.8rem", fontWeight: "800", color: "#ea580c" }}>
+                {oranges}
+              </span>
+              <span style={{ fontSize: "0.8rem", color: "#c2410c" }}>oranges collected</span>
+            </div>
+            <p style={{ fontSize: "0.75rem", color: "#c2410c", lineHeight: "1.4" }}>
+              Earn 10 oranges for every question checked off! Keep practicing to fill your reward basket.
+            </p>
+          </div>
+
           {/* Recent completions */}
           <div className="glass-panel" style={{ padding: "16px" }}>
-            <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#a1a1aa", letterSpacing: "0.05em", marginBottom: "12px" }}>
-              RECENT PROGRESS
+            <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.03em", marginBottom: "12px" }}>
+              RECENT COMPLETIONS
             </h3>
             
             {completedInSemester.length > 0 ? (
@@ -292,23 +313,23 @@ export default function DashboardHome() {
                     alignItems: "flex-start",
                     gap: "8px",
                     paddingBottom: "8px",
-                    borderBottom: "1px solid #27272a"
+                    borderBottom: "1px solid #e2e8f0"
                   }}>
                     <div style={{
                       marginTop: "3px",
                       width: "8px",
                       height: "8px",
                       borderRadius: "50%",
-                      background: "#ffffff",
+                      background: "#f58340",
                       flexShrink: 0
                     }} />
                     <div>
-                      <div style={{ fontSize: "0.8rem", fontWeight: "500", color: "#ffffff" }}>
+                      <div style={{ fontSize: "0.8rem", fontWeight: "600", color: "#0f172a" }}>
                         Solved Question
                       </div>
                       <p style={{
                         fontSize: "0.7rem",
-                        color: "#a1a1aa",
+                        color: "#475569",
                         marginTop: "1px",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
@@ -322,20 +343,10 @@ export default function DashboardHome() {
                 ))}
               </div>
             ) : (
-              <div style={{ padding: "16px 0", textAlign: "center", color: "#71717a", fontSize: "0.75rem" }}>
-                No completions yet. Open a subject to begin.
+              <div style={{ padding: "16px 0", textAlign: "center", color: "#64748b", fontSize: "0.75rem" }}>
+                No questions completed yet.
               </div>
             )}
-          </div>
-
-          {/* Minimal Tip card */}
-          <div className="glass-panel" style={{ padding: "16px", background: "#121214" }}>
-            <h3 style={{ fontSize: "0.8rem", fontWeight: "700", color: "#ffffff", marginBottom: "8px" }}>
-              Study Advice
-            </h3>
-            <p style={{ fontSize: "0.75rem", color: "#a1a1aa", lineHeight: "1.4" }}>
-              Focus on **Depreciation Ledger entries (WDV)** and **AVL Trees**. Historically, similar analytical questions have frequently appeared in SSCBS examinations.
-            </p>
           </div>
         </div>
       </div>

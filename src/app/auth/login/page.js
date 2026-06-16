@@ -45,16 +45,17 @@ export default function LoginPage() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "#09090b",
+      background: "#f9fafb",
       padding: "20px",
     }}>
       <div style={{
         width: "100%",
         maxWidth: "400px",
-        padding: "32px 24px",
-        borderRadius: "6px",
-        background: "#121214",
-        border: "1px solid #27272a",
+        padding: "36px 28px",
+        borderRadius: "8px",
+        background: "#ffffff",
+        border: "1px solid #e2e8f0",
+        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
       }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
@@ -64,21 +65,21 @@ export default function LoginPage() {
             justifyContent: "center",
             width: "40px",
             height: "40px",
-            borderRadius: "4px",
-            background: "#1a1a1e",
-            border: "1px solid #27272a",
-            color: "#ffffff",
+            borderRadius: "6px",
+            background: "#fff7ed",
+            border: "1px solid rgba(245, 131, 64, 0.2)",
+            color: "#f58340",
             marginBottom: "12px",
           }}>
             <BookOpen size={20} />
           </div>
           <h1 style={{
-            fontSize: "1.35rem",
+            fontSize: "1.3rem",
             fontWeight: "700",
             marginBottom: "6px",
-            color: "#ffffff"
+            color: "#0f172a"
           }}>Welcome Back</h1>
-          <p style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>
+          <p style={{ color: "#475569", fontSize: "0.8rem" }}>
             Sign in to track your SSCBS syllabus PYQs
           </p>
         </div>
@@ -86,10 +87,10 @@ export default function LoginPage() {
         {error && (
           <div style={{
             padding: "10px",
-            borderRadius: "4px",
-            background: "rgba(239, 68, 68, 0.1)",
-            border: "1px solid rgba(239, 68, 68, 0.2)",
-            color: "#f87171",
+            borderRadius: "6px",
+            background: "rgba(239, 68, 68, 0.05)",
+            border: "1px solid rgba(239, 68, 68, 0.1)",
+            color: "#ef4444",
             fontSize: "0.8rem",
             marginBottom: "16px",
             textAlign: "center"
@@ -105,7 +106,7 @@ export default function LoginPage() {
               display: "block",
               fontSize: "0.75rem",
               fontWeight: "600",
-              color: "#a1a1aa",
+              color: "#475569",
               marginBottom: "6px"
             }}>
               EMAIL ADDRESS
@@ -116,7 +117,7 @@ export default function LoginPage() {
                 left: "10px",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#52525b",
+                color: "#94a3b8",
                 display: "flex",
                 alignItems: "center"
               }}>
@@ -131,10 +132,10 @@ export default function LoginPage() {
                 style={{
                   width: "100%",
                   padding: "8px 12px 8px 34px",
-                  borderRadius: "4px",
-                  background: "#09090b",
-                  border: "1px solid #27272a",
-                  color: "#ffffff",
+                  borderRadius: "6px",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  color: "#0f172a",
                   fontSize: "0.9rem",
                   outline: "none",
                 }}
@@ -154,13 +155,13 @@ export default function LoginPage() {
               <label style={{
                 fontSize: "0.75rem",
                 fontWeight: "600",
-                color: "#a1a1aa",
+                color: "#475569",
               }}>
                 PASSWORD
               </label>
               <a href="#" style={{
                 fontSize: "0.75rem",
-                color: "#a1a1aa",
+                color: "#f58340",
                 textDecoration: "underline"
               }}>
                 Forgot?
@@ -172,7 +173,7 @@ export default function LoginPage() {
                 left: "10px",
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#52525b",
+                color: "#94a3b8",
                 display: "flex",
                 alignItems: "center"
               }}>
@@ -187,10 +188,10 @@ export default function LoginPage() {
                 style={{
                   width: "100%",
                   padding: "8px 12px 8px 34px",
-                  borderRadius: "4px",
-                  background: "#09090b",
-                  border: "1px solid #27272a",
-                  color: "#ffffff",
+                  borderRadius: "6px",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  color: "#0f172a",
                   fontSize: "0.9rem",
                   outline: "none",
                 }}
@@ -217,11 +218,11 @@ export default function LoginPage() {
           marginTop: "20px",
           textAlign: "center",
           fontSize: "0.8rem",
-          color: "#a1a1aa"
+          color: "#475569"
         }}>
           Don&apos;t have an account?{" "}
           <Link href="/auth/signup" style={{
-            color: "#ffffff",
+            color: "#f58340",
             fontWeight: "600",
             textDecoration: "underline"
           }}>

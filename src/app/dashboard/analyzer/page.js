@@ -10,12 +10,16 @@ import {
   Filter, 
   Search, 
   RefreshCw, 
+  Star,
+  HelpCircle
 } from "lucide-react";
 
 export default function AnalyzerPage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [completedList, setCompletedList] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [doubts, setDoubts] = useState([]);
 
   // Filter States
   const [selectedSubjectId, setSelectedSubjectId] = useState("all");
@@ -24,9 +28,10 @@ export default function AnalyzerPage() {
   const [selectedDifficulties, setSelectedDifficulties] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("all"); // "all" | "completed" | "uncompleted"
+  const [filterBookmarkedOnly, setFilterBookmarkedOnly] = useState(false);
+  const [filterDoubtOnly, setFilterDoubtOnly] = useState(false);
+  
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Expander State
   const [expandedQuestions, setExpandedQuestions] = useState({});
 
   useEffect(() => {
@@ -38,6 +43,8 @@ export default function AnalyzerPage() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
+    setBookmarks(parsed.bookmarkedQuestions || []);
+    setDoubts(parsed.doubtQuestions || []);
   }, [router]);
 
   if (!user) {
@@ -49,7 +56,7 @@ export default function AnalyzerPage() {
   const activeSubjects = userCourse.semesters[user.semester] || [];
   const activeSubjectIds = activeSubjects.map(s => s.id);
 
-  // Set default subject if not initialized
+  // Set default subject
   if (selectedSubjectId === "all" && activeSubjects.length > 0) {
     setSelectedSubjectId(activeSubjects[0].id);
   }
@@ -76,10 +83,18 @@ export default function AnalyzerPage() {
     if (selectedDifficulties.length > 0 && !selectedDifficulties.includes(q.difficulty)) return false;
     if (selectedTypes.length > 0 && !selectedTypes.includes(q.type)) return false;
 
+    // Status filter
     const isCompleted = completedList.includes(q.id);
     if (selectedStatus === "completed" && !isCompleted) return false;
     if (selectedStatus === "uncompleted" && isCompleted) return false;
 
+    // Bookmarked filter
+    if (filterBookmarkedOnly && !bookmarks.includes(q.id)) return false;
+
+    // Doubt filter
+    if (filterDoubtOnly && !doubts.includes(q.id)) return false;
+
+    // Search query filter
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       const textMatches = q.text.toLowerCase().includes(query);
@@ -90,19 +105,35 @@ export default function AnalyzerPage() {
     return true;
   });
 
-  // Toggle completion
-  const handleToggleCompletion = (qId) => {
-    let updated;
-    if (completedList.includes(qId)) {
-      updated = completedList.filter(id => id !== qId);
-    } else {
-      updated = [...completedList, qId];
-    }
-    setCompletedList(updated);
-
-    const updatedUser = { ...user, completedQuestions: updated };
+  // Toggle handlers with persistence
+  const updateLocalStorage = (key, val) => {
+    const updatedUser = { ...user, [key]: val };
     setUser(updatedUser);
     localStorage.setItem("paperwise_user", JSON.stringify(updatedUser));
+  };
+
+  const handleToggleCompletion = (qId) => {
+    const updated = completedList.includes(qId)
+      ? completedList.filter(id => id !== qId)
+      : [...completedList, qId];
+    setCompletedList(updated);
+    updateLocalStorage("completedQuestions", updated);
+  };
+
+  const handleToggleBookmark = (qId) => {
+    const updated = bookmarks.includes(qId)
+      ? bookmarks.filter(id => id !== qId)
+      : [...bookmarks, qId];
+    setBookmarks(updated);
+    updateLocalStorage("bookmarkedQuestions", updated);
+  };
+
+  const handleToggleDoubt = (qId) => {
+    const updated = doubts.includes(qId)
+      ? doubts.filter(id => id !== qId)
+      : [...doubts, qId];
+    setDoubts(updated);
+    updateLocalStorage("doubtQuestions", updated);
   };
 
   const handleToggleExpand = (qId) => {
@@ -115,6 +146,8 @@ export default function AnalyzerPage() {
     setSelectedDifficulties([]);
     setSelectedTypes([]);
     setSelectedStatus("all");
+    setFilterBookmarkedOnly(false);
+    setFilterDoubtOnly(false);
     setSearchQuery("");
   };
 
@@ -144,9 +177,9 @@ export default function AnalyzerPage() {
       alignItems: "start"
     }}>
       {/* COLUMN 1: FILTERS */}
-      <aside className="glass-panel" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div style={{ display: "flex", justifyItems: "center", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ fontSize: "0.8rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px" }}>
+      <aside className="glass-panel" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px", background: "#ffffff" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 style={{ fontSize: "0.8rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px", color: "#0f172a" }}>
             <Filter size={14} /> FILTERS
           </h3>
           <button 
@@ -154,7 +187,7 @@ export default function AnalyzerPage() {
             style={{
               background: "transparent",
               border: "none",
-              color: "#a1a1aa",
+              color: "#f58340",
               fontSize: "0.7rem",
               fontWeight: "600",
               cursor: "pointer",
@@ -181,7 +214,7 @@ export default function AnalyzerPage() {
             style={{ padding: "6px 10px", fontSize: "0.8rem" }}
           >
             {activeSubjects.map((sub) => (
-              <option key={sub.id} value={sub.id} style={{ background: "#09090b" }}>
+              <option key={sub.id} value={sub.id} style={{ background: "#ffffff" }}>
                 {sub.name}
               </option>
             ))}
@@ -198,9 +231,9 @@ export default function AnalyzerPage() {
             flexDirection: "column",
             gap: "6px",
             padding: "4px",
-            border: "1px solid #27272a",
-            borderRadius: "4px",
-            background: "#09090b"
+            border: "1px solid #e2e8f0",
+            borderRadius: "6px",
+            background: "#f9fafb"
           }}>
             {distinctTopics.map((topic) => (
               <label key={topic} className="checkbox-container" style={{ fontSize: "0.75rem" }}>
@@ -214,11 +247,6 @@ export default function AnalyzerPage() {
                 <span>{topic}</span>
               </label>
             ))}
-            {distinctTopics.length === 0 && (
-              <div style={{ padding: "6px", color: "#52525b", fontSize: "0.7rem" }}>
-                Select a subject first
-              </div>
-            )}
           </div>
         </div>
 
@@ -235,9 +263,9 @@ export default function AnalyzerPage() {
                   style={{
                     padding: "3px 8px",
                     borderRadius: "4px",
-                    border: isSelected ? "1px solid #ffffff" : "1px solid #27272a",
-                    background: isSelected ? "#ffffff" : "transparent",
-                    color: isSelected ? "#09090b" : "#a1a1aa",
+                    border: isSelected ? "1px solid #f58340" : "1px solid #e2e8f0",
+                    background: isSelected ? "#fff7ed" : "transparent",
+                    color: isSelected ? "#ea580c" : "#475569",
                     fontSize: "0.7rem",
                     fontWeight: "600",
                     cursor: "pointer",
@@ -247,6 +275,37 @@ export default function AnalyzerPage() {
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        {/* Custom Lists (Bookmarks / Doubts) */}
+        <div className="form-group">
+          <label className="form-label">PERSONAL LISTS</label>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <label className="checkbox-container" style={{ fontSize: "0.75rem" }}>
+              <input 
+                type="checkbox"
+                className="checkbox-input"
+                checked={filterBookmarkedOnly}
+                onChange={(e) => setFilterBookmarkedOnly(e.target.checked)}
+              />
+              <span className="checkmark" />
+              <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <Star size={12} fill={filterBookmarkedOnly ? "#f58340" : "none"} style={{ color: "#f58340" }} /> Bookmarked
+              </span>
+            </label>
+            <label className="checkbox-container" style={{ fontSize: "0.75rem" }}>
+              <input 
+                type="checkbox"
+                className="checkbox-input"
+                checked={filterDoubtOnly}
+                onChange={(e) => setFilterDoubtOnly(e.target.checked)}
+              />
+              <span className="checkmark" />
+              <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <HelpCircle size={12} style={{ color: "#ef4444" }} /> Doubt Basket
+              </span>
+            </label>
           </div>
         </div>
 
@@ -269,41 +328,22 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Type */}
-        <div className="form-group">
-          <label className="form-label">QUESTION TYPE</label>
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {["MCQ", "Short", "Long", "Numerical"].map((type) => (
-              <label key={type} className="checkbox-container" style={{ fontSize: "0.75rem" }}>
-                <input 
-                  type="checkbox"
-                  className="checkbox-input"
-                  checked={selectedTypes.includes(type)}
-                  onChange={() => handleToggleFilter(type, selectedTypes, setSelectedTypes)}
-                />
-                <span className="checkmark" />
-                <span>{type}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
         {/* Status */}
         <div className="form-group">
-          <label className="form-label">STATUS</label>
+          <label className="form-label">COMPLETION</label>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { id: "all", label: "All Questions" },
-              { id: "completed", label: "Attempted" },
-              { id: "uncompleted", label: "Unattempted" }
+              { id: "completed", label: "Attempted Only" },
+              { id: "uncompleted", label: "Unattempted Only" }
             ].map((opt) => (
-              <label key={opt.id} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#a1a1aa", cursor: "pointer" }}>
+              <label key={opt.id} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#475569", cursor: "pointer" }}>
                 <input 
                   type="radio"
                   name="statusFilter"
                   checked={selectedStatus === opt.id}
                   onChange={() => setSelectedStatus(opt.id)}
-                  style={{ accentColor: "#ffffff" }}
+                  style={{ accentColor: "#f58340" }}
                 />
                 <span>{opt.label}</span>
               </label>
@@ -315,39 +355,41 @@ export default function AnalyzerPage() {
       {/* COLUMN 2: DECK */}
       <section style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         
-        {/* Search */}
-        <div className="glass-panel" style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyItems: "center", gap: "12px" }}>
+        {/* Search & Counter */}
+        <div className="glass-panel" style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyItems: "center", gap: "12px", background: "#ffffff" }}>
           <div style={{ position: "relative", flex: 1 }}>
-            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#52525b", display: "flex", alignItems: "center" }}>
+            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8", display: "flex", alignItems: "center" }}>
               <Search size={14} />
             </span>
             <input 
               type="text"
-              placeholder="Search terms, topics, subtopics..."
+              placeholder="Search keywords, topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
                 width: "100%",
                 padding: "6px 12px 6px 30px",
-                borderRadius: "4px",
-                background: "#09090b",
-                border: "1px solid #27272a",
-                color: "#ffffff",
+                borderRadius: "6px",
+                background: "#ffffff",
+                border: "1px solid #e2e8f0",
+                color: "#0f172a",
                 fontSize: "0.8rem",
                 outline: "none",
               }}
             />
           </div>
-          <div style={{ fontSize: "0.75rem", color: "#a1a1aa", whiteSpace: "nowrap" }}>
-            Found: **{filteredQuestions.length}**
+          <div style={{ fontSize: "0.75rem", color: "#475569", whiteSpace: "nowrap" }}>
+            Filtered: **{filteredQuestions.length}**
           </div>
         </div>
 
-        {/* List */}
+        {/* Question Deck */}
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {filteredQuestions.length > 0 ? (
             filteredQuestions.map((q) => {
               const isCompleted = completedList.includes(q.id);
+              const isBookmarked = bookmarks.includes(q.id);
+              const isDoubt = doubts.includes(q.id);
               const isExpanded = !!expandedQuestions[q.id];
 
               return (
@@ -356,7 +398,8 @@ export default function AnalyzerPage() {
                   className="glass-panel"
                   style={{
                     padding: "16px",
-                    borderLeft: isCompleted ? "2px solid #ffffff" : "1px solid #27272a",
+                    borderLeft: isCompleted ? "3px solid #f58340" : "1px solid #e2e8f0",
+                    background: "#ffffff",
                     display: "flex",
                     flexDirection: "column",
                     gap: "8px"
@@ -377,51 +420,77 @@ export default function AnalyzerPage() {
                       <p style={{
                         fontSize: "0.85rem",
                         lineHeight: "1.4",
-                        color: isCompleted ? "#71717a" : "#ffffff",
+                        color: isCompleted ? "#94a3b8" : "#0f172a",
                         textDecoration: isCompleted ? "line-through" : "none"
                       }}>
                         {q.text}
                       </p>
 
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "6px" }}>
-                        <span className="badge">{q.year}</span>
+                        <span className="badge badge-orange">{q.year}</span>
                         <span className="badge">{q.topic}</span>
                         <span className="badge">{q.marks}M</span>
                         <span className="badge">{q.difficulty}</span>
                       </div>
                     </div>
 
-                    <button 
-                      onClick={() => handleToggleExpand(q.id)}
-                      style={{
-                        background: "#121214",
-                        border: "1px solid #27272a",
-                        borderRadius: "4px",
-                        padding: "3px 6px",
-                        color: "#a1a1aa",
-                        fontSize: "0.7rem",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "2px"
-                      }}
-                    >
-                      {isExpanded ? "Hide" : "Solution"}
-                    </button>
+                    {/* Bookmarks, Doubt basket, expand solution */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <button
+                        onClick={() => handleToggleBookmark(q.id)}
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          color: isBookmarked ? "#f58340" : "#94a3b8",
+                          display: "flex"
+                        }}
+                      >
+                        <Star size={14} fill={isBookmarked ? "#f58340" : "none"} />
+                      </button>
+
+                      <button
+                        onClick={() => handleToggleDoubt(q.id)}
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          color: isDoubt ? "#ef4444" : "#94a3b8",
+                          display: "flex"
+                        }}
+                      >
+                        <HelpCircle size={14} fill={isDoubt ? "rgba(239, 68, 68, 0.05)" : "none"} />
+                      </button>
+
+                      <button 
+                        onClick={() => handleToggleExpand(q.id)}
+                        style={{
+                          background: "#ffffff",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "4px",
+                          padding: "3px 6px",
+                          color: "#475569",
+                          fontSize: "0.7rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {isExpanded ? "Hide" : "Solution"}
+                      </button>
+                    </div>
                   </div>
 
                   {isExpanded && (
                     <div style={{
                       padding: "12px",
-                      background: "#09090b",
-                      border: "1px solid #27272a",
-                      borderRadius: "4px",
+                      background: "#f9fafb",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "6px",
                       fontSize: "0.8rem",
                       lineHeight: "1.4",
-                      color: "#cbd5e1",
+                      color: "#334155",
                       marginTop: "4px"
                     }}>
-                      <div style={{ fontWeight: "700", color: "#a1a1aa", marginBottom: "4px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
+                      <div style={{ fontWeight: "700", color: "#f58340", marginBottom: "4px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
                         SOLUTION WORKTHROUGH
                       </div>
                       <div style={{ whiteSpace: "pre-wrap" }}>{q.solution}</div>
@@ -431,8 +500,8 @@ export default function AnalyzerPage() {
               );
             })
           ) : (
-            <div className="glass-panel" style={{ padding: "32px", textAlign: "center", color: "#71717a", fontSize: "0.8rem" }}>
-              No matching questions.
+            <div className="glass-panel" style={{ padding: "32px", textAlign: "center", color: "#64748b", fontSize: "0.8rem", background: "#ffffff" }}>
+              No matching questions found.
             </div>
           )}
         </div>
@@ -441,33 +510,33 @@ export default function AnalyzerPage() {
       {/* COLUMN 3: ANALYTICS */}
       <aside style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         
-        {/* Simple Progress Box */}
-        <div className="glass-panel" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <span style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600", letterSpacing: "0.05em" }}>
+        {/* Progress Box */}
+        <div className="glass-panel" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px", background: "#ffffff" }}>
+          <span style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "700", letterSpacing: "0.05em" }}>
             COMPLETION RATE
           </span>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-            <span style={{ fontSize: "1.5rem", fontWeight: "700", color: "#ffffff" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "4px" }}>
+            <span style={{ fontSize: "1.5rem", fontWeight: "800", color: "#f58340" }}>
               {progressPercent}%
             </span>
-            <span style={{ fontSize: "0.75rem", color: "#71717a" }}>
+            <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
               ({completedInFilter} / {totalInFilter} solved)
             </span>
           </div>
           <div style={{
             height: "4px",
-            background: "#09090b",
-            border: "1px solid #27272a",
+            background: "#f3f4f6",
+            border: "1px solid #e2e8f0",
             borderRadius: "2px",
             overflow: "hidden"
           }}>
-            <div style={{ width: `${progressPercent}%`, height: "100%", background: "#ffffff" }} />
+            <div style={{ width: `${progressPercent}%`, height: "100%", background: "#f58340" }} />
           </div>
         </div>
 
-        {/* Difficulty Breakdown (Clean linear blocks) */}
-        <div className="glass-panel" style={{ padding: "16px" }}>
-          <h3 style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600", marginBottom: "12px", letterSpacing: "0.05em" }}>
+        {/* Difficulty */}
+        <div className="glass-panel" style={{ padding: "16px", background: "#ffffff" }}>
+          <h3 style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "700", marginBottom: "12px", letterSpacing: "0.05em" }}>
             DIFFICULTY SPREAD
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -477,11 +546,11 @@ export default function AnalyzerPage() {
               return (
                 <div key={lvl}>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", marginBottom: "2px" }}>
-                    <span style={{ color: "#ffffff" }}>{lvl}</span>
-                    <span style={{ color: "#71717a" }}>{count} ({pct}%)</span>
+                    <span style={{ color: "#0f172a", fontWeight: "500" }}>{lvl}</span>
+                    <span style={{ color: "#64748b" }}>{count} ({pct}%)</span>
                   </div>
-                  <div style={{ height: "3px", background: "#09090b", borderRadius: "1px", overflow: "hidden" }}>
-                    <div style={{ width: `${pct}%`, height: "100%", background: "#ffffff" }} />
+                  <div style={{ height: "4px", background: "#f3f4f6", border: "1px solid #e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: "#f58340" }} />
                   </div>
                 </div>
               );
@@ -489,9 +558,9 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Repeated Hot Topics (Clean simple list) */}
-        <div className="glass-panel" style={{ padding: "16px" }}>
-          <h3 style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600", marginBottom: "12px", letterSpacing: "0.05em" }}>
+        {/* Topic Repetitions */}
+        <div className="glass-panel" style={{ padding: "16px", background: "#ffffff" }}>
+          <h3 style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "700", marginBottom: "12px", letterSpacing: "0.05em" }}>
             TOPIC REPETITIONS
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -501,22 +570,17 @@ export default function AnalyzerPage() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "6px 10px",
-                background: "#09090b",
-                border: "1px solid #27272a",
+                background: "#f9fafb",
+                border: "1px solid #e2e8f0",
                 borderRadius: "4px",
                 fontSize: "0.75rem"
               }}>
-                <span style={{ fontWeight: "500", color: "#ffffff" }}>{item.topic}</span>
-                <span style={{ color: "#a1a1aa", fontWeight: "600" }}>
+                <span style={{ fontWeight: "500", color: "#0f172a" }}>{item.topic}</span>
+                <span className="badge badge-orange" style={{ fontSize: "0.70rem" }}>
                   {item.count}
                 </span>
               </div>
             ))}
-            {sortedTopicFrequency.length === 0 && (
-              <div style={{ fontSize: "0.75rem", color: "#71717a", textAlign: "center" }}>
-                No active data.
-              </div>
-            )}
           </div>
         </div>
       </aside>

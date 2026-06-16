@@ -19,15 +19,19 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [user, setUser] = useState(null);
+  const [oranges, setOranges] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("paperwise_user");
     if (!storedUser) {
       router.push("/auth/login");
     } else {
-      setUser(JSON.parse(storedUser));
+      const parsed = JSON.parse(storedUser);
+      setUser(parsed);
+      // Award 10 oranges per completed question
+      setOranges((parsed.completedQuestions || []).length * 10);
     }
-  }, [router]);
+  }, [router, pathname]); // Re-calculate oranges when pathname changes (user toggles questions)
 
   const handleLogout = () => {
     localStorage.removeItem("paperwise_user");
@@ -41,8 +45,8 @@ export default function DashboardLayout({ children }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#09090b",
-        color: "#71717a",
+        background: "#f9fafb",
+        color: "#64748b",
         fontSize: "0.85rem",
         fontFamily: "var(--font-inter)"
       }}>
@@ -60,15 +64,15 @@ export default function DashboardLayout({ children }) {
     <div style={{
       display: "flex",
       minHeight: "100vh",
-      background: "#09090b",
+      background: "#f9fafb",
       fontFamily: "var(--font-inter)",
-      color: "#ffffff"
+      color: "#0f172a"
     }}>
       {/* Sidebar */}
       <aside style={{
         width: isSidebarCollapsed ? "68px" : "240px",
-        background: "#121214",
-        borderRight: "1px solid #27272a",
+        background: "#ffffff",
+        borderRight: "1px solid #e2e8f0",
         display: "flex",
         flexDirection: "column",
         transition: "width 0.2s ease-in-out",
@@ -82,7 +86,7 @@ export default function DashboardLayout({ children }) {
           alignItems: "center",
           justifyContent: isSidebarCollapsed ? "center" : "space-between",
           padding: "0 20px",
-          borderBottom: "1px solid #27272a"
+          borderBottom: "1px solid #e2e8f0"
         }}>
           {!isSidebarCollapsed && (
             <Link href="/dashboard" style={{
@@ -90,16 +94,16 @@ export default function DashboardLayout({ children }) {
               alignItems: "center",
               gap: "8px",
               textDecoration: "none",
-              color: "#ffffff"
+              color: "#0f172a"
             }}>
-              <BookOpen size={18} style={{ color: "#ffffff" }} />
-              <span style={{ fontSize: "1rem", fontWeight: "750", letterSpacing: "-0.01em" }}>
-                Paper<span style={{ color: "#a1a1aa" }}>Wise</span>
+              <BookOpen size={18} style={{ color: "#f58340" }} />
+              <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
+                Paper<span style={{ color: "#f58340" }}>Wise</span>
               </span>
             </Link>
           )}
           {isSidebarCollapsed && (
-            <BookOpen size={18} style={{ color: "#ffffff" }} />
+            <BookOpen size={18} style={{ color: "#f58340" }} />
           )}
 
           <button
@@ -111,38 +115,39 @@ export default function DashboardLayout({ children }) {
               width: "20px",
               height: "20px",
               borderRadius: "4px",
-              background: "#27272a",
-              color: "#ffffff",
-              border: "1px solid #3f3f46",
+              background: "#ffffff",
+              color: "#64748b",
+              border: "1px solid #e2e8f0",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
             }}
           >
             {isSidebarCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
           </button>
         </div>
 
-        {/* Profile indicator */}
+        {/* Profile Card */}
         {!isSidebarCollapsed && (
           <div style={{
             padding: "12px 14px",
             margin: "12px 12px 0",
-            background: "#09090b",
-            border: "1px solid #27272a",
-            borderRadius: "4px",
+            background: "#f9fafb",
+            border: "1px solid #e2e8f0",
+            borderRadius: "6px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
-              <GraduationCap size={14} style={{ color: "#a1a1aa" }} />
-              <span style={{ fontSize: "0.65rem", fontWeight: "700", color: "#a1a1aa", letterSpacing: "0.05em" }}>
+              <GraduationCap size={14} style={{ color: "#f58340" }} />
+              <span style={{ fontSize: "0.65rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.05em" }}>
                 ACTIVE PROFILE
               </span>
             </div>
-            <div style={{ fontSize: "0.75rem", fontWeight: "600", color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: "0.75rem", fontWeight: "750", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {user.courseName.includes("[") ? user.courseName.split("[")[1].replace("]", "") : user.courseName}
             </div>
-            <div style={{ fontSize: "0.65rem", color: "#71717a", marginTop: "2px" }}>
+            <div style={{ fontSize: "0.65rem", color: "#64748b", marginTop: "2px" }}>
               Semester {user.semester} • SSCBS
             </div>
           </div>
@@ -162,12 +167,12 @@ export default function DashboardLayout({ children }) {
                   alignItems: "center",
                   gap: "10px",
                   padding: "10px 12px",
-                  borderRadius: "4px",
-                  color: isActive ? "#ffffff" : "#a1a1aa",
-                  background: isActive ? "#1a1a1e" : "transparent",
-                  border: isActive ? "1px solid #27272a" : "1px solid transparent",
+                  borderRadius: "6px",
+                  color: isActive ? "#ea580c" : "#475569",
+                  background: isActive ? "#fff7ed" : "transparent",
+                  border: isActive ? "1px solid rgba(245, 131, 64, 0.15)" : "1px solid transparent",
                   textDecoration: "none",
-                  fontWeight: isActive ? "600" : "500",
+                  fontWeight: isActive ? "650" : "500",
                   fontSize: "0.85rem",
                   transition: "all 0.1s ease",
                   justifyContent: isSidebarCollapsed ? "center" : "flex-start"
@@ -183,7 +188,7 @@ export default function DashboardLayout({ children }) {
         {/* Footer */}
         <div style={{
           padding: "16px 12px",
-          borderTop: "1px solid #27272a",
+          borderTop: "1px solid #e2e8f0",
           display: "flex",
           flexDirection: "column",
           gap: "8px"
@@ -194,20 +199,20 @@ export default function DashboardLayout({ children }) {
                 width: "28px",
                 height: "28px",
                 borderRadius: "4px",
-                background: "#09090b",
-                border: "1px solid #27272a",
+                background: "#f3f4f6",
+                border: "1px solid #e2e8f0",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#a1a1aa"
+                color: "#475569"
               }}>
                 <User size={14} />
               </div>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: "0.8rem", fontWeight: "600", color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontSize: "0.8rem", fontWeight: "600", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {user.name}
                 </div>
-                <div style={{ fontSize: "0.65rem", color: "#71717a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontSize: "0.65rem", color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {user.email}
                 </div>
               </div>
@@ -223,10 +228,10 @@ export default function DashboardLayout({ children }) {
               justifyContent: isSidebarCollapsed ? "center" : "flex-start",
               gap: "10px",
               padding: "8px 12px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               background: "rgba(239, 68, 68, 0.05)",
               border: "1px solid rgba(239, 68, 68, 0.1)",
-              color: "#f87171",
+              color: "#ef4444",
               cursor: "pointer",
               fontSize: "0.8rem",
               fontWeight: "500",
@@ -251,8 +256,8 @@ export default function DashboardLayout({ children }) {
         {/* Header */}
         <header style={{
           height: "64px",
-          background: "#121214",
-          borderBottom: "1px solid #27272a",
+          background: "#ffffff",
+          borderBottom: "1px solid #e2e8f0",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -260,7 +265,7 @@ export default function DashboardLayout({ children }) {
           flexShrink: 0
         }}>
           <div>
-            <h2 style={{ fontSize: "0.95rem", fontWeight: "600", color: "#ffffff" }}>
+            <h2 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#475569", letterSpacing: "0.03em" }}>
               {pathname === "/dashboard" && "OVERVIEW"}
               {pathname === "/dashboard/analyzer" && "ANALYZER"}
               {pathname.includes("/dashboard/subject/") && "SUBJECT REVIEW"}
@@ -268,6 +273,21 @@ export default function DashboardLayout({ children }) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {/* Gamification widget */}
+            <span style={{
+              fontSize: "0.75rem",
+              fontWeight: "700",
+              color: "#ea580c",
+              background: "#fff7ed",
+              border: "1px solid rgba(245, 131, 64, 0.25)",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px"
+            }}>
+              🍊 {oranges} Oranges
+            </span>
             <span className="badge">
               Semester {user.semester}
             </span>

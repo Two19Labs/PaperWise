@@ -7,8 +7,8 @@ export default function LandingPage() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "#09090b",
-      color: "#ffffff",
+      background: "#f9fafb",
+      color: "#0f172a",
       fontFamily: "var(--font-inter)",
       display: "flex",
       flexDirection: "column",
@@ -16,22 +16,23 @@ export default function LandingPage() {
       {/* Header */}
       <header style={{
         height: "64px",
-        borderBottom: "1px solid #27272a",
+        background: "#ffffff",
+        borderBottom: "1px solid #e2e8f0",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         padding: "0 24px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <BookOpen size={20} style={{ color: "#ffffff" }} />
+          <BookOpen size={20} style={{ color: "#f58340" }} />
           <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
-            Paper<span style={{ color: "#a1a1aa" }}>Wise</span>
+            Paper<span style={{ color: "#f58340" }}>Wise</span>
           </span>
         </div>
 
         <nav style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <Link href="/auth/login" style={{
-            color: "#a1a1aa",
+            color: "#475569",
             fontSize: "0.85rem",
             fontWeight: "500",
             textDecoration: "none",
@@ -56,13 +57,13 @@ export default function LandingPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
-            background: "#121214",
-            border: "1px solid #27272a",
-            color: "#a1a1aa",
+            background: "#fff7ed",
+            border: "1px solid rgba(245, 131, 64, 0.25)",
+            color: "#ea580c",
             padding: "4px 10px",
             borderRadius: "4px",
             fontSize: "0.75rem",
-            fontWeight: "600",
+            fontWeight: "700",
             marginBottom: "20px"
           }}>
             <Sparkles size={12} /> Designed for SSCBS Students
@@ -74,20 +75,20 @@ export default function LandingPage() {
             lineHeight: "1.2",
             letterSpacing: "-0.02em",
             marginBottom: "16px",
-            color: "#ffffff"
+            color: "#0f172a"
           }}>
-            Ace Your Semester Exams with Smart PYQ Analysis
+            Ace Your SSCBS Semester Exams with Smart PYQ Analysis
           </h1>
 
           <p style={{
             fontSize: "0.95rem",
-            color: "#a1a1aa",
+            color: "#475569",
             lineHeight: "1.55",
             marginBottom: "32px",
             maxWidth: "540px",
             margin: "0 auto 32px"
           }}>
-            Stop digging through messy PDF dumps. Filter past papers by topic, check off what you have revised, and access structured solution guides instantly.
+            Stop digging through messy PDF dumps. Filter past papers by topic, check off solved questions, earn reward oranges, and access detailed step-by-step guides.
           </p>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
@@ -102,11 +103,12 @@ export default function LandingPage() {
 
         {/* Stats */}
         <section style={{
-          borderTop: "1px solid #27272a",
-          borderBottom: "1px solid #27272a",
-          background: "#121214",
+          borderTop: "1px solid #e2e8f0",
+          borderBottom: "1px solid #e2e8f0",
+          background: "#ffffff",
           padding: "24px 20px",
-          marginBottom: "64px"
+          marginBottom: "64px",
+          boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.02)"
         }}>
           <div style={{
             maxWidth: "800px",
@@ -118,16 +120,16 @@ export default function LandingPage() {
             textAlign: "center"
           }}>
             <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#ffffff" }}>SSCBS</div>
-              <div style={{ fontSize: "0.7rem", color: "#71717a", marginTop: "2px", fontWeight: "600" }}>EXCLUSIVELY TUNED</div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a" }}>SSCBS</div>
+              <div style={{ fontSize: "0.7rem", color: "#64748b", marginTop: "2px", fontWeight: "700" }}>EXCLUSIVELY TUNED</div>
             </div>
             <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#ffffff" }}>BMS, BBA, B.Sc.</div>
-              <div style={{ fontSize: "0.7rem", color: "#71717a", marginTop: "2px", fontWeight: "600" }}>SUPPORTED COURSES</div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a" }}>BMS, BBA, B.Sc.</div>
+              <div style={{ fontSize: "0.7rem", color: "#64748b", marginTop: "2px", fontWeight: "700" }}>SUPPORTED COURSES</div>
             </div>
             <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#ffffff" }}>UGCF NEP</div>
-              <div style={{ fontSize: "0.7rem", color: "#71717a", marginTop: "2px", fontWeight: "600" }}>SYLLABUS COMPLIANT</div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a" }}>UGCF NEP</div>
+              <div style={{ fontSize: "0.7rem", color: "#64748b", marginTop: "2px", fontWeight: "700" }}>SYLLABUS COMPLIANT</div>
             </div>
           </div>
         </section>
@@ -140,14 +142,14 @@ export default function LandingPage() {
             gap: "20px"
           }}>
             {/* Feature 1 */}
-            <div className="glass-panel" style={{ padding: "20px" }}>
+            <div className="glass-panel" style={{ padding: "20px", background: "#ffffff" }}>
               <div style={{
                 width: "36px",
                 height: "36px",
-                borderRadius: "4px",
-                background: "#09090b",
-                border: "1px solid #27272a",
-                color: "#ffffff",
+                borderRadius: "6px",
+                background: "#fff7ed",
+                border: "1px solid rgba(245, 131, 64, 0.2)",
+                color: "#f58340",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -155,21 +157,21 @@ export default function LandingPage() {
               }}>
                 <Filter size={18} />
               </div>
-              <h3 style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px" }}>Granular Filters</h3>
-              <p style={{ color: "#a1a1aa", fontSize: "0.8rem", lineHeight: "1.5" }}>
+              <h3 style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "#0f172a" }}>Granular Filters</h3>
+              <p style={{ color: "#475569", fontSize: "0.8rem", lineHeight: "1.5" }}>
                 Filter questions by subject, year, topic, or difficulty. Find what you need in seconds.
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="glass-panel" style={{ padding: "20px" }}>
+            <div className="glass-panel" style={{ padding: "20px", background: "#ffffff" }}>
               <div style={{
                 width: "36px",
                 height: "36px",
-                borderRadius: "4px",
-                background: "#09090b",
-                border: "1px solid #27272a",
-                color: "#ffffff",
+                borderRadius: "6px",
+                background: "#fff7ed",
+                border: "1px solid rgba(245, 131, 64, 0.2)",
+                color: "#f58340",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -177,21 +179,21 @@ export default function LandingPage() {
               }}>
                 <CheckCircle size={18} />
               </div>
-              <h3 style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px" }}>Track Coverage</h3>
-              <p style={{ color: "#a1a1aa", fontSize: "0.8rem", lineHeight: "1.5" }}>
-                Check off solved questions and watch your progress metrics rise in real-time.
+              <h3 style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "#0f172a" }}>Track Coverage</h3>
+              <p style={{ color: "#475569", fontSize: "0.8rem", lineHeight: "1.5" }}>
+                Check off solved questions, earn oranges, and watch your progress metrics rise in real-time.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="glass-panel" style={{ padding: "20px" }}>
+            <div className="glass-panel" style={{ padding: "20px", background: "#ffffff" }}>
               <div style={{
                 width: "36px",
                 height: "36px",
-                borderRadius: "4px",
-                background: "#09090b",
-                border: "1px solid #27272a",
-                color: "#ffffff",
+                borderRadius: "6px",
+                background: "#fff7ed",
+                border: "1px solid rgba(245, 131, 64, 0.2)",
+                color: "#f58340",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -199,8 +201,8 @@ export default function LandingPage() {
               }}>
                 <BarChart3 size={18} />
               </div>
-              <h3 style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px" }}>Solve Solutions</h3>
-              <p style={{ color: "#a1a1aa", fontSize: "0.8rem", lineHeight: "1.5" }}>
+              <h3 style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "#0f172a" }}>Detailed Solutions</h3>
+              <p style={{ color: "#475569", fontSize: "0.8rem", lineHeight: "1.5" }}>
                 Every question card contains a toggleable, structured explanation to speed up your learning.
               </p>
             </div>
@@ -211,14 +213,15 @@ export default function LandingPage() {
       {/* Footer */}
       <footer style={{
         padding: "32px",
-        borderTop: "1px solid #27272a",
+        borderTop: "1px solid #e2e8f0",
+        background: "#ffffff",
         textAlign: "center",
         fontSize: "0.75rem",
-        color: "#71717a"
+        color: "#64748b"
       }}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
-          <BookOpen size={14} style={{ color: "#ffffff" }} />
-          <span style={{ fontWeight: "700", color: "#ffffff" }}>PaperWise</span>
+          <BookOpen size={14} style={{ color: "#f58340" }} />
+          <span style={{ fontWeight: "700", color: "#0f172a" }}>PaperWise</span>
         </div>
         <p>© 2026 PaperWise. Tailored for Shaheed Sukhdev College of Business Studies.</p>
       </footer>

@@ -11,7 +11,10 @@ import {
   ChevronUp, 
   FileText, 
   Calendar,
-  Grid
+  Grid,
+  Star,
+  HelpCircle,
+  Award
 } from "lucide-react";
 
 export default function SubjectPage() {
@@ -21,6 +24,9 @@ export default function SubjectPage() {
 
   const [user, setUser] = useState(null);
   const [completedList, setCompletedList] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [doubts, setDoubts] = useState([]);
+  
   const [activeTab, setActiveTab] = useState("all"); // "all" | "topic" | "year"
   const [expandedQuestions, setExpandedQuestions] = useState({});
 
@@ -33,6 +39,8 @@ export default function SubjectPage() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
+    setBookmarks(parsed.bookmarkedQuestions || []);
+    setDoubts(parsed.doubtQuestions || []);
   }, [router]);
 
   if (!user) {
@@ -56,7 +64,7 @@ export default function SubjectPage() {
     return (
       <div style={{ textAlign: "center", padding: "40px" }}>
         <h3 style={{ color: "#ef4444" }}>Subject not found</h3>
-        <Link href="/dashboard" style={{ color: "#ffffff", marginTop: "12px", display: "inline-block" }}>
+        <Link href="/dashboard" style={{ color: "#f58340", marginTop: "12px", display: "inline-block" }}>
           Return to Dashboard
         </Link>
       </div>
@@ -70,22 +78,37 @@ export default function SubjectPage() {
     ? Math.round((completedInSubject.length / subjectQuestions.length) * 100)
     : 0;
 
-  // Toggle completion
-  const handleToggleCompletion = (qId) => {
-    let updated;
-    if (completedList.includes(qId)) {
-      updated = completedList.filter(id => id !== qId);
-    } else {
-      updated = [...completedList, qId];
-    }
-    setCompletedList(updated);
-
-    const updatedUser = { ...user, completedQuestions: updated };
+  // Persistence helpers
+  const updateLocalStorage = (key, val) => {
+    const updatedUser = { ...user, [key]: val };
     setUser(updatedUser);
     localStorage.setItem("paperwise_user", JSON.stringify(updatedUser));
   };
 
-  // Toggle expand
+  const handleToggleCompletion = (qId) => {
+    const updated = completedList.includes(qId)
+      ? completedList.filter(id => id !== qId)
+      : [...completedList, qId];
+    setCompletedList(updated);
+    updateLocalStorage("completedQuestions", updated);
+  };
+
+  const handleToggleBookmark = (qId) => {
+    const updated = bookmarks.includes(qId)
+      ? bookmarks.filter(id => id !== qId)
+      : [...bookmarks, qId];
+    setBookmarks(updated);
+    updateLocalStorage("bookmarkedQuestions", updated);
+  };
+
+  const handleToggleDoubt = (qId) => {
+    const updated = doubts.includes(qId)
+      ? doubts.filter(id => id !== qId)
+      : [...doubts, qId];
+    setDoubts(updated);
+    updateLocalStorage("doubtQuestions", updated);
+  };
+
   const handleToggleExpand = (qId) => {
     setExpandedQuestions(prev => ({
       ...prev,
@@ -93,7 +116,7 @@ export default function SubjectPage() {
     }));
   };
 
-  // Grouping
+  // Groupings
   const questionsByTopic = subjectQuestions.reduce((acc, q) => {
     if (!acc[q.topic]) acc[q.topic] = [];
     acc[q.topic].push(q);
@@ -111,6 +134,8 @@ export default function SubjectPage() {
   // Card renderer
   const renderQuestionCard = (q) => {
     const isCompleted = completedList.includes(q.id);
+    const isBookmarked = bookmarks.includes(q.id);
+    const isDoubt = doubts.includes(q.id);
     const isExpanded = !!expandedQuestions[q.id];
 
     return (
@@ -122,7 +147,8 @@ export default function SubjectPage() {
           display: "flex", 
           flexDirection: "column", 
           gap: "12px",
-          borderLeft: isCompleted ? "2px solid #ffffff" : "1px solid #27272a",
+          borderLeft: isCompleted ? "3px solid #f58340" : "1px solid #e2e8f0",
+          background: "#ffffff"
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
@@ -141,57 +167,91 @@ export default function SubjectPage() {
             <p style={{ 
               fontSize: "0.85rem", 
               lineHeight: "1.5", 
-              color: isCompleted ? "#71717a" : "#ffffff",
+              color: isCompleted ? "#94a3b8" : "#0f172a",
               textDecoration: isCompleted ? "line-through" : "none"
             }}>
               {q.text}
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px" }}>
-              <span className="badge">{q.year}</span>
+              <span className="badge badge-orange">{q.year}</span>
               <span className="badge">{q.topic}</span>
               <span className="badge">{q.marks} Marks</span>
               <span className="badge">{q.difficulty}</span>
-              <span className="badge">{q.type}</span>
             </div>
           </div>
 
-          <button 
-            onClick={() => handleToggleExpand(q.id)}
-            style={{
-              background: "#121214",
-              border: "1px solid #27272a",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              color: "#a1a1aa",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "2px",
-              fontSize: "0.75rem",
-            }}
-          >
-            {isExpanded ? (
-              <>Hide <ChevronUp size={12} /></>
-            ) : (
-              <>Solution <ChevronDown size={12} /></>
-            )}
-          </button>
+          {/* Action buttons (Bookmark, Doubt Basket, Solution) */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <button
+              onClick={() => handleToggleBookmark(q.id)}
+              title={isBookmarked ? "Remove Bookmark" : "Bookmark Question"}
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: isBookmarked ? "#f58340" : "#94a3b8",
+                display: "flex",
+                alignItems: "center",
+                padding: "2px"
+              }}
+            >
+              <Star size={16} fill={isBookmarked ? "#f58340" : "none"} />
+            </button>
+
+            <button
+              onClick={() => handleToggleDoubt(q.id)}
+              title={isDoubt ? "Remove from Doubt Basket" : "Add to Doubt Basket"}
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: isDoubt ? "#ef4444" : "#94a3b8",
+                display: "flex",
+                alignItems: "center",
+                padding: "2px"
+              }}
+            >
+              <HelpCircle size={16} fill={isDoubt ? "rgba(239, 68, 68, 0.1)" : "none"} />
+            </button>
+
+            <button 
+              onClick={() => handleToggleExpand(q.id)}
+              style={{
+                background: "#ffffff",
+                border: "1px solid #e2e8f0",
+                borderRadius: "4px",
+                padding: "4px 8px",
+                color: "#475569",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+                fontSize: "0.75rem",
+              }}
+            >
+              {isExpanded ? (
+                <>Hide <ChevronUp size={12} /></>
+              ) : (
+                <>Solution <ChevronDown size={12} /></>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Answer Walkthrough */}
+        {/* Answer */}
         {isExpanded && (
           <div style={{ 
             padding: "12px", 
-            background: "#09090b", 
-            border: "1px solid #27272a",
-            borderRadius: "4px", 
+            background: "#f9fafb", 
+            border: "1px solid #e2e8f0",
+            borderRadius: "6px", 
             fontSize: "0.8rem",
             lineHeight: "1.5",
-            color: "#e2e8f0"
+            color: "#334155"
           }}>
-            <div style={{ fontWeight: "700", color: "#a1a1aa", marginBottom: "6px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
-              SOLUTION WALKTHROUGH
+            <div style={{ fontWeight: "700", color: "#f58340", marginBottom: "6px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
+              SOLUTION WORKTHROUGH
             </div>
             <div style={{ whiteSpace: "pre-wrap" }}>{q.solution}</div>
           </div>
@@ -207,7 +267,7 @@ export default function SubjectPage() {
           display: "inline-flex",
           alignItems: "center",
           gap: "4px",
-          color: "#a1a1aa",
+          color: "#475569",
           fontSize: "0.8rem",
           textDecoration: "none",
         }}>
@@ -228,33 +288,33 @@ export default function SubjectPage() {
           <span className="badge" style={{ marginBottom: "6px" }}>
             {activeSubject.code}
           </span>
-          <h1 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "4px" }}>
+          <h1 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "4px", color: "#0f172a" }}>
             {activeSubject.name}
           </h1>
-          <p style={{ color: "#a1a1aa", fontSize: "0.75rem" }}>
+          <p style={{ color: "#64748b", fontSize: "0.75rem" }}>
             Syllabus: UGCF NEP • Course: SSCBS
           </p>
         </div>
 
-        {/* Progress box */}
+        {/* Progress Box */}
         <div style={{
           display: "flex",
           flexDirection: "column",
           gap: "4px",
-          background: "#09090b",
-          border: "1px solid #27272a",
+          background: "#fff7ed",
+          border: "1px solid rgba(245, 131, 64, 0.25)",
           padding: "10px 16px",
-          borderRadius: "4px",
+          borderRadius: "6px",
           alignItems: "flex-end"
         }}>
-          <span style={{ fontSize: "0.65rem", color: "#a1a1aa", fontWeight: "600", letterSpacing: "0.05em" }}>
-            COMPLETED QUESTIONS
+          <span style={{ fontSize: "0.65rem", color: "#ea580c", fontWeight: "700", letterSpacing: "0.05em" }}>
+            SYLLABUS PROGRESS
           </span>
           <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-            <span style={{ fontSize: "1.15rem", fontWeight: "700", color: "#ffffff" }}>
+            <span style={{ fontSize: "1.15rem", fontWeight: "800", color: "#ea580c" }}>
               {completedInSubject.length} / {subjectQuestions.length}
             </span>
-            <span style={{ fontSize: "0.8rem", color: "#a1a1aa" }}>
+            <span style={{ fontSize: "0.8rem", color: "#c2410c", fontWeight: "600" }}>
               ({progressRate}%)
             </span>
           </div>
@@ -264,7 +324,7 @@ export default function SubjectPage() {
       {/* Tabs Menu */}
       <div style={{
         display: "flex",
-        borderBottom: "1px solid #27272a",
+        borderBottom: "1px solid #e2e8f0",
         gap: "16px",
         marginBottom: "8px"
       }}>
@@ -286,11 +346,11 @@ export default function SubjectPage() {
                 padding: "10px 2px",
                 border: "none",
                 background: "transparent",
-                color: isActive ? "#ffffff" : "#71717a",
-                fontWeight: isActive ? "600" : "500",
+                color: isActive ? "#ea580c" : "#64748b",
+                fontWeight: isActive ? "650" : "500",
                 fontSize: "0.85rem",
                 cursor: "pointer",
-                borderBottom: isActive ? "2px solid #ffffff" : "2px solid transparent",
+                borderBottom: isActive ? "2px solid #f58340" : "2px solid transparent",
                 transition: "all 0.1s ease",
                 marginBottom: "-1px"
               }}
@@ -308,7 +368,7 @@ export default function SubjectPage() {
           subjectQuestions.length > 0 ? (
             subjectQuestions.map(renderQuestionCard)
           ) : (
-            <div style={{ textAlign: "center", padding: "32px", color: "#71717a", fontSize: "0.8rem" }}>
+            <div style={{ textAlign: "center", padding: "32px", color: "#64748b", fontSize: "0.8rem" }}>
               No questions found.
             </div>
           )
@@ -321,15 +381,15 @@ export default function SubjectPage() {
                 <h3 style={{ 
                   fontSize: "0.85rem", 
                   fontWeight: "700", 
-                  color: "#ffffff", 
+                  color: "#0f172a", 
                   paddingBottom: "4px", 
-                  borderBottom: "1px solid #27272a",
+                  borderBottom: "1px solid #e2e8f0",
                   marginTop: "8px",
                   display: "flex",
                   justifyContent: "space-between"
                 }}>
                   <span>{topic}</span>
-                  <span style={{ fontSize: "0.75rem", color: "#71717a", fontWeight: "normal" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "normal" }}>
                     {questionsByTopic[topic].length} Questions
                   </span>
                 </h3>
@@ -337,7 +397,7 @@ export default function SubjectPage() {
               </div>
             ))
           ) : (
-            <div style={{ textAlign: "center", padding: "32px", color: "#71717a", fontSize: "0.8rem" }}>
+            <div style={{ textAlign: "center", padding: "32px", color: "#64748b", fontSize: "0.8rem" }}>
               No questions found.
             </div>
           )
@@ -350,15 +410,15 @@ export default function SubjectPage() {
                 <h3 style={{ 
                   fontSize: "0.85rem", 
                   fontWeight: "700", 
-                  color: "#ffffff", 
+                  color: "#0f172a", 
                   paddingBottom: "4px", 
-                  borderBottom: "1px solid #27272a",
+                  borderBottom: "1px solid #e2e8f0",
                   marginTop: "8px",
                   display: "flex",
                   justifyContent: "space-between"
                 }}>
                   <span>{year} Semester Exam</span>
-                  <span style={{ fontSize: "0.75rem", color: "#71717a", fontWeight: "normal" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "normal" }}>
                     {questionsByYear[year].length} Questions
                   </span>
                 </h3>
@@ -366,7 +426,7 @@ export default function SubjectPage() {
               </div>
             ))
           ) : (
-            <div style={{ textAlign: "center", padding: "32px", color: "#71717a", fontSize: "0.8rem" }}>
+            <div style={{ textAlign: "center", padding: "32px", color: "#64748b", fontSize: "0.8rem" }}>
               No questions found.
             </div>
           )

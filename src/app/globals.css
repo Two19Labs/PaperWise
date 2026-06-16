@@ -1,21 +1,21 @@
 :root {
-  /* Flat Neutral Colors - Sleek Zinc Theme */
-  --bg-primary: #09090b;
-  --bg-secondary: #121214;
-  --bg-tertiary: #1a1a1e;
+  /* AfterBoards Design Language - Clean Light Theme */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
   
-  --card-bg: #121214;
-  --card-hover-bg: #1a1a1e;
-  --card-border: #27272a;
-  --card-border-hover: #3f3f46;
+  --card-bg: #ffffff;
+  --card-hover-bg: #f9fafb;
+  --card-border: #e2e8f0;
+  --card-border-hover: #cbd5e1;
   
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-muted: #52525b;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
   
-  --accent: #ffffff;
-  --accent-text: #09090b;
-  --accent-border: #3f3f46;
+  --accent-orange: #f58340;
+  --accent-orange-hover: #ea580c;
+  --accent-orange-light: #fff7ed;
   
   --success: #10b981;
   --error: #ef4444;
@@ -25,7 +25,7 @@
   --transition-fast: all 0.1s ease-out;
 }
 
-/* Base reset */
+/* Base styles */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -33,7 +33,7 @@
 }
 
 html, body {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-inter);
   min-height: 100vh;
@@ -47,21 +47,21 @@ html, body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--card-border);
+  background: var(--text-muted);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: var(--text-secondary);
 }
 
-/* Flat panels replacing glassmorphism */
+/* Flat panels */
 .glass-panel {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 6px;
+  border-radius: 8px;
   transition: var(--transition-fast);
 }
 
@@ -70,11 +70,7 @@ html, body {
   background: var(--card-hover-bg);
 }
 
-.glass-panel-interactive {
-  cursor: pointer;
-}
-
-/* Flat Buttons (sharp, high-contrast) */
+/* AfterBoards Buttons (Orange Brand Accents) */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -84,7 +80,7 @@ html, body {
   font-family: var(--font-inter);
   font-weight: 500;
   font-size: 0.85rem;
-  border-radius: 4px;
+  border-radius: 6px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -92,41 +88,47 @@ html, body {
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: var(--accent-text);
+  background: var(--accent-orange);
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: #e4e4e7;
+  background: var(--accent-orange-hover);
 }
 
 .btn-secondary {
-  background: transparent;
+  background: var(--bg-primary);
   border-color: var(--card-border);
   color: var(--text-primary);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   border-color: var(--card-border-hover);
 }
 
 .btn:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Badges (flat, clean outline or solid color block) */
+/* Badges / Chips */
 .badge {
   display: inline-flex;
   align-items: center;
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: 4px;
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 550;
   border: 1px solid var(--card-border);
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   color: var(--text-secondary);
+}
+
+.badge-orange {
+  border-color: rgba(245, 131, 64, 0.3);
+  color: var(--accent-orange);
+  background: var(--accent-orange-light);
 }
 
 .badge-blue {
@@ -137,27 +139,21 @@ html, body {
 
 .badge-teal {
   border-color: rgba(20, 184, 166, 0.3);
-  color: #14b8a6;
+  color: #0d9488;
   background: rgba(20, 184, 166, 0.05);
-}
-
-.badge-amber {
-  border-color: rgba(245, 158, 11, 0.3);
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.05);
 }
 
 .badge-rose {
   border-color: rgba(244, 63, 94, 0.3);
-  color: #f43f5e;
+  color: #e11d48;
   background: rgba(244, 63, 94, 0.05);
 }
 
-/* Flat Forms */
+/* Inputs & Forms */
 .input-control {
   background: var(--bg-primary);
   border: 1px solid var(--card-border);
-  border-radius: 4px;
+  border-radius: 6px;
   color: var(--text-primary);
   padding: 8px 12px;
   font-family: var(--font-inter);
@@ -168,7 +164,8 @@ html, body {
 }
 
 .input-control:focus {
-  border-color: var(--text-secondary);
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 0 2px rgba(245, 131, 64, 0.15);
 }
 
 .input-control::placeholder {
@@ -178,14 +175,14 @@ html, body {
 /* Select */
 .select-control {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 14px;
   padding-right: 32px;
 }
 
-/* Checkbox (Flat Square) */
+/* Checkbox (Orange Check) */
 .checkbox-container {
   display: flex;
   align-items: center;
@@ -209,7 +206,7 @@ html, body {
   width: 16px;
   background-color: var(--bg-primary);
   border: 1px solid var(--card-border);
-  border-radius: 2px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,12 +214,12 @@ html, body {
 }
 
 .checkbox-container:hover .checkmark {
-  border-color: var(--text-secondary);
+  border-color: var(--accent-orange);
 }
 
 .checkbox-input:checked ~ .checkmark {
-  background-color: var(--accent);
-  border-color: var(--accent);
+  background-color: var(--accent-orange);
+  border-color: var(--accent-orange);
 }
 
 .checkmark:after {
@@ -230,7 +227,7 @@ html, body {
   display: none;
   width: 3px;
   height: 6px;
-  border: solid var(--accent-text);
+  border: solid white;
   border-width: 0 1.5px 1.5px 0;
   transform: rotate(45deg) translate(-0.5px, -0.5px);
 }
@@ -239,7 +236,7 @@ html, body {
   display: block;
 }
 
-/* Form layouts */
+/* Form layout */
 .form-group {
   margin-bottom: 12px;
   display: flex;
@@ -251,7 +248,7 @@ html, body {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-secondary);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .container {

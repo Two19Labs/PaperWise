@@ -13,7 +13,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  // Onboarding states (SSCBS is the only option, so pre-selected)
+  // Onboarding states
   const [selectedCollege] = useState("Shaheed Sukhdev College of Business Studies (SSCBS)");
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedSemester, setSelectedSemester] = useState(1);
@@ -32,7 +32,7 @@ export default function SignupPage() {
         return;
       }
     } else if (step === 2) {
-      // College step (SSCBS is pre-selected, just proceed)
+      // College confirm
     } else if (step === 3) {
       if (!selectedCourseId) {
         setError("Please select your course.");
@@ -73,24 +73,23 @@ export default function SignupPage() {
     }, 1000);
   };
 
-  const currentCourse = courses.find(c => c.id === selectedCourseId);
-
   return (
     <main style={{
       minHeight: "100vh",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "#09090b",
+      background: "#f9fafb",
       padding: "20px",
     }}>
       <div style={{
         width: "100%",
         maxWidth: "440px",
-        padding: "32px 24px",
-        borderRadius: "6px",
-        background: "#121214",
-        border: "1px solid #27272a",
+        padding: "36px 28px",
+        borderRadius: "8px",
+        background: "#ffffff",
+        border: "1px solid #e2e8f0",
+        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
       }}>
         {/* Step Indicator */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
@@ -99,15 +98,16 @@ export default function SignupPage() {
               <div
                 key={s}
                 style={{
-                  height: "2px",
+                  height: "3px",
                   width: "20px",
-                  background: s <= step ? "#ffffff" : "#27272a",
+                  borderRadius: "1.5px",
+                  background: s <= step ? "#f58340" : "#e2e8f0",
                   transition: "all 0.2s ease",
                 }}
               />
             ))}
           </div>
-          <span style={{ fontSize: "0.75rem", color: "#a1a1aa", fontWeight: "600" }}>
+          <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "600" }}>
             STEP {step} OF 4
           </span>
         </div>
@@ -115,20 +115,20 @@ export default function SignupPage() {
         {/* Header */}
         <div style={{ marginBottom: "24px" }}>
           <h1 style={{
-            fontSize: "1.35rem",
+            fontSize: "1.3rem",
             fontWeight: "700",
             marginBottom: "6px",
-            color: "#ffffff"
+            color: "#0f172a"
           }}>
             {step === 1 && "Create Your Account"}
             {step === 2 && "Confirm College"}
             {step === 3 && "Select Your Course"}
             {step === 4 && "Choose Semester"}
           </h1>
-          <p style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>
-            {step === 1 && "Sign up to track and analyze your semester exams."}
-            {step === 2 && "PaperWise is configured for SSCBS."}
-            {step === 3 && "We will map your syllabus to the chosen undergraduate course."}
+          <p style={{ color: "#475569", fontSize: "0.8rem" }}>
+            {step === 1 && "Start tracking and analyzing your SSCBS past papers."}
+            {step === 2 && "Verify your college details to proceed."}
+            {step === 3 && "We will load the relevant syllabus modules."}
             {step === 4 && "Select your current semester."}
           </p>
         </div>
@@ -136,10 +136,10 @@ export default function SignupPage() {
         {error && (
           <div style={{
             padding: "10px",
-            borderRadius: "4px",
-            background: "rgba(239, 68, 68, 0.1)",
-            border: "1px solid rgba(239, 68, 68, 0.2)",
-            color: "#f87171",
+            borderRadius: "6px",
+            background: "rgba(239, 68, 68, 0.05)",
+            border: "1px solid rgba(239, 68, 68, 0.1)",
+            color: "#ef4444",
             fontSize: "0.8rem",
             marginBottom: "16px",
             textAlign: "center"
@@ -148,15 +148,15 @@ export default function SignupPage() {
           </div>
         )}
 
-        {/* Step 1: Credentials */}
+        {/* Step 1 */}
         {step === 1 && (
           <div>
             <div style={{ marginBottom: "12px" }}>
-              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#a1a1aa", marginBottom: "6px" }}>
+              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>
                 FULL NAME
               </label>
               <div style={{ position: "relative" }}>
-                <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#52525b", display: "flex", alignItems: "center" }}>
+                <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8", display: "flex", alignItems: "center" }}>
                   <User size={16} />
                 </span>
                 <input
@@ -168,10 +168,10 @@ export default function SignupPage() {
                   style={{
                     width: "100%",
                     padding: "8px 12px 8px 34px",
-                    borderRadius: "4px",
-                    background: "#09090b",
-                    border: "1px solid #27272a",
-                    color: "#ffffff",
+                    borderRadius: "6px",
+                    background: "#ffffff",
+                    border: "1px solid #e2e8f0",
+                    color: "#0f172a",
                     fontSize: "0.9rem",
                     outline: "none",
                   }}
@@ -180,11 +180,11 @@ export default function SignupPage() {
             </div>
 
             <div style={{ marginBottom: "12px" }}>
-              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#a1a1aa", marginBottom: "6px" }}>
+              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>
                 EMAIL ADDRESS
               </label>
               <div style={{ position: "relative" }}>
-                <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#52525b", display: "flex", alignItems: "center" }}>
+                <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8", display: "flex", alignItems: "center" }}>
                   <Mail size={16} />
                 </span>
                 <input
@@ -196,10 +196,10 @@ export default function SignupPage() {
                   style={{
                     width: "100%",
                     padding: "8px 12px 8px 34px",
-                    borderRadius: "4px",
-                    background: "#09090b",
-                    border: "1px solid #27272a",
-                    color: "#ffffff",
+                    borderRadius: "6px",
+                    background: "#ffffff",
+                    border: "1px solid #e2e8f0",
+                    color: "#0f172a",
                     fontSize: "0.9rem",
                     outline: "none",
                   }}
@@ -208,11 +208,11 @@ export default function SignupPage() {
             </div>
 
             <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#a1a1aa", marginBottom: "6px" }}>
+              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>
                 PASSWORD
               </label>
               <div style={{ position: "relative" }}>
-                <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#52525b", display: "flex", alignItems: "center" }}>
+                <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8", display: "flex", alignItems: "center" }}>
                   <Lock size={16} />
                 </span>
                 <input
@@ -224,10 +224,10 @@ export default function SignupPage() {
                   style={{
                     width: "100%",
                     padding: "8px 12px 8px 34px",
-                    borderRadius: "4px",
-                    background: "#09090b",
-                    border: "1px solid #27272a",
-                    color: "#ffffff",
+                    borderRadius: "6px",
+                    background: "#ffffff",
+                    border: "1px solid #e2e8f0",
+                    color: "#0f172a",
                     fontSize: "0.9rem",
                     outline: "none",
                   }}
@@ -246,20 +246,20 @@ export default function SignupPage() {
           </div>
         )}
 
-        {/* Step 2: College Confirmation */}
+        {/* Step 2 */}
         {step === 2 && (
           <div>
             <div style={{
               padding: "16px",
-              background: "#09090b",
-              border: "1px solid #27272a",
-              borderRadius: "4px",
+              background: "#f9fafb",
+              border: "1px solid #e2e8f0",
+              borderRadius: "6px",
               marginBottom: "20px"
             }}>
-              <span style={{ fontSize: "0.7rem", color: "#a1a1aa", fontWeight: "600", display: "block", marginBottom: "4px" }}>
+              <span style={{ fontSize: "0.65rem", color: "#64748b", fontWeight: "600", display: "block", marginBottom: "4px" }}>
                 COLLEGE
               </span>
-              <div style={{ fontSize: "0.95rem", fontWeight: "600", color: "#ffffff" }}>
+              <div style={{ fontSize: "0.95rem", fontWeight: "600", color: "#0f172a" }}>
                 {selectedCollege}
               </div>
             </div>
@@ -284,7 +284,7 @@ export default function SignupPage() {
           </div>
         )}
 
-        {/* Step 3: Course Selection */}
+        {/* Step 3 */}
         {step === 3 && (
           <div>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
@@ -296,11 +296,11 @@ export default function SignupPage() {
                     onClick={() => setSelectedCourseId(course.id)}
                     style={{
                       padding: "12px 16px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       cursor: "pointer",
-                      background: isSelected ? "#1a1a1e" : "#09090b",
-                      border: isSelected ? "1px solid #ffffff" : "1px solid #27272a",
-                      color: isSelected ? "#ffffff" : "#a1a1aa",
+                      background: isSelected ? "#fff7ed" : "#ffffff",
+                      border: isSelected ? "1px solid #f58340" : "1px solid #e2e8f0",
+                      color: isSelected ? "#ea580c" : "#475569",
                       transition: "all 0.15s",
                       display: "flex",
                       justifyContent: "space-between",
@@ -311,11 +311,11 @@ export default function SignupPage() {
                       <div style={{ fontWeight: "600", fontSize: "0.85rem", marginBottom: "2px" }}>
                         {course.name}
                       </div>
-                      <div style={{ fontSize: "0.7rem", color: "#71717a" }}>
+                      <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
                         Syllabus: UGCF NEP
                       </div>
                     </div>
-                    {isSelected && <Check size={14} style={{ color: "#ffffff" }} />}
+                    {isSelected && <Check size={14} style={{ color: "#ea580c" }} />}
                   </div>
                 );
               })}
@@ -341,7 +341,7 @@ export default function SignupPage() {
           </div>
         )}
 
-        {/* Step 4: Semester selection */}
+        {/* Step 4 */}
         {step === 4 && (
           <div>
             <div style={{
@@ -359,11 +359,11 @@ export default function SignupPage() {
                     onClick={() => setSelectedSemester(sem)}
                     style={{
                       height: "44px",
-                      borderRadius: "4px",
-                      background: isSelected ? "#ffffff" : "#09090b",
-                      border: isSelected ? "1px solid #ffffff" : "1px solid #27272a",
-                      color: isSelected ? "#09090b" : "#ffffff",
-                      fontSize: "0.9rem",
+                      borderRadius: "6px",
+                      background: isSelected ? "#f58340" : "#ffffff",
+                      border: isSelected ? "1px solid #f58340" : "1px solid #e2e8f0",
+                      color: isSelected ? "#ffffff" : "#0f172a",
+                      fontSize: "0.95rem",
                       fontWeight: "600",
                       cursor: "pointer",
                       transition: "all 0.15s",
@@ -388,7 +388,7 @@ export default function SignupPage() {
                 onClick={handleSubmit}
                 disabled={isLoading}
                 className="btn btn-primary"
-                style={{ flex: "1", background: "#ffffff", color: "#09090b", fontWeight: "700" }}
+                style={{ flex: "1", fontWeight: "700" }}
               >
                 {isLoading ? "Creating..." : "Complete Setup"}
               </button>
@@ -402,11 +402,11 @@ export default function SignupPage() {
             marginTop: "20px",
             textAlign: "center",
             fontSize: "0.8rem",
-            color: "#a1a1aa"
+            color: "#475569"
           }}>
             Already have an account?{" "}
             <Link href="/auth/login" style={{
-              color: "#ffffff",
+              color: "#f58340",
               fontWeight: "600",
               textDecoration: "underline"
             }}>
