@@ -6,6 +6,7 @@ import Link from "next/link";
 import { courses } from "@/data/courses";
 import { questions } from "@/data/questions";
 import { BookOpen, CheckCircle, Award, Calendar, ChevronRight, Play } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function DashboardHome() {
   const router = useRouter();
@@ -25,6 +26,38 @@ export default function DashboardHome() {
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
     setActiveCourseId(parsed.courseId || "bms");
+
+    const syncProfile = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profile) {
+          const freshUserObj = {
+            email: session.user.email,
+            name: profile.name,
+            college: profile.college_name,
+            collegeId: profile.college_id,
+            courseId: profile.course_id,
+            courseName: profile.course_name,
+            completedQuestions: profile.completed_questions || []
+          };
+          setUser(freshUserObj);
+          setCompletedList(profile.completed_questions || []);
+          localStorage.setItem("paperwise_user", JSON.stringify(freshUserObj));
+        }
+      } catch (err) {
+        console.error("Dashboard home profile sync error:", err);
+      }
+    };
+
+    syncProfile();
   }, [router]);
 
   if (!user || !activeCourseId) {

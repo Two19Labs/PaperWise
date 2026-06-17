@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, ArrowRight, BookOpen } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,7 +13,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setError("Please fill in all fields.");
@@ -21,22 +22,70 @@ export default function LoginPage() {
     setError("");
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (loginError) {
+        if (loginError.message === "Invalid login credentials") {
+          setError("This email does not exist, or the password is incorrect. Please sign up first if you don't have an account.");
+        } else {
+          setError(loginError.message);
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // Login succeeded. Fetch user profile from profiles table
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error("Error fetching user profile:", profileError);
+        // Fallback using auth user metadata if profile table fetch fails
+        const nameFallback = data.user.user_metadata?.name || email.split("@")[0];
+        localStorage.setItem(
+          "paperwise_user",
+          JSON.stringify({
+            email,
+            name: nameFallback,
+            college: data.user.user_metadata?.college_name || "Shaheed Sukhdev College of Business Studies (SSCBS)",
+            collegeId: data.user.user_metadata?.college_id || "sscbs",
+            courseId: data.user.user_metadata?.course_id || "bsc_cs",
+            courseName: data.user.user_metadata?.course_name || "B.Sc. (Hons.) Computer Science [B.Sc. Comp Science]",
+            completedQuestions: []
+          })
+        );
+      } else {
+        localStorage.setItem(
+          "paperwise_user",
+          JSON.stringify({
+            email,
+            name: profile.name,
+            college: profile.college_name,
+            collegeId: profile.college_id,
+            courseId: profile.course_id,
+            courseName: profile.course_name,
+            completedQuestions: profile.completed_questions || []
+          })
+        );
+      }
+
       setIsLoading(false);
-      localStorage.setItem(
-        "paperwise_user",
-        JSON.stringify({
-          email,
-          name: email.split("@")[0],
-          college: "Shaheed Sukhdev College of Business Studies (SSCBS)",
-          courseId: "bsc_cs",
-          courseName: "B.Sc. (Hons.) Computer Science [B.Sc. Comp Science]",
-          semester: 2,
-          completedQuestions: ["ds_q2"]
-        })
-      );
       router.push("/dashboard");
-    }, 1000);
+    } catch (err) {
+      if (err.message && (err.message.includes("supabaseUrl") || err.message.includes("supabaseKey"))) {
+        setError("Supabase URL and Key are missing. Please restart your Next.js development server to load the environment variables.");
+      } else {
+        setError(err.message || "An unexpected error occurred during sign in.");
+      }
+      setIsLoading(false);
+    }
   };
 
   return (

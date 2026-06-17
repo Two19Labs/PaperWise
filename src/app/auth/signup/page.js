@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { courses } from "@/data/courses";
 import { Mail, Lock, User, ArrowRight, ArrowLeft, BookOpen, Check } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function SignupPage() {
   const [selectedCourseId, setSelectedCourseId] = useState("");
   
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNextStep = () => {
@@ -49,34 +51,72 @@ export default function SignupPage() {
     setStep(step - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedCourseId) {
       setError("Please select your course.");
       return;
     }
     setIsLoading(true);
+    setError("");
+    setSuccessMessage("");
 
     const collegeObj = colleges.find(c => c.id === selectedCollegeId);
     const collegeName = collegeObj ? collegeObj.name : "Shaheed Sukhdev College of Business Studies (SSCBS)";
     const courseObj = courses.find(c => c.id === selectedCourseId);
+    const courseName = courseObj ? courseObj.name : "Custom Course";
 
-    setTimeout(() => {
+    try {
+      const { data, error: signupError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            college_id: selectedCollegeId,
+            college_name: collegeName,
+            course_id: selectedCourseId,
+            course_name: courseName,
+          }
+        }
+      });
+
+      if (signupError) {
+        setError(signupError.message);
+        setIsLoading(false);
+        return;
+      }
+
+      const userSession = data?.session;
+      const userProfile = {
+        email,
+        name,
+        college: collegeName,
+        collegeId: selectedCollegeId,
+        courseId: selectedCourseId,
+        courseName,
+        completedQuestions: []
+      };
+
+      // Cache user details locally for instant/optimistic loading
+      localStorage.setItem("paperwise_user", JSON.stringify(userProfile));
+
+      if (userSession) {
+        setIsLoading(false);
+        router.push("/dashboard");
+      } else {
+        setIsLoading(false);
+        setSuccessMessage("Account created successfully! Please check your email inbox to verify your account, then sign in.");
+        setStep(1); // Reset back to step 1 so they can navigate to sign in
+      }
+    } catch (err) {
+      if (err.message && (err.message.includes("supabaseUrl") || err.message.includes("supabaseKey"))) {
+        setError("Supabase URL and Key are missing. Please restart your Next.js development server to load the environment variables.");
+      } else {
+        setError(err.message || "An unexpected error occurred during signup.");
+      }
       setIsLoading(false);
-      localStorage.setItem(
-        "paperwise_user",
-        JSON.stringify({
-          email,
-          name,
-          college: collegeName,
-          collegeId: selectedCollegeId,
-          courseId: selectedCourseId,
-          courseName: courseObj ? courseObj.name : "Custom Course",
-          completedQuestions: []
-        })
-      );
-      router.push("/dashboard");
-    }, 1000);
+    }
   };
 
   return (
@@ -149,6 +189,22 @@ export default function SignupPage() {
             textAlign: "center"
           }}>
             {error}
+          </div>
+        )}
+
+        {successMessage && (
+          <div style={{
+            padding: "12px",
+            borderRadius: "6px",
+            background: "rgba(34, 197, 94, 0.05)",
+            border: "1px solid rgba(34, 197, 94, 0.1)",
+            color: "#16a34a",
+            fontSize: "0.8rem",
+            marginBottom: "16px",
+            textAlign: "center",
+            lineHeight: "1.4"
+          }}>
+            {successMessage}
           </div>
         )}
 

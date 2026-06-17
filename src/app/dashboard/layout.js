@@ -15,6 +15,7 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -24,12 +25,63 @@ export default function DashboardLayout({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // 1. Load from localStorage for instant render
     const storedUser = localStorage.getItem("paperwise_user");
-    if (!storedUser) {
-      router.push("/auth/login");
-    } else {
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    // 2. Check active Supabase session
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session) {
+          throw new Error("No active session");
+        }
+
+        // 3. Fetch latest profile to keep local storage in sync
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profileError || !profile) {
+          throw new Error("Profile not found in database");
+        }
+
+        const freshProfile = {
+          email: session.user.email,
+          name: profile.name,
+          college: profile.college_name,
+          collegeId: profile.college_id,
+          courseId: profile.course_id,
+          courseName: profile.course_name,
+          completedQuestions: profile.completed_questions || []
+        };
+        setUser(freshProfile);
+        localStorage.setItem("paperwise_user", JSON.stringify(freshProfile));
+      } catch (err) {
+        console.error("Session verification failed, force redirecting:", err.message);
+        localStorage.removeItem("paperwise_user");
+        setUser(null);
+        router.push("/auth/login");
+      }
+    };
+
+    checkSession();
+
+    // 4. Subscribe to auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        localStorage.removeItem("paperwise_user");
+        router.push("/auth/login");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [router]);
 
   // Close mobile sidebar drawer on pathname changes
@@ -37,7 +89,12 @@ export default function DashboardLayout({ children }) {
     setIsMobileOpen(false);
   }, [pathname]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
     localStorage.removeItem("paperwise_user");
     router.push("/auth/login");
   };

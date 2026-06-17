@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function AnalyzerPage() {
   const router = useRouter();
@@ -46,6 +47,30 @@ export default function AnalyzerPage() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
+
+    const syncCompletedList = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("completed_questions")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profile && profile.completed_questions) {
+          setCompletedList(profile.completed_questions);
+          const freshUser = { ...parsed, completedQuestions: profile.completed_questions };
+          setUser(freshUser);
+          localStorage.setItem("paperwise_user", JSON.stringify(freshUser));
+        }
+      } catch (err) {
+        console.error("Error syncing completed list in analyzer page:", err);
+      }
+    };
+
+    syncCompletedList();
   }, [router]);
 
   if (!user) {
@@ -134,10 +159,28 @@ export default function AnalyzerPage() {
   });
 
   // Toggle handlers with persistence
-  const updateLocalStorage = (key, val) => {
-    const updatedUser = { ...user, [key]: val };
+  const updateDatabaseAndLocal = async (val) => {
+    // 1. Update local cache and state instantly (optimistic UI)
+    const updatedUser = { ...user, completedQuestions: val };
     setUser(updatedUser);
     localStorage.setItem("paperwise_user", JSON.stringify(updatedUser));
+
+    // 2. Sync with Supabase database
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ completed_questions: val })
+        .eq("id", session.user.id);
+
+      if (error) {
+        console.error("Error updating completed questions in Supabase:", error);
+      }
+    } catch (err) {
+      console.error("Supabase update error:", err);
+    }
   };
 
   const handleToggleCompletion = (qId) => {
@@ -145,7 +188,7 @@ export default function AnalyzerPage() {
       ? completedList.filter(id => id !== qId)
       : [...completedList, qId];
     setCompletedList(updated);
-    updateLocalStorage("completedQuestions", updated);
+    updateDatabaseAndLocal(updated);
   };
 
 
