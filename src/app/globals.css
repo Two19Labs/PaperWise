@@ -258,3 +258,117 @@ html, body {
   margin: 0 auto;
   padding: 0 16px;
 }
+
+/* Responsive utility helpers */
+.desktop-only {
+  display: block !important;
+}
+.mobile-only {
+  display: none !important;
+}
+
+/* Sidebar and Layout Responsive classes */
+.sidebar-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+  font-family: var(--font-inter);
+  color: var(--text-primary);
+}
+
+.sidebar-container {
+  width: 240px;
+  background: var(--bg-primary);
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.2s ease-in-out;
+  position: relative;
+  z-index: 100;
+}
+
+.sidebar-collapsed {
+  width: 68px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Analyzer page responsive layouts */
+.analyzer-layout-container {
+  display: grid;
+  grid-template-columns: 240px 1fr 280px;
+  gap: 20px;
+  align-items: start;
+}
+
+.analyzer-sidebar-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Tablet view styling */
+@media (max-width: 1024px) {
+  .analyzer-layout-container {
+    grid-template-columns: 220px 1fr;
+  }
+  .analyzer-sidebar-right {
+    display: none !important;
+  }
+}
+
+/* Mobile view styling */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 240px;
+    height: 100vh;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .sidebar-open {
+    transform: translateX(0) !important;
+  }
+  
+  .sidebar-collapsed {
+    transform: translateX(-100%) !important;
+  }
+  
+  .analyzer-layout-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  /* Make lists/grids stack vertically */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Spacing and margins */
+  body {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 12px;
+  }
+}
+

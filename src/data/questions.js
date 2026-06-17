@@ -1144,3 +1144,17 @@ export const questions = [
     solution: "The Hamiltonian is:\n$$\\mathcal{H}(t, x, u, \\lambda) = f(t, x, u) + \\lambda \\cdot g(t, x, u)$$\nwhere $x$ is the state variable, $u$ is the control variable, and $\\lambda$ is the costate variable."
   }
 ];
+
+// Post-process to dynamically add unit field based on topic grouping
+const topicsPerSubject = {};
+questions.forEach((q) => {
+  if (!topicsPerSubject[q.subjectId]) {
+    topicsPerSubject[q.subjectId] = [];
+  }
+  if (!topicsPerSubject[q.subjectId].includes(q.topic)) {
+    topicsPerSubject[q.subjectId].push(q.topic);
+  }
+  const index = topicsPerSubject[q.subjectId].indexOf(q.topic);
+  q.unit = index + 1; // Topic 1 is Unit 1, Topic 2 is Unit 2, etc.
+});
+

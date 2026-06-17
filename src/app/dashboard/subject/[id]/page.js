@@ -14,7 +14,6 @@ import {
   Calendar,
   Grid,
   Star,
-  HelpCircle,
   Award
 } from "lucide-react";
 
@@ -26,9 +25,9 @@ export default function SubjectPage() {
   const [user, setUser] = useState(null);
   const [completedList, setCompletedList] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
-  const [doubts, setDoubts] = useState([]);
   
-  const [activeTab, setActiveTab] = useState("all"); // "all" | "topic" | "year"
+  const [activeTab, setActiveTab] = useState("unit"); // "all" | "unit" | "year"
+  const [selectedUnit, setSelectedUnit] = useState(1);
   const [expandedQuestions, setExpandedQuestions] = useState({});
 
   useEffect(() => {
@@ -41,7 +40,6 @@ export default function SubjectPage() {
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
     setBookmarks(parsed.bookmarkedQuestions || []);
-    setDoubts(parsed.doubtQuestions || []);
   }, [router]);
 
   if (!user) {
@@ -102,13 +100,7 @@ export default function SubjectPage() {
     updateLocalStorage("bookmarkedQuestions", updated);
   };
 
-  const handleToggleDoubt = (qId) => {
-    const updated = doubts.includes(qId)
-      ? doubts.filter(id => id !== qId)
-      : [...doubts, qId];
-    setDoubts(updated);
-    updateLocalStorage("doubtQuestions", updated);
-  };
+
 
   const handleToggleExpand = (qId) => {
     setExpandedQuestions(prev => ({
@@ -118,7 +110,8 @@ export default function SubjectPage() {
   };
 
   // Groupings
-  const questionsByTopic = subjectQuestions.reduce((acc, q) => {
+  const questionsInUnit = subjectQuestions.filter(q => q.unit === selectedUnit);
+  const unitQuestionsByTopic = questionsInUnit.reduce((acc, q) => {
     if (!acc[q.topic]) acc[q.topic] = [];
     acc[q.topic].push(q);
     return acc;
@@ -136,7 +129,6 @@ export default function SubjectPage() {
   const renderQuestionCard = (q) => {
     const isCompleted = completedList.includes(q.id);
     const isBookmarked = bookmarks.includes(q.id);
-    const isDoubt = doubts.includes(q.id);
     const isExpanded = !!expandedQuestions[q.id];
 
     return (
@@ -178,7 +170,6 @@ export default function SubjectPage() {
               <span className="badge badge-orange">{q.year}</span>
               <span className="badge">{q.topic}</span>
               <span className="badge">{q.marks} Marks</span>
-              <span className="badge">{q.difficulty}</span>
             </div>
           </div>
 
@@ -200,21 +191,7 @@ export default function SubjectPage() {
               <Star size={16} fill={isBookmarked ? "#f58340" : "none"} />
             </button>
 
-            <button
-              onClick={() => handleToggleDoubt(q.id)}
-              title={isDoubt ? "Remove from Doubt Basket" : "Add to Doubt Basket"}
-              style={{
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                color: isDoubt ? "#ef4444" : "#94a3b8",
-                display: "flex",
-                alignItems: "center",
-                padding: "2px"
-              }}
-            >
-              <HelpCircle size={16} fill={isDoubt ? "rgba(239, 68, 68, 0.1)" : "none"} />
-            </button>
+
 
             <button 
               onClick={() => handleToggleExpand(q.id)}
@@ -331,7 +308,7 @@ export default function SubjectPage() {
       }}>
         {[
           { id: "all", label: "All Questions", icon: FileText },
-          { id: "topic", label: "Group by Topic", icon: Grid },
+          { id: "unit", label: "Unit Wise", icon: Grid },
           { id: "year", label: "Group by Year", icon: Calendar }
         ].map((tab) => {
           const isActive = activeTab === tab.id;
@@ -375,33 +352,63 @@ export default function SubjectPage() {
           )
         )}
 
-        {activeTab === "topic" && (
-          Object.keys(questionsByTopic).length > 0 ? (
-            Object.keys(questionsByTopic).map((topic) => (
-              <div key={topic} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <h3 style={{ 
-                  fontSize: "0.85rem", 
-                  fontWeight: "700", 
-                  color: "#0f172a", 
-                  paddingBottom: "4px", 
-                  borderBottom: "1px solid #e2e8f0",
-                  marginTop: "8px",
-                  display: "flex",
-                  justifyContent: "space-between"
-                }}>
-                  <span>{topic}</span>
-                  <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "normal" }}>
-                    {questionsByTopic[topic].length} Questions
-                  </span>
-                </h3>
-                {questionsByTopic[topic].map(renderQuestionCard)}
-              </div>
-            ))
-          ) : (
-            <div style={{ textAlign: "center", padding: "32px", color: "#64748b", fontSize: "0.8rem" }}>
-              No questions found.
+        {activeTab === "unit" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {/* Unit Selector */}
+            <div style={{ display: "flex", gap: "8px", background: "#f1f5f9", padding: "4px", borderRadius: "6px", width: "max-content" }}>
+              {[1, 2].map((u) => {
+                const isSelected = selectedUnit === u;
+                return (
+                  <button
+                    key={u}
+                    onClick={() => setSelectedUnit(u)}
+                    style={{
+                      padding: "6px 16px",
+                      borderRadius: "4px",
+                      border: "none",
+                      background: isSelected ? "#ffffff" : "transparent",
+                      color: isSelected ? "#ea580c" : "#475569",
+                      fontWeight: isSelected ? "700" : "500",
+                      fontSize: "0.8rem",
+                      cursor: "pointer",
+                      boxShadow: isSelected ? "0 1px 3px rgba(0, 0, 0, 0.05)" : "none",
+                      transition: "all 0.15s"
+                    }}
+                  >
+                    Unit {u}
+                  </button>
+                );
+              })}
             </div>
-          )
+
+            {/* Questions list grouped by topic */}
+            {Object.keys(unitQuestionsByTopic).length > 0 ? (
+              Object.keys(unitQuestionsByTopic).map((topic) => (
+                <div key={topic} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h3 style={{ 
+                    fontSize: "0.85rem", 
+                    fontWeight: "700", 
+                    color: "#0f172a", 
+                    paddingBottom: "4px", 
+                    borderBottom: "1px solid #e2e8f0",
+                    marginTop: "8px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                  }}>
+                    <span>{topic}</span>
+                    <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "normal" }}>
+                      {unitQuestionsByTopic[topic].length} Questions
+                    </span>
+                  </h3>
+                  {unitQuestionsByTopic[topic].map(renderQuestionCard)}
+                </div>
+              ))
+            ) : (
+              <div style={{ textAlign: "center", padding: "32px", color: "#64748b", fontSize: "0.8rem" }}>
+                No questions found for Unit {selectedUnit}.
+              </div>
+            )}
+          </div>
         )}
 
         {activeTab === "year" && (

@@ -11,13 +11,16 @@ import {
   ChevronLeft, 
   ChevronRight,
   User,
-  GraduationCap
+  GraduationCap,
+  Menu,
+  X
 } from "lucide-react";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -27,7 +30,12 @@ export default function DashboardLayout({ children }) {
     } else {
       setUser(JSON.parse(storedUser));
     }
-  }, [router, pathname]);
+  }, [router]);
+
+  // Close mobile sidebar drawer on pathname changes
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("paperwise_user");
@@ -57,34 +65,45 @@ export default function DashboardLayout({ children }) {
   ];
 
   return (
-    <div style={{
-      display: "flex",
-      minHeight: "100vh",
-      background: "#f9fafb",
-      fontFamily: "var(--font-inter)",
-      color: "#0f172a"
-    }}>
+    <div className="sidebar-layout">
+      {/* Mobile Drawer Overlay */}
+      {isMobileOpen && (
+        <div 
+          onClick={() => setIsMobileOpen(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(15, 23, 42, 0.4)",
+            backdropFilter: "blur(4px)",
+            zIndex: 90,
+            transition: "opacity 0.2s"
+          }}
+          className="mobile-only"
+        />
+      )}
+
       {/* Sidebar */}
-      <aside style={{
-        width: isSidebarCollapsed ? "68px" : "240px",
-        background: "#ffffff",
-        borderRight: "1px solid #e2e8f0",
-        display: "flex",
-        flexDirection: "column",
-        transition: "width 0.2s ease-in-out",
-        position: "relative",
-        zIndex: 10
-      }}>
+      <aside 
+        className={`sidebar-container ${isSidebarCollapsed ? "sidebar-collapsed" : ""} ${isMobileOpen ? "sidebar-open" : ""}`}
+        style={{
+          // Set dynamic widths for desktop mode via inline style overriding
+          width: undefined // fallback to CSS classes
+        }}
+      >
         {/* Sidebar Header */}
         <div style={{
           height: "64px",
           display: "flex",
           alignItems: "center",
-          justifyContent: isSidebarCollapsed ? "center" : "space-between",
+          justifyContent: "space-between",
           padding: "0 20px",
           borderBottom: "1px solid #e2e8f0"
         }}>
-          {!isSidebarCollapsed && (
+          {/* Mobile view Logo */}
+          <div className="mobile-only">
             <Link href="/dashboard" style={{
               display: "flex",
               alignItems: "center",
@@ -97,13 +116,51 @@ export default function DashboardLayout({ children }) {
                 Paper<span style={{ color: "#f58340" }}>Wise</span>
               </span>
             </Link>
-          )}
-          {isSidebarCollapsed && (
-            <BookOpen size={18} style={{ color: "#f58340" }} />
-          )}
+          </div>
 
+          {/* Desktop view Logo */}
+          <div className="desktop-only" style={{ width: "100%" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: isSidebarCollapsed ? "center" : "space-between", width: "100%" }}>
+              {!isSidebarCollapsed ? (
+                <Link href="/dashboard" style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  textDecoration: "none",
+                  color: "#0f172a"
+                }}>
+                  <BookOpen size={18} style={{ color: "#f58340" }} />
+                  <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
+                    Paper<span style={{ color: "#f58340" }}>Wise</span>
+                  </span>
+                </Link>
+              ) : (
+                <BookOpen size={18} style={{ color: "#f58340" }} />
+              )}
+            </div>
+          </div>
+
+          {/* Close button for Mobile only */}
+          <button
+            onClick={() => setIsMobileOpen(false)}
+            className="mobile-only"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "#64748b",
+              cursor: "pointer",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center"
+            }}
+          >
+            <X size={18} />
+          </button>
+
+          {/* Collapse toggle for Desktop only */}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="desktop-only"
             style={{
               position: "absolute",
               right: "-10px",
@@ -126,7 +183,7 @@ export default function DashboardLayout({ children }) {
         </div>
 
         {/* Profile Card */}
-        {!isSidebarCollapsed && (
+        {(!isSidebarCollapsed || isMobileOpen) && (
           <div style={{
             padding: "12px 14px",
             margin: "12px 12px 0",
@@ -171,11 +228,11 @@ export default function DashboardLayout({ children }) {
                   fontWeight: isActive ? "650" : "500",
                   fontSize: "0.85rem",
                   transition: "all 0.1s ease",
-                  justifyContent: isSidebarCollapsed ? "center" : "flex-start"
+                  justifyContent: (isSidebarCollapsed && !isMobileOpen) ? "center" : "flex-start"
                 }}
               >
                 <Icon size={16} />
-                {!isSidebarCollapsed && <span>{item.name}</span>}
+                {(!isSidebarCollapsed || isMobileOpen) && <span>{item.name}</span>}
               </Link>
             );
           })}
@@ -189,7 +246,7 @@ export default function DashboardLayout({ children }) {
           flexDirection: "column",
           gap: "8px"
         }}>
-          {!isSidebarCollapsed && (
+          {(!isSidebarCollapsed || isMobileOpen) && (
             <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "2px 6px" }}>
               <div style={{
                 width: "28px",
@@ -221,7 +278,7 @@ export default function DashboardLayout({ children }) {
               width: "100%",
               display: "flex",
               alignItems: "center",
-              justifyContent: isSidebarCollapsed ? "center" : "flex-start",
+              justifyContent: (isSidebarCollapsed && !isMobileOpen) ? "center" : "flex-start",
               gap: "10px",
               padding: "8px 12px",
               borderRadius: "6px",
@@ -235,20 +292,13 @@ export default function DashboardLayout({ children }) {
             }}
           >
             <LogOut size={14} />
-            {!isSidebarCollapsed && <span>Log Out</span>}
+            {(!isSidebarCollapsed || isMobileOpen) && <span>Log Out</span>}
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        minWidth: 0,
-        height: "100vh",
-        overflowY: "auto"
-      }}>
+      <div className="main-content">
         {/* Header */}
         <header style={{
           height: "64px",
@@ -260,7 +310,24 @@ export default function DashboardLayout({ children }) {
           padding: "0 24px",
           flexShrink: 0
         }}>
-          <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            {/* Hamburger icon for mobile view */}
+            <button
+              onClick={() => setIsMobileOpen(true)}
+              className="mobile-only"
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "#475569",
+                cursor: "pointer",
+                padding: "4px",
+                display: "flex",
+                alignItems: "center"
+              }}
+            >
+              <Menu size={20} />
+            </button>
+
             <h2 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#475569", letterSpacing: "0.03em" }}>
               {pathname === "/dashboard" && "OVERVIEW"}
               {pathname === "/dashboard/analyzer" && "ANALYZER"}
@@ -269,10 +336,10 @@ export default function DashboardLayout({ children }) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span className="badge badge-orange" style={{ fontWeight: "700" }}>
+            <span className="badge badge-orange desktop-only" style={{ fontWeight: "700" }}>
               ALL ACCESS
             </span>
-            <span className="badge" title={user.college}>
+            <span className="badge" title={user.college} style={{ maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {user.college && user.college.includes("(") ? user.college.split("(")[1].replace(")", "") : (user.college || "SSCBS")}
             </span>
           </div>
