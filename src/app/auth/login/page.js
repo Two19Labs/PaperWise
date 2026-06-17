@@ -115,9 +115,9 @@ export default function LoginPage() {
             width: "40px",
             height: "40px",
             borderRadius: "6px",
-            background: "#f5f3ff",
-            border: "1px solid rgba(124, 58, 237, 0.2)",
-            color: "#7c3aed",
+            background: "#fdf2f2",
+            border: "1px solid rgba(158, 42, 43, 0.2)",
+            color: "#9e2a2b",
             marginBottom: "12px",
           }}>
             <BookOpen size={20} />
@@ -210,7 +210,7 @@ export default function LoginPage() {
               </label>
               <a href="#" style={{
                 fontSize: "0.75rem",
-                color: "#7c3aed",
+                color: "#9e2a2b",
                 textDecoration: "underline"
               }}>
                 Forgot?
@@ -271,7 +271,7 @@ export default function LoginPage() {
         }}>
           Don&apos;t have an account?{" "}
           <Link href="/auth/signup" style={{
-            color: "#7c3aed",
+            color: "#9e2a2b",
             fontWeight: "600",
             textDecoration: "underline"
           }}>

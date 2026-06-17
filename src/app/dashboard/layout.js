@@ -168,9 +168,9 @@ export default function DashboardLayout({ children }) {
               textDecoration: "none",
               color: "#0f172a"
             }}>
-              <BookOpen size={18} style={{ color: "#7c3aed" }} />
+              <BookOpen size={18} style={{ color: "#9e2a2b" }} />
               <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
-                Paper<span style={{ color: "#7c3aed" }}>Wise</span>
+                Paper<span style={{ color: "#9e2a2b" }}>Wise</span>
               </span>
             </Link>
           </div>
@@ -186,13 +186,13 @@ export default function DashboardLayout({ children }) {
                   textDecoration: "none",
                   color: "#0f172a"
                 }}>
-                  <BookOpen size={18} style={{ color: "#7c3aed" }} />
+                  <BookOpen size={18} style={{ color: "#9e2a2b" }} />
                   <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
-                    Paper<span style={{ color: "#7c3aed" }}>Wise</span>
+                    Paper<span style={{ color: "#9e2a2b" }}>Wise</span>
                   </span>
                 </Link>
               ) : (
-                <BookOpen size={18} style={{ color: "#7c3aed" }} />
+                <BookOpen size={18} style={{ color: "#9e2a2b" }} />
               )}
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function DashboardLayout({ children }) {
             borderRadius: "6px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
-              <GraduationCap size={14} style={{ color: "#7c3aed" }} />
+              <GraduationCap size={14} style={{ color: "#9e2a2b" }} />
               <span style={{ fontSize: "0.65rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.05em" }}>
                 DU ACADEMIC PORTAL
               </span>
@@ -278,9 +278,9 @@ export default function DashboardLayout({ children }) {
                   gap: "10px",
                   padding: "10px 12px",
                   borderRadius: "6px",
-                  color: isActive ? "#6d28d9" : "#475569",
-                  background: isActive ? "#f5f3ff" : "transparent",
-                  border: isActive ? "1px solid rgba(124, 58, 237, 0.15)" : "1px solid transparent",
+                  color: isActive ? "#7f1d1d" : "#475569",
+                  background: isActive ? "#fdf2f2" : "transparent",
+                  border: isActive ? "1px solid rgba(158, 42, 43, 0.15)" : "1px solid transparent",
                   textDecoration: "none",
                   fontWeight: isActive ? "650" : "500",
                   fontSize: "0.85rem",

@@ -230,7 +230,7 @@ export default function AnalyzerPage() {
             style={{
               background: "transparent",
               border: "none",
-              color: "#7c3aed",
+              color: "#9e2a2b",
               fontSize: "0.7rem",
               fontWeight: "600",
               cursor: "pointer",
@@ -257,9 +257,9 @@ export default function AnalyzerPage() {
                   style={{
                     padding: "5px 14px",
                     borderRadius: "16px",
-                    border: isSelected ? "1.5px solid #7c3aed" : "1px solid #e2e8f0",
-                    background: isSelected ? "#f5f3ff" : "#f9fafb",
-                    color: isSelected ? "#6d28d9" : "#475569",
+                    border: isSelected ? "1.5px solid #9e2a2b" : "1px solid #e2e8f0",
+                    background: isSelected ? "#fdf2f2" : "#f9fafb",
+                    color: isSelected ? "#7f1d1d" : "#475569",
                     fontSize: "0.75rem",
                     fontWeight: isSelected ? "700" : "500",
                     cursor: "pointer",
@@ -345,9 +345,9 @@ export default function AnalyzerPage() {
                     style={{
                       padding: "3px 8px",
                       borderRadius: "4px",
-                      border: isSelected ? "1px solid #7c3aed" : "1px solid #e2e8f0",
-                      background: isSelected ? "#f5f3ff" : "transparent",
-                      color: isSelected ? "#6d28d9" : "#475569",
+                      border: isSelected ? "1px solid #9e2a2b" : "1px solid #e2e8f0",
+                      background: isSelected ? "#fdf2f2" : "transparent",
+                      color: isSelected ? "#7f1d1d" : "#475569",
                       fontSize: "0.7rem",
                       fontWeight: "600",
                       cursor: "pointer",
@@ -379,7 +379,7 @@ export default function AnalyzerPage() {
                     name="statusFilter"
                     checked={selectedStatus === opt.id}
                     onChange={() => setSelectedStatus(opt.id)}
-                    style={{ accentColor: "#7c3aed" }}
+                    style={{ accentColor: "#9e2a2b" }}
                   />
                   <span>{opt.label}</span>
                 </label>
@@ -435,12 +435,12 @@ export default function AnalyzerPage() {
               width: "48px",
               height: "48px",
               borderRadius: "50%",
-              background: "#f5f3ff",
-              border: "1px solid rgba(124, 58, 237, 0.2)",
+              background: "#fdf2f2",
+              border: "1px solid rgba(158, 42, 43, 0.2)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#7c3aed"
+              color: "#9e2a2b"
             }}>
               <Filter size={20} />
             </div>
@@ -556,7 +556,7 @@ export default function AnalyzerPage() {
                       className="glass-panel"
                       style={{
                         padding: "24px",
-                        borderLeft: isSolved ? "4px solid #7c3aed" : "1px solid #e2e8f0",
+                        borderLeft: isSolved ? "4px solid #9e2a2b" : "1px solid #e2e8f0",
                         background: "#ffffff",
                         display: "flex",
                         flexDirection: "column",
@@ -584,7 +584,7 @@ export default function AnalyzerPage() {
                             onChange={() => handleToggleCompletion(activeQuestion.id)}
                           />
                           <span className="checkmark" />
-                          <span style={{ color: isSolved ? "#7c3aed" : "#475569" }}>
+                          <span style={{ color: isSolved ? "#9e2a2b" : "#475569" }}>
                             {isSolved ? "Solved" : "Mark Solved"}
                           </span>
                         </label>
@@ -638,7 +638,7 @@ export default function AnalyzerPage() {
                           marginTop: "8px",
                           boxShadow: "inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)"
                         }}>
-                          <div style={{ fontWeight: "700", color: "#7c3aed", marginBottom: "8px", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
+                          <div style={{ fontWeight: "700", color: "#9e2a2b", marginBottom: "8px", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
                             SOLUTION WORKTHROUGH
                           </div>
                           <div style={{ whiteSpace: "pre-wrap" }}><Latex>{activeQuestion.solution}</Latex></div>
@@ -666,7 +666,7 @@ export default function AnalyzerPage() {
             COMPLETION RATE
           </span>
           <div style={{ display: "flex", alignItems: "baseline", gap: "4px" }}>
-            <span style={{ fontSize: "1.5rem", fontWeight: "800", color: "#7c3aed" }}>
+            <span style={{ fontSize: "1.5rem", fontWeight: "800", color: "#9e2a2b" }}>
               {progressPercent}%
             </span>
             <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
@@ -680,7 +680,7 @@ export default function AnalyzerPage() {
             borderRadius: "2px",
             overflow: "hidden"
           }}>
-            <div style={{ width: `${progressPercent}%`, height: "100%", background: "#7c3aed" }} />
+            <div style={{ width: `${progressPercent}%`, height: "100%", background: "#9e2a2b" }} />
           </div>
         </div>
 

@@ -85,7 +85,7 @@ export default function SubjectPage() {
     return (
       <div style={{ textAlign: "center", padding: "40px" }}>
         <h3 style={{ color: "#ef4444" }}>Subject not found</h3>
-        <Link href="/dashboard" style={{ color: "#7c3aed", marginTop: "12px", display: "inline-block" }}>
+        <Link href="/dashboard" style={{ color: "#9e2a2b", marginTop: "12px", display: "inline-block" }}>
           Return to Dashboard
         </Link>
       </div>
@@ -169,7 +169,7 @@ export default function SubjectPage() {
           display: "flex", 
           flexDirection: "column", 
           gap: "12px",
-          borderLeft: isCompleted ? "3px solid #7c3aed" : "1px solid #e2e8f0",
+          borderLeft: isCompleted ? "3px solid #9e2a2b" : "1px solid #e2e8f0",
           background: "#ffffff"
         }}
       >
@@ -238,7 +238,7 @@ export default function SubjectPage() {
             lineHeight: "1.5",
             color: "#334155"
           }}>
-            <div style={{ fontWeight: "700", color: "#7c3aed", marginBottom: "6px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
+            <div style={{ fontWeight: "700", color: "#9e2a2b", marginBottom: "6px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
               SOLUTION WORKTHROUGH
             </div>
             <div style={{ whiteSpace: "pre-wrap" }}><Latex text={q.solution} /></div>
@@ -289,20 +289,20 @@ export default function SubjectPage() {
           display: "flex",
           flexDirection: "column",
           gap: "4px",
-          background: "#f5f3ff",
-          border: "1px solid rgba(124, 58, 237, 0.25)",
+          background: "#fdf2f2",
+          border: "1px solid rgba(158, 42, 43, 0.25)",
           padding: "10px 16px",
           borderRadius: "6px",
           alignItems: "flex-end"
         }}>
-          <span style={{ fontSize: "0.65rem", color: "#6d28d9", fontWeight: "700", letterSpacing: "0.05em" }}>
+          <span style={{ fontSize: "0.65rem", color: "#7f1d1d", fontWeight: "700", letterSpacing: "0.05em" }}>
             SYLLABUS PROGRESS
           </span>
           <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-            <span style={{ fontSize: "1.15rem", fontWeight: "800", color: "#6d28d9" }}>
+            <span style={{ fontSize: "1.15rem", fontWeight: "800", color: "#7f1d1d" }}>
               {completedInSubject.length} / {subjectQuestions.length}
             </span>
-            <span style={{ fontSize: "0.8rem", color: "#6d28d9", fontWeight: "600" }}>
+            <span style={{ fontSize: "0.8rem", color: "#7f1d1d", fontWeight: "600" }}>
               ({progressRate}%)
             </span>
           </div>
@@ -334,11 +334,11 @@ export default function SubjectPage() {
                 padding: "10px 2px",
                 border: "none",
                 background: "transparent",
-                color: isActive ? "#6d28d9" : "#64748b",
+                color: isActive ? "#7f1d1d" : "#64748b",
                 fontWeight: isActive ? "650" : "500",
                 fontSize: "0.85rem",
                 cursor: "pointer",
-                borderBottom: isActive ? "2px solid #7c3aed" : "2px solid transparent",
+                borderBottom: isActive ? "2px solid #9e2a2b" : "2px solid transparent",
                 transition: "all 0.1s ease",
                 marginBottom: "-1px"
               }}
@@ -377,7 +377,7 @@ export default function SubjectPage() {
                       borderRadius: "4px",
                       border: "none",
                       background: isSelected ? "#ffffff" : "transparent",
-                      color: isSelected ? "#6d28d9" : "#475569",
+                      color: isSelected ? "#7f1d1d" : "#475569",
                       fontWeight: isSelected ? "700" : "500",
                       fontSize: "0.8rem",
                       cursor: "pointer",

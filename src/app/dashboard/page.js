@@ -135,9 +135,9 @@ export default function DashboardHome() {
             width: "36px",
             height: "36px",
             borderRadius: "6px",
-            background: "#f5f3ff",
-            border: "1px solid rgba(124, 58, 237, 0.2)",
-            color: "#7c3aed",
+            background: "#fdf2f2",
+            border: "1px solid rgba(158, 42, 43, 0.2)",
+            color: "#9e2a2b",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -158,9 +158,9 @@ export default function DashboardHome() {
             width: "36px",
             height: "36px",
             borderRadius: "6px",
-            background: "#f5f3ff",
-            border: "1px solid rgba(124, 58, 237, 0.2)",
-            color: "#7c3aed",
+            background: "#fdf2f2",
+            border: "1px solid rgba(158, 42, 43, 0.2)",
+            color: "#9e2a2b",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -181,9 +181,9 @@ export default function DashboardHome() {
             width: "36px",
             height: "36px",
             borderRadius: "6px",
-            background: "#f5f3ff",
-            border: "1px solid rgba(124, 58, 237, 0.2)",
-            color: "#7c3aed",
+            background: "#fdf2f2",
+            border: "1px solid rgba(158, 42, 43, 0.2)",
+            color: "#9e2a2b",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -246,7 +246,7 @@ export default function DashboardHome() {
                       <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
                         {subject.completedCount} / {subject.totalCount} done
                       </div>
-                      <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#7c3aed", marginTop: "2px" }}>
+                      <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#9e2a2b", marginTop: "2px" }}>
                         {subject.progress}%
                       </div>
                     </div>
@@ -264,7 +264,7 @@ export default function DashboardHome() {
                     <div style={{
                       width: `${subject.progress}%`,
                       height: "100%",
-                      background: "#7c3aed",
+                      background: "#9e2a2b",
                       borderRadius: "2px",
                       transition: "width 0.3s"
                     }} />
@@ -283,7 +283,7 @@ export default function DashboardHome() {
                       style={{
                         fontSize: "0.75rem",
                         fontWeight: "650",
-                        color: "#7c3aed",
+                        color: "#9e2a2b",
                         display: "flex",
                         alignItems: "center",
                         gap: "2px",

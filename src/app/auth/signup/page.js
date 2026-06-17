@@ -147,7 +147,7 @@ export default function SignupPage() {
                   height: "3px",
                   width: "24px",
                   borderRadius: "1.5px",
-                  background: s <= step ? "#7c3aed" : "#e2e8f0",
+                  background: s <= step ? "#9e2a2b" : "#e2e8f0",
                   transition: "all 0.2s ease",
                 }}
               />
@@ -323,9 +323,9 @@ export default function SignupPage() {
                       padding: "16px",
                       borderRadius: "6px",
                       cursor: "pointer",
-                      background: isSelected ? "#f5f3ff" : "#ffffff",
-                      border: isSelected ? "1px solid #7c3aed" : "1px solid #e2e8f0",
-                      color: isSelected ? "#6d28d9" : "#475569",
+                      background: isSelected ? "#fcf2f2" : "#ffffff",
+                      border: isSelected ? "1px solid #9e2a2b" : "1px solid #e2e8f0",
+                      color: isSelected ? "#9e2a2b" : "#475569",
                       transition: "all 0.15s",
                       display: "flex",
                       justifyContent: "space-between",
@@ -337,7 +337,7 @@ export default function SignupPage() {
                         {college.name}
                       </div>
                     </div>
-                    {isSelected && <Check size={14} style={{ color: "#6d28d9" }} />}
+                    {isSelected && <Check size={14} style={{ color: "#9e2a2b" }} />}
                   </div>
                 );
               })}
@@ -377,9 +377,9 @@ export default function SignupPage() {
                       padding: "12px 16px",
                       borderRadius: "6px",
                       cursor: "pointer",
-                      background: isSelected ? "#f5f3ff" : "#ffffff",
-                      border: isSelected ? "1px solid #7c3aed" : "1px solid #e2e8f0",
-                      color: isSelected ? "#6d28d9" : "#475569",
+                      background: isSelected ? "#fcf2f2" : "#ffffff",
+                      border: isSelected ? "1px solid #9e2a2b" : "1px solid #e2e8f0",
+                      color: isSelected ? "#9e2a2b" : "#475569",
                       transition: "all 0.15s",
                       display: "flex",
                       justifyContent: "space-between",
@@ -394,7 +394,7 @@ export default function SignupPage() {
                         Syllabus: UGCF NEP
                       </div>
                     </div>
-                    {isSelected && <Check size={14} style={{ color: "#6d28d9" }} />}
+                    {isSelected && <Check size={14} style={{ color: "#9e2a2b" }} />}
                   </div>
                 );
               })}
@@ -431,7 +431,7 @@ export default function SignupPage() {
           }}>
             Already have an account?{" "}
             <Link href="/auth/login" style={{
-              color: "#7c3aed",
+              color: "#9e2a2b",
               fontWeight: "600",
               textDecoration: "underline"
             }}>

@@ -24,9 +24,9 @@ export default function LandingPage() {
         padding: "0 24px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <BookOpen size={20} style={{ color: "#7c3aed" }} />
+          <BookOpen size={20} style={{ color: "#9e2a2b" }} />
           <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em", fontFamily: "var(--font-outfit)" }}>
-            Paper<span style={{ color: "#7c3aed" }}>Wise</span>
+            Paper<span style={{ color: "#9e2a2b" }}>Wise</span>
           </span>
         </div>
 
@@ -39,7 +39,7 @@ export default function LandingPage() {
           }}>
             Sign In
           </Link>
-          <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "0.8rem", background: "#7c3aed" }}>
+          <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "0.8rem", background: "#9e2a2b" }}>
             Sign Up Free
           </Link>
         </nav>
@@ -57,9 +57,9 @@ export default function LandingPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
-            background: "#f5f3ff",
-            border: "1px solid rgba(124, 58, 237, 0.25)",
-            color: "#6d28d9",
+            background: "#fdf2f2",
+            border: "1px solid rgba(158, 42, 43, 0.25)",
+            color: "#7f1d1d",
             padding: "4px 10px",
             borderRadius: "4px",
             fontSize: "0.75rem",
@@ -92,7 +92,7 @@ export default function LandingPage() {
           </p>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
-            <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "10px 20px", background: "#7c3aed" }}>
+            <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "10px 20px", background: "#9e2a2b" }}>
               Get Started <ArrowRight size={14} />
             </Link>
             <Link href="/auth/login" className="btn btn-secondary" style={{ padding: "10px 20px" }}>
@@ -147,9 +147,9 @@ export default function LandingPage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "6px",
-                background: "#f5f3ff",
-                border: "1px solid rgba(124, 58, 237, 0.2)",
-                color: "#7c3aed",
+                background: "#fdf2f2",
+                border: "1px solid rgba(158, 42, 43, 0.2)",
+                color: "#9e2a2b",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -169,9 +169,9 @@ export default function LandingPage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "6px",
-                background: "#f5f3ff",
-                border: "1px solid rgba(124, 58, 237, 0.2)",
-                color: "#7c3aed",
+                background: "#fdf2f2",
+                border: "1px solid rgba(158, 42, 43, 0.2)",
+                color: "#9e2a2b",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -191,9 +191,9 @@ export default function LandingPage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "6px",
-                background: "#f5f3ff",
-                border: "1px solid rgba(124, 58, 237, 0.2)",
-                color: "#7c3aed",
+                background: "#fdf2f2",
+                border: "1px solid rgba(158, 42, 43, 0.2)",
+                color: "#9e2a2b",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -220,7 +220,7 @@ export default function LandingPage() {
         color: "#64748b"
       }}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
-          <BookOpen size={14} style={{ color: "#7c3aed" }} />
+          <BookOpen size={14} style={{ color: "#9e2a2b" }} />
           <span style={{ fontWeight: "700", color: "#0f172a", fontFamily: "var(--font-outfit)" }}>PaperWise</span>
         </div>
         <p>© 2026 PaperWise. Designed by SSCBS students for the entirety of Delhi University.</p>

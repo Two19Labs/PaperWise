@@ -16,10 +16,10 @@
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   
-  /* Delhi University Royal Purple / Violet Brand Accents */
-  --accent-orange: #7c3aed;
-  --accent-orange-hover: #6d28d9;
-  --accent-orange-light: #f5f3ff;
+  /* Delhi University Brick Red Brand Accents */
+  --accent-orange: #9e2a2b;
+  --accent-orange-hover: #7f1d1d;
+  --accent-orange-light: #fdf2f2;
   
   --success: #10b981;
   --error: #ef4444;
@@ -151,7 +151,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .badge-orange {
-  border-color: rgba(124, 58, 237, 0.3);
+  border-color: rgba(158, 42, 43, 0.3);
   color: var(--accent-orange);
   background: var(--accent-orange-light);
 }
@@ -190,7 +190,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .input-control:focus {
   border-color: var(--accent-orange);
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 0 2px rgba(158, 42, 43, 0.15);
 }
 
 .input-control::placeholder {
