@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { courses } from "@/data/courses";
+import { courses, normalizeCourseId } from "@/data/courses";
 import { questions } from "@/data/questions";
 import Latex from "@/components/Latex";
 import { 
@@ -45,6 +45,7 @@ export default function AnalyzerPage() {
       return;
     }
     const parsed = JSON.parse(storedUser);
+    parsed.courseId = normalizeCourseId(parsed.courseId);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
 
@@ -61,7 +62,11 @@ export default function AnalyzerPage() {
 
         if (profile && profile.completed_questions) {
           setCompletedList(profile.completed_questions);
-          const freshUser = { ...parsed, completedQuestions: profile.completed_questions };
+          const freshUser = { 
+            ...parsed, 
+            courseId: normalizeCourseId(parsed.courseId),
+            completedQuestions: profile.completed_questions 
+          };
           setUser(freshUser);
           localStorage.setItem("paperwise_user", JSON.stringify(freshUser));
         }
@@ -78,7 +83,7 @@ export default function AnalyzerPage() {
   }
 
   // Load the user's course data
-  const userCourse = courses.find(c => c.id === user.courseId) || courses[0];
+  const userCourse = courses.find(c => c.id === normalizeCourseId(user.courseId)) || courses[0];
   const semesterKeys = Object.keys(userCourse.semesters).map(Number).sort((a, b) => a - b);
 
   // Build subject list from selected semesters

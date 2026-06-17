@@ -16,6 +16,7 @@ import {
   X
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { normalizeCourseId } from "@/data/courses";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -28,7 +29,9 @@ export default function DashboardLayout({ children }) {
     // 1. Load from localStorage for instant render
     const storedUser = localStorage.getItem("paperwise_user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsed = JSON.parse(storedUser);
+      parsed.courseId = normalizeCourseId(parsed.courseId);
+      setUser(parsed);
     }
 
     // 2. Check active Supabase session
@@ -55,7 +58,7 @@ export default function DashboardLayout({ children }) {
           name: profile.name,
           college: profile.college_name,
           collegeId: profile.college_id,
-          courseId: profile.course_id,
+          courseId: normalizeCourseId(profile.course_id),
           courseName: profile.course_name,
           completedQuestions: profile.completed_questions || []
         };

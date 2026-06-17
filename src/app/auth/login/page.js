@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, ArrowRight, BookOpen } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { normalizeCourseId } from "@/data/courses";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function LoginPage() {
             name: nameFallback,
             college: data.user.user_metadata?.college_name || "Shaheed Sukhdev College of Business Studies (SSCBS)",
             collegeId: data.user.user_metadata?.college_id || "sscbs",
-            courseId: data.user.user_metadata?.course_id || "bsc_cs",
+            courseId: normalizeCourseId(data.user.user_metadata?.course_id || "bsc_cs"),
             courseName: data.user.user_metadata?.course_name || "B.Sc. (Hons.) Computer Science [B.Sc. Comp Science]",
             completedQuestions: []
           })
@@ -69,7 +70,7 @@ export default function LoginPage() {
             name: profile.name,
             college: profile.college_name,
             collegeId: profile.college_id,
-            courseId: profile.course_id,
+            courseId: normalizeCourseId(profile.course_id),
             courseName: profile.course_name,
             completedQuestions: profile.completed_questions || []
           })

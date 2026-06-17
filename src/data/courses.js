@@ -9071,3 +9071,12 @@ export const courses = [
     }
   }
 ];
+
+export function normalizeCourseId(courseId) {
+  if (!courseId) return "sscbs_bachelor_of_management_studies_bms";
+  if (courseId === "bms") return "sscbs_bachelor_of_management_studies_bms";
+  if (courseId === "bsc_cs") return "sscbs_b_sc_h_computer_science";
+  if (courseId === "fia") return "sscbs_bachelor_of_business_administration_financial_investment_analysis";
+  return courseId;
+}
+

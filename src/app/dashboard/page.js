@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { courses } from "@/data/courses";
+import { courses, normalizeCourseId } from "@/data/courses";
 import { questions } from "@/data/questions";
 import { BookOpen, CheckCircle, Award, Calendar, ChevronRight, Play } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -25,7 +25,7 @@ export default function DashboardHome() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
-    setActiveCourseId(parsed.courseId || "bms");
+    setActiveCourseId(normalizeCourseId(parsed.courseId));
 
     const syncProfile = async () => {
       try {
@@ -44,7 +44,7 @@ export default function DashboardHome() {
             name: profile.name,
             college: profile.college_name,
             collegeId: profile.college_id,
-            courseId: profile.course_id,
+            courseId: normalizeCourseId(profile.course_id),
             courseName: profile.course_name,
             completedQuestions: profile.completed_questions || []
           };
