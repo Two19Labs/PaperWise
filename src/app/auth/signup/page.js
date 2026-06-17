@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { courses } from "@/data/courses";
+import { colleges } from "@/data/colleges";
 import { Mail, Lock, User, ArrowRight, ArrowLeft, BookOpen, Check } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -14,14 +15,12 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  // Colleges list
-  const colleges = [
-    { id: "sscbs", name: "Shaheed Sukhdev College of Business Studies (SSCBS)" },
-    { id: "srcc", name: "Shri Ram College of Commerce (SRCC)" }
-  ];
+  // Search state filters
+  const [collegeSearchQuery, setCollegeSearchQuery] = useState("");
+  const [courseSearchQuery, setCourseSearchQuery] = useState("");
 
   // Onboarding states
-  const [selectedCollegeId, setSelectedCollegeId] = useState("sscbs");
+  const [selectedCollegeId, setSelectedCollegeId] = useState("acharya_narendra_dev");
   const [selectedCourseId, setSelectedCourseId] = useState("");
   
   const [error, setError] = useState("");
@@ -62,7 +61,7 @@ export default function SignupPage() {
     setSuccessMessage("");
 
     const collegeObj = colleges.find(c => c.id === selectedCollegeId);
-    const collegeName = collegeObj ? collegeObj.name : "Shaheed Sukhdev College of Business Studies (SSCBS)";
+    const collegeName = collegeObj ? collegeObj.name : "Delhi University College";
     const courseObj = courses.find(c => c.id === selectedCourseId);
     const courseName = courseObj ? courseObj.name : "Custom Course";
 
@@ -172,7 +171,7 @@ export default function SignupPage() {
           </h1>
           <p style={{ color: "#475569", fontSize: "0.8rem" }}>
             {step === 1 && "Start tracking and analyzing your Delhi University (DU) past papers."}
-            {step === 2 && "Delhi University Colleges (SSCBS & SRCC live, more coming soon!)"}
+            {step === 2 && "Select your college from the official Delhi University list."}
             {step === 3 && "You will have full access to all semesters and subjects."}
           </p>
         </div>
@@ -310,37 +309,60 @@ export default function SignupPage() {
         {step === 2 && (
           <div>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
-              {colleges.map((college) => {
-                const isSelected = selectedCollegeId === college.id;
-                return (
-                  <div
-                    key={college.id}
-                    onClick={() => {
-                      setSelectedCollegeId(college.id);
-                      setSelectedCourseId(""); // Reset course if college changes
-                    }}
-                    style={{
-                      padding: "16px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      background: isSelected ? "#fcf2f2" : "#ffffff",
-                      border: isSelected ? "1px solid #9e2a2b" : "1px solid #e2e8f0",
-                      color: isSelected ? "#9e2a2b" : "#475569",
-                      transition: "all 0.15s",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center"
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>
-                        {college.name}
+              <input
+                type="text"
+                placeholder="Search college..."
+                value={collegeSearchQuery}
+                onChange={(e) => setCollegeSearchQuery(e.target.value)}
+                className="input-control"
+                style={{ padding: "8px 12px", fontSize: "0.85rem" }}
+              />
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                maxHeight: "240px",
+                overflowY: "auto",
+                paddingRight: "4px"
+              }}>
+                {colleges.filter(c => c.name.toLowerCase().includes(collegeSearchQuery.toLowerCase())).map((college) => {
+                  const isSelected = selectedCollegeId === college.id;
+                  return (
+                    <div
+                      key={college.id}
+                      onClick={() => {
+                        setSelectedCollegeId(college.id);
+                        setSelectedCourseId(""); // Reset course if college changes
+                        setCourseSearchQuery(""); // Reset course search
+                      }}
+                      style={{
+                        padding: "12px 14px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        background: isSelected ? "#fcf2f2" : "#ffffff",
+                        border: isSelected ? "1px solid #9e2a2b" : "1px solid #e2e8f0",
+                        color: isSelected ? "#9e2a2b" : "#475569",
+                        transition: "all 0.15s",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>
+                          {college.name}
+                        </div>
                       </div>
+                      {isSelected && <Check size={14} style={{ color: "#9e2a2b" }} />}
                     </div>
-                    {isSelected && <Check size={14} style={{ color: "#9e2a2b" }} />}
+                  );
+                })}
+                {colleges.filter(c => c.name.toLowerCase().includes(collegeSearchQuery.toLowerCase())).length === 0 && (
+                  <div style={{ textAlign: "center", padding: "12px", color: "#64748b", fontSize: "0.8rem" }}>
+                    No colleges match your search.
                   </div>
-                );
-              })}
+                )}
+              </div>
             </div>
 
             <div style={{ display: "flex", gap: "10px" }}>
@@ -367,37 +389,59 @@ export default function SignupPage() {
         {step === 3 && (
           <div>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
-              {courses.filter(c => c.collegeId === selectedCollegeId).map((course) => {
-                const isSelected = selectedCourseId === course.id;
-                return (
-                  <div
-                    key={course.id}
-                    onClick={() => setSelectedCourseId(course.id)}
-                    style={{
-                      padding: "12px 16px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      background: isSelected ? "#fcf2f2" : "#ffffff",
-                      border: isSelected ? "1px solid #9e2a2b" : "1px solid #e2e8f0",
-                      color: isSelected ? "#9e2a2b" : "#475569",
-                      transition: "all 0.15s",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center"
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontWeight: "600", fontSize: "0.85rem", marginBottom: "2px" }}>
-                        {course.name}
+              <input
+                type="text"
+                placeholder="Search course..."
+                value={courseSearchQuery}
+                onChange={(e) => setCourseSearchQuery(e.target.value)}
+                className="input-control"
+                style={{ padding: "8px 12px", fontSize: "0.85rem" }}
+              />
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                maxHeight: "240px",
+                overflowY: "auto",
+                paddingRight: "4px"
+              }}>
+                {courses.filter(c => c.collegeId === selectedCollegeId).filter(c => c.name.toLowerCase().includes(courseSearchQuery.toLowerCase())).map((course) => {
+                  const isSelected = selectedCourseId === course.id;
+                  return (
+                    <div
+                      key={course.id}
+                      onClick={() => setSelectedCourseId(course.id)}
+                      style={{
+                        padding: "12px 14px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        background: isSelected ? "#fcf2f2" : "#ffffff",
+                        border: isSelected ? "1px solid #9e2a2b" : "1px solid #e2e8f0",
+                        color: isSelected ? "#9e2a2b" : "#475569",
+                        transition: "all 0.15s",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: "600", fontSize: "0.85rem", marginBottom: "2px" }}>
+                          {course.name}
+                        </div>
+                        <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
+                          Syllabus: UGCF NEP
+                        </div>
                       </div>
-                      <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                        Syllabus: UGCF NEP
-                      </div>
+                      {isSelected && <Check size={14} style={{ color: "#9e2a2b" }} />}
                     </div>
-                    {isSelected && <Check size={14} style={{ color: "#9e2a2b" }} />}
+                  );
+                })}
+                {courses.filter(c => c.collegeId === selectedCollegeId).filter(c => c.name.toLowerCase().includes(courseSearchQuery.toLowerCase())).length === 0 && (
+                  <div style={{ textAlign: "center", padding: "12px", color: "#64748b", fontSize: "0.8rem" }}>
+                    No courses match your search.
                   </div>
-                );
-              })}
+                )}
+              </div>
             </div>
 
             <div style={{ display: "flex", gap: "10px" }}>
