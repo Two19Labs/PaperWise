@@ -456,6 +456,95 @@ export const questions = [
     text: "What is 360-degree performance appraisal and who are the key evaluators?",
     solution: "It is a holistic appraisal method gathering feedback from all directions:\nSuperiors, Peers, Subordinates, Customers, and Self-evaluation."
   },
+  // Semester 4
+  {
+    id: "bms_4_1_q1",
+    subjectId: "bms_4_1",
+    year: 2024,
+    type: "Long",
+    difficulty: "Medium",
+    topic: "Research Design",
+    subtopic: "Exploratory vs Conclusive",
+    marks: 10,
+    text: "Distinguish between exploratory, descriptive, and causal research designs with appropriate business examples.",
+    solution: "Exploratory research gathers preliminary information. Descriptive research profiles features. Causal research tests hypothesis about cause-and-effect relationships."
+  },
+  {
+    id: "bms_4_2_q1",
+    subjectId: "bms_4_2",
+    year: 2024,
+    type: "Short",
+    difficulty: "Easy",
+    topic: "Money Market",
+    subtopic: "Treasury Bills",
+    marks: 5,
+    text: "What are Treasury Bills (T-Bills) and how do they function in the money market?",
+    solution: "T-Bills are short-term debt instruments issued by the Central Government to meet short-term financial requirements. They are zero-coupon bonds sold at discount and redeemed at par."
+  },
+  // Semester 5
+  {
+    id: "bms_5_1_q1",
+    subjectId: "bms_5_1",
+    year: 2024,
+    type: "Long",
+    difficulty: "Medium",
+    topic: "Linear Programming",
+    subtopic: "Simplex Method",
+    marks: 10,
+    text: "Solve the following Linear Programming Problem using the graphical method:\nMaximize $Z = 3x_1 + 5x_2$\nsubject to:\n$x_1 + 2x_2 \\le 2000$\n$x_1 + x_2 \\le 1500$\n$x_2 \\le 600$\n$x_1, x_2 \\ge 0$",
+    solution: "Plot the constraints and locate the feasible region vertices: $(0,0)$, $(1500,0)$, $(1000,500)$, $(800,600)$, $(0,600)$. The maximum value is at $(1000,500)$ where $Z = 3000 + 2500 = 5500$."
+  },
+  {
+    id: "bms_5_2_q1",
+    subjectId: "bms_5_2",
+    year: 2024,
+    type: "Short",
+    difficulty: "Medium",
+    topic: "Corporate Strategy",
+    subtopic: "BCG Matrix",
+    marks: 5,
+    text: "Briefly explain the four quadrants of the Boston Consulting Group (BCG) matrix: Cash Cows, Stars, Question Marks, and Dogs.",
+    solution: "- **Stars**: High market share, high growth.\n- **Cash Cows**: High market share, low growth.\n- **Question Marks**: Low market share, high growth.\n- **Dogs**: Low market share, low growth."
+  },
+  // Semester 6
+  {
+    id: "bms_6_1_q1",
+    subjectId: "bms_6_1",
+    year: 2024,
+    type: "Long",
+    difficulty: "Medium",
+    topic: "Policy Formulation",
+    subtopic: "SWOT Analysis",
+    marks: 10,
+    text: "How does SWOT analysis assist in the formulation of business policies? Provide a real-world case study.",
+    solution: "SWOT analysis evaluates internal Strengths and Weaknesses alongside external Opportunities and Threats. It bridges internal capabilities with competitive market landscapes to formulate viable corporate policies."
+  },
+  // Semester 7
+  {
+    id: "bms_7_1_q1",
+    subjectId: "bms_7_1",
+    year: 2024,
+    type: "Long",
+    difficulty: "Medium",
+    topic: "Board Structure",
+    subtopic: "Independent Directors",
+    marks: 10,
+    text: "Discuss the role of independent directors in ensuring effective corporate governance. Cite key regulatory frameworks under Companies Act 2013.",
+    solution: "Independent directors bring objectivity to the board, protect minority shareholder interests, audit financials unbiasedly, and comply with Section 149 of the Companies Act 2013."
+  },
+  // Semester 8
+  {
+    id: "bms_8_1_q1",
+    subjectId: "bms_8_1",
+    year: 2024,
+    type: "Short",
+    difficulty: "Easy",
+    topic: "Academic Writing",
+    subtopic: "Citation Styles",
+    marks: 5,
+    text: "Briefly explain the difference between APA and Harvard referencing systems used in management dissertations.",
+    solution: "- **APA Style**: Author-date system, uses parenthetical reference, e.g., (Smith, 2023). Uses specific references format.\n- **Harvard Style**: Author-date system, similar but spacing and punctuation conventions in bibliography formatting differ."
+  },
 
   // ==========================================
   // BBA (FIA) (fia_*)

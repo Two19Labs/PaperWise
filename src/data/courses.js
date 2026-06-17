@@ -6836,9 +6836,38 @@ export const courses = [
     "name": "Bachelor of Management Studies (BMS)",
     "durationSemesters": 8,
     "semesters": {
-      "1": [],
-      "2": [],
-      "3": []
+      "1": [
+        { "id": "bms_1_1", "name": "Microeconomics", "code": "DSC-1", "type": "DSC" },
+        { "id": "bms_1_2", "name": "Financial Accounting & Analysis", "code": "DSC-2", "type": "DSC" },
+        { "id": "bms_1_3", "name": "Statistics for Business Decisions", "code": "DSC-3", "type": "DSC" }
+      ],
+      "2": [
+        { "id": "bms_2_1", "name": "Macroeconomics", "code": "DSC-4", "type": "DSC" },
+        { "id": "bms_2_2", "name": "Corporate Finance", "code": "DSC-5", "type": "DSC" },
+        { "id": "bms_2_3", "name": "Organizational Behavior", "code": "DSC-6", "type": "DSC" }
+      ],
+      "3": [
+        { "id": "bms_3_1", "name": "Business Analytics", "code": "DSC-7", "type": "DSC" },
+        { "id": "bms_3_2", "name": "Marketing Management", "code": "DSC-8", "type": "DSC" },
+        { "id": "bms_3_3", "name": "Human Resource Management", "code": "DSC-9", "type": "DSC" }
+      ],
+      "4": [
+        { "id": "bms_4_1", "name": "Business Research", "code": "DSC-10", "type": "DSC" },
+        { "id": "bms_4_2", "name": "Financial Markets & Institutions", "code": "DSC-11", "type": "DSC" }
+      ],
+      "5": [
+        { "id": "bms_5_1", "name": "Operations Research", "code": "DSC-12", "type": "DSC" },
+        { "id": "bms_5_2", "name": "Strategic Management", "code": "DSC-13", "type": "DSC" }
+      ],
+      "6": [
+        { "id": "bms_6_1", "name": "Business Policy", "code": "DSC-14", "type": "DSC" }
+      ],
+      "7": [
+        { "id": "bms_7_1", "name": "Corporate Governance", "code": "DSC-15", "type": "DSC" }
+      ],
+      "8": [
+        { "id": "bms_8_1", "name": "Dissertation", "code": "DSC-16", "type": "DSC" }
+      ]
     }
   },
   {
