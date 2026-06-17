@@ -13,7 +13,6 @@ import {
   FileText, 
   Calendar,
   Grid,
-  Star,
   Award
 } from "lucide-react";
 
@@ -24,7 +23,6 @@ export default function SubjectPage() {
 
   const [user, setUser] = useState(null);
   const [completedList, setCompletedList] = useState([]);
-  const [bookmarks, setBookmarks] = useState([]);
   
   const [activeTab, setActiveTab] = useState("unit"); // "all" | "unit" | "year"
   const [selectedUnit, setSelectedUnit] = useState(1);
@@ -39,7 +37,6 @@ export default function SubjectPage() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
-    setBookmarks(parsed.bookmarkedQuestions || []);
   }, [router]);
 
   if (!user) {
@@ -92,13 +89,7 @@ export default function SubjectPage() {
     updateLocalStorage("completedQuestions", updated);
   };
 
-  const handleToggleBookmark = (qId) => {
-    const updated = bookmarks.includes(qId)
-      ? bookmarks.filter(id => id !== qId)
-      : [...bookmarks, qId];
-    setBookmarks(updated);
-    updateLocalStorage("bookmarkedQuestions", updated);
-  };
+
 
 
 
@@ -111,11 +102,7 @@ export default function SubjectPage() {
 
   // Groupings
   const questionsInUnit = subjectQuestions.filter(q => q.unit === selectedUnit);
-  const unitQuestionsByTopic = questionsInUnit.reduce((acc, q) => {
-    if (!acc[q.topic]) acc[q.topic] = [];
-    acc[q.topic].push(q);
-    return acc;
-  }, {});
+
 
   const questionsByYear = subjectQuestions.reduce((acc, q) => {
     if (!acc[q.year]) acc[q.year] = [];
@@ -128,7 +115,6 @@ export default function SubjectPage() {
   // Card renderer
   const renderQuestionCard = (q) => {
     const isCompleted = completedList.includes(q.id);
-    const isBookmarked = bookmarks.includes(q.id);
     const isExpanded = !!expandedQuestions[q.id];
 
     return (
@@ -168,31 +154,12 @@ export default function SubjectPage() {
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px" }}>
               <span className="badge badge-orange">{q.year}</span>
-              <span className="badge">{q.topic}</span>
               <span className="badge">{q.marks} Marks</span>
             </div>
           </div>
 
-          {/* Action buttons (Bookmark, Doubt Basket, Solution) */}
+          {/* Action buttons (Doubt Basket, Solution) */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <button
-              onClick={() => handleToggleBookmark(q.id)}
-              title={isBookmarked ? "Remove Bookmark" : "Bookmark Question"}
-              style={{
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                color: isBookmarked ? "#f58340" : "#94a3b8",
-                display: "flex",
-                alignItems: "center",
-                padding: "2px"
-              }}
-            >
-              <Star size={16} fill={isBookmarked ? "#f58340" : "none"} />
-            </button>
-
-
-
             <button 
               onClick={() => handleToggleExpand(q.id)}
               style={{
@@ -381,28 +348,11 @@ export default function SubjectPage() {
               })}
             </div>
 
-            {/* Questions list grouped by topic */}
-            {Object.keys(unitQuestionsByTopic).length > 0 ? (
-              Object.keys(unitQuestionsByTopic).map((topic) => (
-                <div key={topic} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <h3 style={{ 
-                    fontSize: "0.85rem", 
-                    fontWeight: "700", 
-                    color: "#0f172a", 
-                    paddingBottom: "4px", 
-                    borderBottom: "1px solid #e2e8f0",
-                    marginTop: "8px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                  }}>
-                    <span>{topic}</span>
-                    <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "normal" }}>
-                      {unitQuestionsByTopic[topic].length} Questions
-                    </span>
-                  </h3>
-                  {unitQuestionsByTopic[topic].map(renderQuestionCard)}
-                </div>
-              ))
+            {/* Questions list for selected unit */}
+            {questionsInUnit.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {questionsInUnit.map(renderQuestionCard)}
+              </div>
             ) : (
               <div style={{ textAlign: "center", padding: "32px", color: "#64748b", fontSize: "0.8rem" }}>
                 No questions found for Unit {selectedUnit}.

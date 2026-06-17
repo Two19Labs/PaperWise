@@ -10,28 +10,32 @@ import {
   ChevronUp, 
   Filter, 
   Search, 
-  RefreshCw, 
-  Star
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 export default function AnalyzerPage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [completedList, setCompletedList] = useState([]);
-  const [bookmarks, setBookmarks] = useState([]);
 
   // Cascading Filter States
   const [selectedSemesters, setSelectedSemesters] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedUnit, setSelectedUnit] = useState("all");
-  const [selectedTopics, setSelectedTopics] = useState([]);
   const [selectedYears, setSelectedYears] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("all"); // "all" | "solved" | "unsolved"
-  const [filterBookmarkedOnly, setFilterBookmarkedOnly] = useState(false);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedQuestions, setExpandedQuestions] = useState({});
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+
+  // Reset active index when filter criteria changes
+  useEffect(() => {
+    setActiveQuestionIndex(0);
+  }, [selectedSemesters, selectedSubjects, selectedUnit, selectedYears, selectedTypes, selectedStatus, searchQuery]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("paperwise_user");
@@ -42,7 +46,6 @@ export default function AnalyzerPage() {
     const parsed = JSON.parse(storedUser);
     setUser(parsed);
     setCompletedList(parsed.completedQuestions || []);
-    setBookmarks(parsed.bookmarkedQuestions || []);
   }, [router]);
 
   if (!user) {
@@ -74,11 +77,7 @@ export default function AnalyzerPage() {
     ? []
     : questions.filter(q => activeSubjectIds.includes(q.subjectId));
 
-  // Get distinct topics for current filtered set, optionally filtered by unit
-  const questionsForTopics = selectedUnit === "all"
-    ? baseQuestions
-    : baseQuestions.filter(q => q.unit === Number(selectedUnit));
-  const distinctTopics = Array.from(new Set(questionsForTopics.map(q => q.topic)));
+
 
   // Get distinct years from the base set
   const distinctYears = Array.from(new Set(baseQuestions.map(q => q.year))).sort((a, b) => b - a);
@@ -102,7 +101,6 @@ export default function AnalyzerPage() {
     // Reset downstream filters when semesters change
     setSelectedSubjects([]);
     setSelectedUnit("all");
-    setSelectedTopics([]);
     setSelectedYears([]);
   };
 
@@ -113,9 +111,6 @@ export default function AnalyzerPage() {
 
     // Unit filter
     if (selectedUnit !== "all" && q.unit !== Number(selectedUnit)) return false;
-
-    // Topic filter
-    if (selectedTopics.length > 0 && !selectedTopics.includes(q.topic)) return false;
 
     // Year filter
     if (selectedYears.length > 0 && !selectedYears.includes(q.year)) return false;
@@ -128,15 +123,11 @@ export default function AnalyzerPage() {
     if (selectedStatus === "solved" && !isSolved) return false;
     if (selectedStatus === "unsolved" && isSolved) return false;
 
-    // Bookmarked filter
-    if (filterBookmarkedOnly && !bookmarks.includes(q.id)) return false;
-
     // Search query filter
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       const textMatches = q.text.toLowerCase().includes(query);
-      const topicMatches = q.topic.toLowerCase().includes(query);
-      if (!textMatches && !topicMatches) return false;
+      if (!textMatches) return false;
     }
 
     return true;
@@ -157,13 +148,7 @@ export default function AnalyzerPage() {
     updateLocalStorage("completedQuestions", updated);
   };
 
-  const handleToggleBookmark = (qId) => {
-    const updated = bookmarks.includes(qId)
-      ? bookmarks.filter(id => id !== qId)
-      : [...bookmarks, qId];
-    setBookmarks(updated);
-    updateLocalStorage("bookmarkedQuestions", updated);
-  };
+
 
   const handleToggleExpand = (qId) => {
     setExpandedQuestions(prev => ({ ...prev, [qId]: !prev[qId] }));
@@ -173,11 +158,9 @@ export default function AnalyzerPage() {
     setSelectedSemesters([]);
     setSelectedSubjects([]);
     setSelectedUnit("all");
-    setSelectedTopics([]);
     setSelectedYears([]);
     setSelectedTypes([]);
     setSelectedStatus("all");
-    setFilterBookmarkedOnly(false);
     setSearchQuery("");
   };
 
@@ -186,13 +169,7 @@ export default function AnalyzerPage() {
   const solvedInFilter = filteredQuestions.filter(q => completedList.includes(q.id)).length;
   const progressPercent = totalInFilter > 0 ? Math.round((solvedInFilter / totalInFilter) * 100) : 0;
 
-  const topicCounts = filteredQuestions.reduce((acc, q) => {
-    acc[q.topic] = (acc[q.topic] || 0) + 1;
-    return acc;
-  }, {});
-  const sortedTopicFrequency = Object.keys(topicCounts)
-    .map(topic => ({ topic, count: topicCounts[topic] }))
-    .sort((a, b) => b.count - a.count);
+
 
   // Check if unit filter should be shown (only when exactly one subject is selected)
   const showUnitFilter = selectedSubjects.length === 1;
@@ -277,7 +254,6 @@ export default function AnalyzerPage() {
                     onChange={() => {
                       handleToggleFilter(sub.id, selectedSubjects, setSelectedSubjects);
                       setSelectedUnit("all");
-                      setSelectedTopics([]);
                     }}
                   />
                   <span className="checkmark" />
@@ -300,7 +276,6 @@ export default function AnalyzerPage() {
               value={selectedUnit}
               onChange={(e) => {
                 setSelectedUnit(e.target.value);
-                setSelectedTopics([]);
               }}
               style={{ padding: "6px 10px", fontSize: "0.8rem" }}
             >
@@ -311,36 +286,7 @@ export default function AnalyzerPage() {
           </div>
         )}
 
-        {/* 4. TOPICS — visible after ≥1 semester selected */}
-        {selectedSemesters.length > 0 && distinctTopics.length > 0 && (
-          <div className="form-group">
-            <label className="form-label">TOPICS</label>
-            <div style={{
-              maxHeight: "120px",
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: "6px",
-              padding: "6px",
-              border: "1px solid #e2e8f0",
-              borderRadius: "6px",
-              background: "#f9fafb"
-            }}>
-              {distinctTopics.map((topic) => (
-                <label key={topic} className="checkbox-container" style={{ fontSize: "0.75rem" }}>
-                  <input 
-                    type="checkbox"
-                    className="checkbox-input"
-                    checked={selectedTopics.includes(topic)}
-                    onChange={() => handleToggleFilter(topic, selectedTopics, setSelectedTopics)}
-                  />
-                  <span className="checkmark" />
-                  <span>{topic}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
+
 
         {/* 5. EXAM YEARS — visible after ≥1 semester selected */}
         {selectedSemesters.length > 0 && distinctYears.length > 0 && (
@@ -372,26 +318,7 @@ export default function AnalyzerPage() {
           </div>
         )}
 
-        {/* 6. PERSONAL LISTS — visible after ≥1 semester selected */}
-        {selectedSemesters.length > 0 && (
-          <div className="form-group">
-            <label className="form-label">PERSONAL LISTS</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label className="checkbox-container" style={{ fontSize: "0.75rem" }}>
-                <input 
-                  type="checkbox"
-                  className="checkbox-input"
-                  checked={filterBookmarkedOnly}
-                  onChange={(e) => setFilterBookmarkedOnly(e.target.checked)}
-                />
-                <span className="checkmark" />
-                <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <Star size={12} fill={filterBookmarkedOnly ? "#f58340" : "none"} style={{ color: "#f58340" }} /> Bookmarked
-                </span>
-              </label>
-            </div>
-          </div>
-        )}
+
 
         {/* 7. COMPLETION — visible after ≥1 semester selected */}
         {selectedSemesters.length > 0 && (
@@ -430,7 +357,7 @@ export default function AnalyzerPage() {
             </span>
             <input 
               type="text"
-              placeholder="Search keyword, formula, or topic..."
+              placeholder="Search keyword or formula..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -485,115 +412,199 @@ export default function AnalyzerPage() {
           </div>
         )}
 
-        {/* Question List */}
+        {/* Question Pagination Deck */}
         {selectedSemesters.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {filteredQuestions.length > 0 ? (
-              filteredQuestions.map((q) => {
-                const isSolved = completedList.includes(q.id);
-                const isBookmarked = bookmarks.includes(q.id);
-                const isExpanded = !!expandedQuestions[q.id];
-
-                // Find subject name for display
-                const subjectInfo = availableSubjects.find(s => s.id === q.subjectId);
-
-                return (
-                  <div 
-                    key={q.id}
-                    className="glass-panel"
+              <>
+                {/* Numbered Boxes Navigation */}
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <button
+                    disabled={activeQuestionIndex === 0}
+                    onClick={() => setActiveQuestionIndex(prev => prev - 1)}
                     style={{
-                      padding: "16px",
-                      borderLeft: isSolved ? "3px solid #f58340" : "1px solid #e2e8f0",
                       background: "#ffffff",
+                      border: "1.5px solid #e2e8f0",
+                      borderRadius: "6px",
+                      width: "36px",
+                      height: "36px",
                       display: "flex",
-                      flexDirection: "column",
-                      gap: "8px"
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: activeQuestionIndex === 0 ? "#cbd5e1" : "#475569",
+                      cursor: activeQuestionIndex === 0 ? "not-allowed" : "pointer",
+                      transition: "all 0.15s ease",
+                      flexShrink: 0
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                      <label className="checkbox-container" style={{ marginTop: "2px" }}>
-                        <input 
-                          type="checkbox"
-                          className="checkbox-input"
-                          checked={isSolved}
-                          onChange={() => handleToggleCompletion(q.id)}
-                        />
-                        <span className="checkmark" />
-                      </label>
+                    <ChevronLeft size={16} />
+                  </button>
 
-                      <div style={{ flex: 1 }}>
-                        <p style={{
-                          fontSize: "0.85rem",
-                          lineHeight: "1.4",
-                          color: isSolved ? "#94a3b8" : "#0f172a",
-                          textDecoration: isSolved ? "line-through" : "none"
-                        }}>
-                          <Latex text={q.text} />
-                        </p>
+                  <div style={{
+                    display: "flex",
+                    gap: "6px",
+                    overflowX: "auto",
+                    paddingBottom: "4px",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none"
+                  }}>
+                    {filteredQuestions.map((_, index) => {
+                      const isActive = index === activeQuestionIndex;
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => setActiveQuestionIndex(index)}
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "6px",
+                            border: "none",
+                            background: isActive ? "#0f172a" : "#f1f5f9",
+                            color: isActive ? "#ffffff" : "#475569",
+                            fontWeight: isActive ? "700" : "500",
+                            fontSize: "0.85rem",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            transition: "all 0.15s ease"
+                          }}
+                        >
+                          {index + 1}
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "6px" }}>
-                          <span className="badge badge-orange">{q.year}</span>
-                          <span className="badge">{q.topic}</span>
-                          <span className="badge">{q.marks}M</span>
+                  <button
+                    disabled={activeQuestionIndex === filteredQuestions.length - 1}
+                    onClick={() => setActiveQuestionIndex(prev => prev + 1)}
+                    style={{
+                      background: "#ffffff",
+                      border: "1.5px solid #e2e8f0",
+                      borderRadius: "6px",
+                      width: "36px",
+                      height: "36px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: activeQuestionIndex === filteredQuestions.length - 1 ? "#cbd5e1" : "#475569",
+                      cursor: activeQuestionIndex === filteredQuestions.length - 1 ? "not-allowed" : "pointer",
+                      transition: "all 0.15s ease",
+                      flexShrink: 0
+                    }}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+
+                {/* Single Active Question Card */}
+                {(() => {
+                  const activeQuestion = filteredQuestions[activeQuestionIndex] || filteredQuestions[0];
+                  if (!activeQuestion) return null;
+
+                  const isSolved = completedList.includes(activeQuestion.id);
+                  const isExpanded = !!expandedQuestions[activeQuestion.id];
+                  const subjectInfo = availableSubjects.find(s => s.id === activeQuestion.subjectId);
+
+                  return (
+                    <div 
+                      className="glass-panel"
+                      style={{
+                        padding: "24px",
+                        borderLeft: isSolved ? "4px solid #f58340" : "1px solid #e2e8f0",
+                        background: "#ffffff",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
+                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.025)"
+                      }}
+                    >
+                      {/* Top Row: Badges & Solved status */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                          <span className="badge badge-orange" style={{ padding: "4px 8px", fontSize: "0.75rem" }}>{activeQuestion.year}</span>
+                          <span className="badge" style={{ padding: "4px 8px", fontSize: "0.75rem" }}>{activeQuestion.marks}M</span>
                           {subjectInfo && (
-                            <span className="badge" style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0" }}>
-                              {subjectInfo.name.length > 25 ? subjectInfo.name.substring(0, 22) + "…" : subjectInfo.name}
+                            <span className="badge" style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", padding: "4px 8px", fontSize: "0.75rem" }}>
+                              {subjectInfo.name}
                             </span>
                           )}
                         </div>
+
+                        <label className="checkbox-container" style={{ fontSize: "0.85rem", fontWeight: "600", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", userSelect: "none" }}>
+                          <input 
+                            type="checkbox"
+                            className="checkbox-input"
+                            checked={isSolved}
+                            onChange={() => handleToggleCompletion(activeQuestion.id)}
+                          />
+                          <span className="checkmark" />
+                          <span style={{ color: isSolved ? "#f58340" : "#475569" }}>
+                            {isSolved ? "Solved" : "Mark Solved"}
+                          </span>
+                        </label>
                       </div>
 
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                        <button
-                          onClick={() => handleToggleBookmark(q.id)}
-                          style={{
-                            background: "transparent",
-                            border: "none",
-                            cursor: "pointer",
-                            color: isBookmarked ? "#f58340" : "#94a3b8",
-                            display: "flex"
-                          }}
-                        >
-                          <Star size={14} fill={isBookmarked ? "#f58340" : "none"} />
-                        </button>
-
-                        <button 
-                          onClick={() => handleToggleExpand(q.id)}
-                          style={{
-                            background: "#ffffff",
-                            border: "1px solid #e2e8f0",
-                            borderRadius: "4px",
-                            padding: "3px 6px",
-                            color: "#475569",
-                            fontSize: "0.7rem",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {isExpanded ? "Hide" : "Solution"}
-                        </button>
-                      </div>
-                    </div>
-
-                    {isExpanded && (
+                      {/* Body: Large Latex question text */}
                       <div style={{
-                        padding: "12px",
-                        background: "#f9fafb",
-                        border: "1px solid #e2e8f0",
-                        borderRadius: "6px",
-                        fontSize: "0.8rem",
-                        lineHeight: "1.4",
-                        color: "#334155",
-                        marginTop: "4px"
+                        fontSize: "0.95rem",
+                        lineHeight: "1.6",
+                        color: "#0f172a",
+                        padding: "12px 0",
+                        borderBottom: "1px solid #f1f5f9"
                       }}>
-                        <div style={{ fontWeight: "700", color: "#f58340", marginBottom: "4px", fontSize: "0.7rem", letterSpacing: "0.05em" }}>
-                          SOLUTION WORKTHROUGH
-                        </div>
-                        <div style={{ whiteSpace: "pre-wrap" }}><Latex>{q.solution}</Latex></div>
+                        <Latex text={activeQuestion.text} />
                       </div>
-                    )}
-                  </div>
-                );
-              })
+
+                      {/* Bottom Row: Solution Toggle Button */}
+                      <div style={{ display: "flex", justifyContent: "center", marginTop: "4px" }}>
+                        <button 
+                          onClick={() => handleToggleExpand(activeQuestion.id)}
+                          style={{
+                            background: isExpanded ? "#f1f5f9" : "#0f172a",
+                            border: "none",
+                            borderRadius: "6px",
+                            padding: "8px 18px",
+                            color: isExpanded ? "#0f172a" : "#ffffff",
+                            fontSize: "0.8rem",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                            transition: "all 0.15s ease",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                        >
+                          {isExpanded ? "Hide Solution" : "Show Solution"}
+                          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        </button>
+                      </div>
+
+                      {/* Solution Walkthrough box */}
+                      {isExpanded && (
+                        <div style={{
+                          padding: "20px",
+                          background: "#f8fafc",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "8px",
+                          fontSize: "0.85rem",
+                          lineHeight: "1.6",
+                          color: "#334155",
+                          marginTop: "8px",
+                          boxShadow: "inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)"
+                        }}>
+                          <div style={{ fontWeight: "700", color: "#f58340", marginBottom: "8px", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
+                            SOLUTION WORKTHROUGH
+                          </div>
+                          <div style={{ whiteSpace: "pre-wrap" }}><Latex>{activeQuestion.solution}</Latex></div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </>
             ) : (
               <div className="glass-panel" style={{ padding: "32px", textAlign: "center", color: "#64748b", fontSize: "0.8rem", background: "#ffffff" }}>
                 No matching questions found. Try adjusting your filters.
@@ -648,12 +659,7 @@ export default function AnalyzerPage() {
                 {selectedSubjects.length > 0 ? selectedSubjects.length : "All"}
               </span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Topics</span>
-              <span style={{ fontWeight: "600", color: "#0f172a" }}>
-                {selectedTopics.length > 0 ? selectedTopics.length : "All"}
-              </span>
-            </div>
+
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span>Years</span>
               <span style={{ fontWeight: "600", color: "#0f172a" }}>
@@ -663,37 +669,7 @@ export default function AnalyzerPage() {
           </div>
         </div>
 
-        {/* Topic Repetitions */}
-        <div className="glass-panel" style={{ padding: "16px", background: "#ffffff" }}>
-          <h3 style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: "700", marginBottom: "12px", letterSpacing: "0.05em" }}>
-            TOPIC REPETITIONS
-          </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {sortedTopicFrequency.length > 0 ? (
-              sortedTopicFrequency.slice(0, 5).map((item) => (
-                <div key={item.topic} style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "6px 10px",
-                  background: "#f9fafb",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "4px",
-                  fontSize: "0.75rem"
-                }}>
-                  <span style={{ fontWeight: "500", color: "#0f172a" }}>{item.topic}</span>
-                  <span className="badge badge-orange" style={{ fontSize: "0.70rem" }}>
-                    {item.count}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <p style={{ fontSize: "0.75rem", color: "#94a3b8", textAlign: "center", padding: "8px" }}>
-                Select a semester to see topic data.
-              </p>
-            )}
-          </div>
-        </div>
+
       </aside>
     </div>
   );
