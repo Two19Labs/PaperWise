@@ -12,7 +12,7 @@ export default function LandingPage() {
       fontFamily: "var(--font-inter)",
       display: "flex",
       flexDirection: "column",
-    }}>
+    }} className="fade-in-up">
       {/* Header */}
       <header style={{
         height: "64px",
@@ -24,9 +24,9 @@ export default function LandingPage() {
         padding: "0 24px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <BookOpen size={20} style={{ color: "#f58340" }} />
-          <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
-            Paper<span style={{ color: "#f58340" }}>Wise</span>
+          <BookOpen size={20} style={{ color: "#7c3aed" }} />
+          <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em", fontFamily: "var(--font-outfit)" }}>
+            Paper<span style={{ color: "#7c3aed" }}>Wise</span>
           </span>
         </div>
 
@@ -39,7 +39,7 @@ export default function LandingPage() {
           }}>
             Sign In
           </Link>
-          <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
+          <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "0.8rem", background: "#7c3aed" }}>
             Sign Up Free
           </Link>
         </nav>
@@ -57,27 +57,27 @@ export default function LandingPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
-            background: "#fff7ed",
-            border: "1px solid rgba(245, 131, 64, 0.25)",
-            color: "#ea580c",
+            background: "#f5f3ff",
+            border: "1px solid rgba(124, 58, 237, 0.25)",
+            color: "#6d28d9",
             padding: "4px 10px",
             borderRadius: "4px",
             fontSize: "0.75rem",
             fontWeight: "700",
             marginBottom: "20px"
           }}>
-            <Sparkles size={12} /> Designed for SSCBS Students
+            <Sparkles size={12} /> Supporting Delhi University Syllabus
           </div>
 
           <h1 style={{
-            fontSize: "2.5rem",
+            fontSize: "2.75rem",
             fontWeight: "800",
             lineHeight: "1.2",
             letterSpacing: "-0.02em",
             marginBottom: "16px",
             color: "#0f172a"
           }}>
-            Ace Your SSCBS Semester Exams with Smart PYQ Analysis
+            Ace Your Delhi University Semester Exams with Smart PYQ Analysis
           </h1>
 
           <p style={{
@@ -88,11 +88,11 @@ export default function LandingPage() {
             maxWidth: "540px",
             margin: "0 auto 32px"
           }}>
-            Stop digging through messy PDF dumps. Filter past papers by topic, check off solved questions, and access detailed step-by-step guides.
+            Stop digging through messy PDF dumps. Filter past papers by topic, check off solved questions, and access detailed step-by-step solutions tailored to UGCF NEP regulations.
           </p>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
-            <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "10px 20px" }}>
+            <Link href="/auth/signup" className="btn btn-primary" style={{ padding: "10px 20px", background: "#7c3aed" }}>
               Get Started <ArrowRight size={14} />
             </Link>
             <Link href="/auth/login" className="btn btn-secondary" style={{ padding: "10px 20px" }}>
@@ -120,15 +120,15 @@ export default function LandingPage() {
             textAlign: "center"
           }}>
             <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a" }}>SSCBS</div>
-              <div style={{ fontSize: "0.7rem", color: "#64748b", marginTop: "2px", fontWeight: "700" }}>EXCLUSIVELY TUNED</div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a", fontFamily: "var(--font-outfit)" }}>DELHI UNIVERSITY</div>
+              <div style={{ fontSize: "0.7rem", color: "#64748b", marginTop: "2px", fontWeight: "700" }}>ALL COLLEGES SUPPORTED</div>
             </div>
             <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a" }}>BMS, BBA, B.Sc.</div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a", fontFamily: "var(--font-outfit)" }}>BMS, BBA, B.Sc. & More</div>
               <div style={{ fontSize: "0.7rem", color: "#64748b", marginTop: "2px", fontWeight: "700" }}>SUPPORTED COURSES</div>
             </div>
             <div>
-              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a" }}>UGCF NEP</div>
+              <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "#0f172a", fontFamily: "var(--font-outfit)" }}>UGCF NEP</div>
               <div style={{ fontSize: "0.7rem", color: "#64748b", marginTop: "2px", fontWeight: "700" }}>SYLLABUS COMPLIANT</div>
             </div>
           </div>
@@ -147,9 +147,9 @@ export default function LandingPage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "6px",
-                background: "#fff7ed",
-                border: "1px solid rgba(245, 131, 64, 0.2)",
-                color: "#f58340",
+                background: "#f5f3ff",
+                border: "1px solid rgba(124, 58, 237, 0.2)",
+                color: "#7c3aed",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -169,9 +169,9 @@ export default function LandingPage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "6px",
-                background: "#fff7ed",
-                border: "1px solid rgba(245, 131, 64, 0.2)",
-                color: "#f58340",
+                background: "#f5f3ff",
+                border: "1px solid rgba(124, 58, 237, 0.2)",
+                color: "#7c3aed",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -191,9 +191,9 @@ export default function LandingPage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "6px",
-                background: "#fff7ed",
-                border: "1px solid rgba(245, 131, 64, 0.2)",
-                color: "#f58340",
+                background: "#f5f3ff",
+                border: "1px solid rgba(124, 58, 237, 0.2)",
+                color: "#7c3aed",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -220,10 +220,10 @@ export default function LandingPage() {
         color: "#64748b"
       }}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
-          <BookOpen size={14} style={{ color: "#f58340" }} />
-          <span style={{ fontWeight: "700", color: "#0f172a" }}>PaperWise</span>
+          <BookOpen size={14} style={{ color: "#7c3aed" }} />
+          <span style={{ fontWeight: "700", color: "#0f172a", fontFamily: "var(--font-outfit)" }}>PaperWise</span>
         </div>
-        <p>© 2026 PaperWise. Tailored for Shaheed Sukhdev College of Business Studies.</p>
+        <p>© 2026 PaperWise. Designed by SSCBS students for the entirety of Delhi University.</p>
       </footer>
     </div>
   );

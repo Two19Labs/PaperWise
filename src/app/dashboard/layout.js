@@ -168,9 +168,9 @@ export default function DashboardLayout({ children }) {
               textDecoration: "none",
               color: "#0f172a"
             }}>
-              <BookOpen size={18} style={{ color: "#f58340" }} />
+              <BookOpen size={18} style={{ color: "#7c3aed" }} />
               <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
-                Paper<span style={{ color: "#f58340" }}>Wise</span>
+                Paper<span style={{ color: "#7c3aed" }}>Wise</span>
               </span>
             </Link>
           </div>
@@ -186,13 +186,13 @@ export default function DashboardLayout({ children }) {
                   textDecoration: "none",
                   color: "#0f172a"
                 }}>
-                  <BookOpen size={18} style={{ color: "#f58340" }} />
+                  <BookOpen size={18} style={{ color: "#7c3aed" }} />
                   <span style={{ fontSize: "1rem", fontWeight: "800", letterSpacing: "-0.01em" }}>
-                    Paper<span style={{ color: "#f58340" }}>Wise</span>
+                    Paper<span style={{ color: "#7c3aed" }}>Wise</span>
                   </span>
                 </Link>
               ) : (
-                <BookOpen size={18} style={{ color: "#f58340" }} />
+                <BookOpen size={18} style={{ color: "#7c3aed" }} />
               )}
             </div>
           </div>
@@ -249,9 +249,9 @@ export default function DashboardLayout({ children }) {
             borderRadius: "6px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
-              <GraduationCap size={14} style={{ color: "#f58340" }} />
+              <GraduationCap size={14} style={{ color: "#7c3aed" }} />
               <span style={{ fontSize: "0.65rem", fontWeight: "700", color: "#64748b", letterSpacing: "0.05em" }}>
-                ACADEMIC PORTAL
+                DU ACADEMIC PORTAL
               </span>
             </div>
             <div style={{ fontSize: "0.75rem", fontWeight: "750", color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={user.college}>
@@ -278,9 +278,9 @@ export default function DashboardLayout({ children }) {
                   gap: "10px",
                   padding: "10px 12px",
                   borderRadius: "6px",
-                  color: isActive ? "#ea580c" : "#475569",
-                  background: isActive ? "#fff7ed" : "transparent",
-                  border: isActive ? "1px solid rgba(245, 131, 64, 0.15)" : "1px solid transparent",
+                  color: isActive ? "#6d28d9" : "#475569",
+                  background: isActive ? "#f5f3ff" : "transparent",
+                  border: isActive ? "1px solid rgba(124, 58, 237, 0.15)" : "1px solid transparent",
                   textDecoration: "none",
                   fontWeight: isActive ? "650" : "500",
                   fontSize: "0.85rem",

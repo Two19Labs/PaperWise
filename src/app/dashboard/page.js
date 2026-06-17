@@ -115,7 +115,7 @@ export default function DashboardHome() {
             Welcome, {user.name || "Student"} 👋
           </h1>
           <p style={{ color: "#475569", fontSize: "0.8rem" }}>
-            You have full access to all semesters and subjects for **{user.college || "SSCBS"}**.
+            You have full access to all semesters and subjects for **{user.college || "Delhi University"}**.
           </p>
         </div>
         <Link href="/dashboard/analyzer" className="btn btn-primary" style={{ padding: "8px 12px", fontSize: "0.8rem" }}>
@@ -135,9 +135,9 @@ export default function DashboardHome() {
             width: "36px",
             height: "36px",
             borderRadius: "6px",
-            background: "#fff7ed",
-            border: "1px solid rgba(245, 131, 64, 0.2)",
-            color: "#f58340",
+            background: "#f5f3ff",
+            border: "1px solid rgba(124, 58, 237, 0.2)",
+            color: "#7c3aed",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -158,9 +158,9 @@ export default function DashboardHome() {
             width: "36px",
             height: "36px",
             borderRadius: "6px",
-            background: "#fff7ed",
-            border: "1px solid rgba(245, 131, 64, 0.2)",
-            color: "#f58340",
+            background: "#f5f3ff",
+            border: "1px solid rgba(124, 58, 237, 0.2)",
+            color: "#7c3aed",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -181,9 +181,9 @@ export default function DashboardHome() {
             width: "36px",
             height: "36px",
             borderRadius: "6px",
-            background: "#fff7ed",
-            border: "1px solid rgba(245, 131, 64, 0.2)",
-            color: "#f58340",
+            background: "#f5f3ff",
+            border: "1px solid rgba(124, 58, 237, 0.2)",
+            color: "#7c3aed",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -246,7 +246,7 @@ export default function DashboardHome() {
                       <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
                         {subject.completedCount} / {subject.totalCount} done
                       </div>
-                      <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#f58340", marginTop: "2px" }}>
+                      <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "#7c3aed", marginTop: "2px" }}>
                         {subject.progress}%
                       </div>
                     </div>
@@ -264,7 +264,7 @@ export default function DashboardHome() {
                     <div style={{
                       width: `${subject.progress}%`,
                       height: "100%",
-                      background: "#f58340",
+                      background: "#7c3aed",
                       borderRadius: "2px",
                       transition: "width 0.3s"
                     }} />
@@ -283,7 +283,7 @@ export default function DashboardHome() {
                       style={{
                         fontSize: "0.75rem",
                         fontWeight: "650",
-                        color: "#f58340",
+                        color: "#7c3aed",
                         display: "flex",
                         alignItems: "center",
                         gap: "2px",

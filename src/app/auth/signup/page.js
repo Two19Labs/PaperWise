@@ -127,7 +127,7 @@ export default function SignupPage() {
       justifyContent: "center",
       background: "#f9fafb",
       padding: "20px",
-    }}>
+    }} className="fade-in-up">
       <div style={{
         width: "100%",
         maxWidth: "440px",
@@ -147,7 +147,7 @@ export default function SignupPage() {
                   height: "3px",
                   width: "24px",
                   borderRadius: "1.5px",
-                  background: s <= step ? "#f58340" : "#e2e8f0",
+                  background: s <= step ? "#7c3aed" : "#e2e8f0",
                   transition: "all 0.2s ease",
                 }}
               />
@@ -171,8 +171,8 @@ export default function SignupPage() {
             {step === 3 && "Select Your Course"}
           </h1>
           <p style={{ color: "#475569", fontSize: "0.8rem" }}>
-            {step === 1 && "Start tracking and analyzing your SSCBS past papers."}
-            {step === 2 && "Verify your college details to proceed."}
+            {step === 1 && "Start tracking and analyzing your Delhi University (DU) past papers."}
+            {step === 2 && "Delhi University Colleges (SSCBS & SRCC live, more coming soon!)"}
             {step === 3 && "You will have full access to all semesters and subjects."}
           </p>
         </div>
@@ -323,9 +323,9 @@ export default function SignupPage() {
                       padding: "16px",
                       borderRadius: "6px",
                       cursor: "pointer",
-                      background: isSelected ? "#fff7ed" : "#ffffff",
-                      border: isSelected ? "1px solid #f58340" : "1px solid #e2e8f0",
-                      color: isSelected ? "#ea580c" : "#475569",
+                      background: isSelected ? "#f5f3ff" : "#ffffff",
+                      border: isSelected ? "1px solid #7c3aed" : "1px solid #e2e8f0",
+                      color: isSelected ? "#6d28d9" : "#475569",
                       transition: "all 0.15s",
                       display: "flex",
                       justifyContent: "space-between",
@@ -337,7 +337,7 @@ export default function SignupPage() {
                         {college.name}
                       </div>
                     </div>
-                    {isSelected && <Check size={14} style={{ color: "#ea580c" }} />}
+                    {isSelected && <Check size={14} style={{ color: "#6d28d9" }} />}
                   </div>
                 );
               })}
@@ -377,9 +377,9 @@ export default function SignupPage() {
                       padding: "12px 16px",
                       borderRadius: "6px",
                       cursor: "pointer",
-                      background: isSelected ? "#fff7ed" : "#ffffff",
-                      border: isSelected ? "1px solid #f58340" : "1px solid #e2e8f0",
-                      color: isSelected ? "#ea580c" : "#475569",
+                      background: isSelected ? "#f5f3ff" : "#ffffff",
+                      border: isSelected ? "1px solid #7c3aed" : "1px solid #e2e8f0",
+                      color: isSelected ? "#6d28d9" : "#475569",
                       transition: "all 0.15s",
                       display: "flex",
                       justifyContent: "space-between",
@@ -394,7 +394,7 @@ export default function SignupPage() {
                         Syllabus: UGCF NEP
                       </div>
                     </div>
-                    {isSelected && <Check size={14} style={{ color: "#ea580c" }} />}
+                    {isSelected && <Check size={14} style={{ color: "#6d28d9" }} />}
                   </div>
                 );
               })}
@@ -431,7 +431,7 @@ export default function SignupPage() {
           }}>
             Already have an account?{" "}
             <Link href="/auth/login" style={{
-              color: "#f58340",
+              color: "#7c3aed",
               fontWeight: "600",
               textDecoration: "underline"
             }}>

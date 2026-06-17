@@ -1,4 +1,5 @@
 @import url("https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
   /* AfterBoards Design Language - Clean Light Theme */
@@ -15,16 +16,18 @@
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   
-  --accent-orange: #f58340;
-  --accent-orange-hover: #ea580c;
-  --accent-orange-light: #fff7ed;
+  /* Delhi University Royal Purple / Violet Brand Accents */
+  --accent-orange: #7c3aed;
+  --accent-orange-hover: #6d28d9;
+  --accent-orange-light: #f5f3ff;
   
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
   
   --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
-  --transition-fast: all 0.1s ease-out;
+  --font-outfit: 'Outfit', 'Inter', system-ui, sans-serif;
+  --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Base styles */
@@ -41,6 +44,26 @@ html, body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-outfit);
+  letter-spacing: -0.02em;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Scrollbars */
@@ -128,7 +151,7 @@ html, body {
 }
 
 .badge-orange {
-  border-color: rgba(245, 131, 64, 0.3);
+  border-color: rgba(124, 58, 237, 0.3);
   color: var(--accent-orange);
   background: var(--accent-orange-light);
 }
@@ -167,7 +190,7 @@ html, body {
 
 .input-control:focus {
   border-color: var(--accent-orange);
-  box-shadow: 0 0 0 2px rgba(245, 131, 64, 0.15);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
 }
 
 .input-control::placeholder {

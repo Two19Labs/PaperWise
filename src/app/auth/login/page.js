@@ -96,7 +96,7 @@ export default function LoginPage() {
       justifyContent: "center",
       background: "#f9fafb",
       padding: "20px",
-    }}>
+    }} className="fade-in-up">
       <div style={{
         width: "100%",
         maxWidth: "400px",
@@ -115,9 +115,9 @@ export default function LoginPage() {
             width: "40px",
             height: "40px",
             borderRadius: "6px",
-            background: "#fff7ed",
-            border: "1px solid rgba(245, 131, 64, 0.2)",
-            color: "#f58340",
+            background: "#f5f3ff",
+            border: "1px solid rgba(124, 58, 237, 0.2)",
+            color: "#7c3aed",
             marginBottom: "12px",
           }}>
             <BookOpen size={20} />
@@ -129,7 +129,7 @@ export default function LoginPage() {
             color: "#0f172a"
           }}>Welcome Back</h1>
           <p style={{ color: "#475569", fontSize: "0.8rem" }}>
-            Sign in to track your SSCBS syllabus PYQs
+            Sign in to track your Delhi University (DU) syllabus PYQs
           </p>
         </div>
 
@@ -210,7 +210,7 @@ export default function LoginPage() {
               </label>
               <a href="#" style={{
                 fontSize: "0.75rem",
-                color: "#f58340",
+                color: "#7c3aed",
                 textDecoration: "underline"
               }}>
                 Forgot?
@@ -271,7 +271,7 @@ export default function LoginPage() {
         }}>
           Don&apos;t have an account?{" "}
           <Link href="/auth/signup" style={{
-            color: "#f58340",
+            color: "#7c3aed",
             fontWeight: "600",
             textDecoration: "underline"
           }}>
